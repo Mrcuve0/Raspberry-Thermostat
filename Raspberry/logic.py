@@ -7,6 +7,7 @@ def on_connect(client, userdata, flags, rc):
     print('Connected with result code {0}'.format(rc))
     # Subscribe (or renew if reconnect).
     client.subscribe('raspone')
+    client.publish('raspone', 'msg')
 
 # Callback fires when a published message is received.
 def on_message(client, userdata, msg):
@@ -17,5 +18,7 @@ client.on_connect = on_connect  # Specify on_connect callback
 client.on_message = on_message  # Specify on_message callback
 client.connect(MQTT_SERVER, 1883, 60)  # Connect to MQTT broker (also running on Pi).
 
-# Processes MQTT network traffic, callbacks and reconnections. (Blocking)
-client.loop_forever()
+# Start connection loop in a separate thread
+client.loop_start()
+while True:
+    pass
