@@ -4,14 +4,15 @@ import ast
 class connection_manager:   
     temperature_topic = 'logs'
     actuator_topic = 'actuators'
-    last_temperatures = {}
+    last_temperatures = []
     last_msg = ""
     # Mqtt broker will run on the raspberry, so the address to use will be 'localhost'
     MQTT_SERVER = '192.168.43.154' #'localhost'
     mqtt_client = mqtt.Client()
 
     def __init__(self):
-        self.last_temperatures = [{'room': 'default', 'temperature': 0}]
+        # Get last temperatures from db, or create a new empty list []
+        self.last_temperatures = []#[{'room': 'default', 'temperature': 0}]
 
     def get_last_message(self):
         return self.last_msg

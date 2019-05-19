@@ -16,6 +16,11 @@ def find_log(criteria):
 	result = posts.find_one(criteria)
 	return result
 
+def get_configuration():
+	pass
+
+def get_last_temperatures():
+	pass
 
 
 
