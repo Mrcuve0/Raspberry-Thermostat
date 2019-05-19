@@ -1,6 +1,7 @@
 import time
 import connection_manager
 import db_manager
+import json
 
 # Room settings constants
 manual_settings = 'manual'
@@ -36,7 +37,7 @@ def drive_actuator(room, actuator_type, power):
 		topic = actuator_hot_topic
 	elif (actuator_type == actuator_cold):
 		topic = actuator_cold_topic
-	msg = str({'room': room, 'power': power})
+	msg = json.dumps({'room': room, 'power': power})
 	mqtt_manager.mqtt_publish(topic, msg)
 
 while True:
