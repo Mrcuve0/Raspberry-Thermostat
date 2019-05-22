@@ -1,5 +1,5 @@
-#include <Adafruit_Sensor.h>
-#include <DHT.h>
+#include "Adafruit_Sensor.h"
+#include "DHT.h"
 
 #define DHTPIN 27     // Digital pin connected to the DHT sensor
 
