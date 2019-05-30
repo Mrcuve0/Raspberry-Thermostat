@@ -1,0 +1,4 @@
+lunghezza configurazione -> usata per backup custom configuration dell'utente. usare web services per cambiare config.
+
+sicurezza comunicazione bluetooth iniziale
+

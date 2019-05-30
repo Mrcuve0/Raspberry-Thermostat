@@ -12,12 +12,13 @@ import mainWindow
 
 
 class Ui_AddRoomSensorWindow(object):
+
     def on_PB_goBack_clicked(self):
+        self.close()
         self.window = QtWidgets.QMainWindow()
         self.ui = mainWindow.Ui_MainWindow()
         self.ui.setupUi(self.window)
         self.window.show()
-        self.close()
 
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
@@ -26,6 +27,7 @@ class Ui_AddRoomSensorWindow(object):
         self.window.close()
 
     def setupUi(self, AddRoomSensorWindow):
+        self.window = AddRoomSensorWindow
         AddRoomSensorWindow.setObjectName("AddRoomSensorWindow")
         AddRoomSensorWindow.resize(800, 480)
         font = QtGui.QFont()
@@ -115,6 +117,7 @@ class Ui_AddRoomSensorWindow(object):
         self.statusbar.setObjectName("statusbar")
         AddRoomSensorWindow.setStatusBar(self.statusbar)
 
+        self.activeFunctionsConnection()
         self.retranslateUi(AddRoomSensorWindow)
         QtCore.QMetaObject.connectSlotsByName(AddRoomSensorWindow)
 
@@ -135,12 +138,3 @@ class Ui_AddRoomSensorWindow(object):
         self.PB_connect.setText(_translate(
             "AddRoomSensorWindow", "Connetti..."))
 
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    AddRoomSensorWindow = QtWidgets.QMainWindow()
-    ui = Ui_AddRoomSensorWindow()
-    ui.setupUi(AddRoomSensorWindow)
-    AddRoomSensorWindow.show()
-    sys.exit(app.exec_())
