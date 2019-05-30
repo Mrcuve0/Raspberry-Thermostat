@@ -15,11 +15,11 @@ import addRoomSensorWindow
 class Ui_MainWindow(object):
 
     def on_PB_roomList_clicked(self):
+        self.close()
         self.window = QtWidgets.QMainWindow()
         self.ui = addRoomSensorWindow.Ui_AddRoomSensorWindow()
         self.ui.setupUi(self.window)
         self.window.show()
-        self.close()
 
     def activeFunctionsConnection(self):
         # PB_roomList
@@ -29,6 +29,7 @@ class Ui_MainWindow(object):
         self.window.close()
 
     def setupUi(self, MainWindow):
+        self.window = MainWindow
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 480)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -170,12 +171,3 @@ class Ui_MainWindow(object):
         self.PB_roomList.setText(_translate("MainWindow", "PushButton"))
         self.PB_prevRoom.setText(_translate("MainWindow", "<"))
         self.PB_nextRoom.setText(_translate("MainWindow", ">"))
-
-# if __name__ == "__main__":
-#     import sys
-#     app = QtWidgets.QApplication(sys.argv)
-#     MainWindow = QtWidgets.QMainWindow()
-#     ui = Ui_MainWindow()
-#     ui.setupUi(MainWindow)
-#     MainWindow.show()
-#     sys.exit(app.exec_())
