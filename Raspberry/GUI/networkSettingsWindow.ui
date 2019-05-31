@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AddRoomSensorWindow</class>
- <widget class="QMainWindow" name="AddRoomSensorWindow">
+ <class>networkSettingsWindow</class>
+ <widget class="QMainWindow" name="networkSettingsWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,51 +10,10 @@
     <height>480</height>
    </rect>
   </property>
-  <property name="font">
-   <font>
-    <pointsize>10</pointsize>
-   </font>
-  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTimeEdit" name="timeEdit">
-    <property name="geometry">
-     <rect>
-      <x>677</x>
-      <y>0</y>
-      <width>121</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-      <kerning>true</kerning>
-     </font>
-    </property>
-    <property name="wrapping">
-     <bool>false</bool>
-    </property>
-    <property name="frame">
-     <bool>false</bool>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-    <property name="buttonSymbols">
-     <enum>QAbstractSpinBox::NoButtons</enum>
-    </property>
-    <property name="displayFormat">
-     <string>HH : mm</string>
-    </property>
-   </widget>
    <widget class="QDateEdit" name="dateEdit">
     <property name="geometry">
      <rect>
@@ -94,47 +53,7 @@
      <string>dd - MM - yyyy</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="PB_ok">
-    <property name="geometry">
-     <rect>
-      <x>690</x>
-      <y>350</y>
-      <width>111</width>
-      <height>100</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Ok</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="PB_goBack">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>350</y>
-      <width>111</width>
-      <height>100</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>&lt;</string>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="PT_room">
+   <widget class="QPlainTextEdit" name="PT_networkSSID">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -160,10 +79,66 @@
      <bool>true</bool>
     </property>
     <property name="placeholderText">
-     <string>Inserire nome della stanza</string>
+     <string>Inserire Network SSID</string>
     </property>
    </widget>
-   <widget class="QPlainTextEdit" name="PT_sensor">
+   <widget class="QTimeEdit" name="timeEdit">
+    <property name="geometry">
+     <rect>
+      <x>677</x>
+      <y>0</y>
+      <width>121</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+      <kerning>true</kerning>
+     </font>
+    </property>
+    <property name="wrapping">
+     <bool>false</bool>
+    </property>
+    <property name="frame">
+     <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="buttonSymbols">
+     <enum>QAbstractSpinBox::NoButtons</enum>
+    </property>
+    <property name="displayFormat">
+     <string>HH : mm</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PB_ok">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>350</y>
+      <width>111</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Ok</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="PT_networkPassword">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -179,6 +154,9 @@
       <bold>true</bold>
      </font>
     </property>
+    <property name="inputMethodHints">
+     <set>Qt::ImhMultiLine|Qt::ImhSensitiveData</set>
+    </property>
     <property name="verticalScrollBarPolicy">
      <enum>Qt::ScrollBarAlwaysOff</enum>
     </property>
@@ -189,16 +167,16 @@
      <bool>true</bool>
     </property>
     <property name="placeholderText">
-     <string>Inserire identificativo del sensore</string>
+     <string>Inserire Network Password</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_RoomSettings">
+   <widget class="QPushButton" name="PB_goBack">
     <property name="geometry">
      <rect>
-      <x>-10</x>
-      <y>0</y>
-      <width>121</width>
-      <height>61</height>
+      <x>0</x>
+      <y>350</y>
+      <width>111</width>
+      <height>100</height>
      </rect>
     </property>
     <property name="font">
@@ -209,57 +187,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Room
-Settings</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_RoomName">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>80</y>
-      <width>161</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Room Name:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_SensorID">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>190</y>
-      <width>140</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Sensor ID:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <string>&lt;</string>
     </property>
    </widget>
    <widget class="QPushButton" name="PB_connect">
@@ -280,6 +208,96 @@ Settings</string>
     </property>
     <property name="text">
      <string>Connetti...</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_NetworkSettings">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>0</y>
+      <width>121</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Network
+Settings</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_NetworkSSID">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>80</y>
+      <width>161</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Network SSID:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_NetworkPassword">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>190</y>
+      <width>211</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Network Password:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PB_showPassword">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>240</y>
+      <width>71</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Show</string>
     </property>
    </widget>
   </widget>
