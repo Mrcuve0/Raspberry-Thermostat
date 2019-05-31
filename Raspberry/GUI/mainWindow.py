@@ -10,26 +10,37 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 # from addRoomSensorWindow import Ui_AddRoomSensorWindow
 import addRoomSensorWindow
+import settingsWindow
 
 
 class Ui_MainWindow(object):
 
     def on_PB_roomList_clicked(self):
         self.close()
-        self.window = QtWidgets.QMainWindow()
-        self.ui = addRoomSensorWindow.Ui_AddRoomSensorWindow()
-        self.ui.setupUi(self.window)
-        self.window.show()
+        self.mainWindow = QtWidgets.QMainWindow()
+        self.uiRoomSensorWindow = addRoomSensorWindow.Ui_AddRoomSensorWindow()
+        self.uiRoomSensorWindow.setupUi(self.mainWindow)
+        self.mainWindow.show()
+
+    def on_PB_settings_clicked(self):
+        self.close()
+        self.mainWindow = QtWidgets.QMainWindow()
+        self.uiSettingsWindow = settingsWindow.Ui_SettingsWindow()
+        self.uiSettingsWindow.setupUi(self.mainWindow)
+        self.mainWindow.show()
 
     def activeFunctionsConnection(self):
         # PB_roomList
         self.PB_roomList.clicked.connect(self.on_PB_roomList_clicked)
+        self.PB_settings.clicked.connect(self.on_PB_settings_clicked)
 
     def close(self):
-        self.window.close()
+        self.mainWindow.close()
 
     def setupUi(self, MainWindow):
-        self.window = MainWindow
+
+        self.mainWindow = MainWindow
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 480)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
