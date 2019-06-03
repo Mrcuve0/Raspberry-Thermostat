@@ -52,8 +52,6 @@ class Ui_NetworkSettingsWindow(object):
                 "NetworkSettingsWindow", "Connetti..."))
             self.PB_connect.setEnabled(True)
 
-            # cursorPositionChanged
-
     def __handleTextChanged(self, text):
         if not self.LE_networkSSID.hasFocus:
             self.LE_networkSSID._beforeSSID = text
@@ -81,10 +79,6 @@ class Ui_NetworkSettingsWindow(object):
         self.PB_showPassword.pressed.connect(self.on_PB_showPassword_pressed)
         self.PB_showPassword.released.connect(self.on_PB_showPassword_released)
         self.PB_connect.pressed.connect(self.on_PB_connect_clicked)
-        # self.LE_networkSSID.editingFinished.connect(
-        #     self.on_LE_networkSSID_clicked)
-        # self.LE_networkPassword.editingFinished.connect(
-        #     self.on_LE_networkPassword_clicked)
 
         self.LE_networkSSID.editingFinished.connect(
             self.__handleEditingFinished)
@@ -95,11 +89,6 @@ class Ui_NetworkSettingsWindow(object):
             self.__handleEditingFinished)
         self.LE_networkPassword.textChanged.connect(self.__handleTextChanged)
         self.LE_networkPassword._beforePWD = ""
-
-        # self.LE_networkSSID.mousePressEvent.connect(
-        #     self.on_LE_networkSSID_clicked)
-        # self.LE_networkPassword.mousePressEvent.connect(
-        #     self.on_LE_networkPassword_clicked)
 
     def close(self):
         self.networkSettingsWindow.close()
