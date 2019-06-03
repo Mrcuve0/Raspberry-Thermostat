@@ -6,6 +6,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+import subprocess
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 import settingsWindow
 
@@ -25,10 +27,79 @@ class Ui_NetworkSettingsWindow(object):
     def on_PB_showPassword_released(self):
         self.LE_networkPassword.setEchoMode(QtWidgets.QLineEdit.Password)
 
+    def on_PB_connect_clicked(self):
+        bashCommand = "whoami"
+        process = subprocess.run(bashCommand,
+                                 shell=True, check=True,
+                                 executable='/bin/bash')
+        if (process.returncode != 0):
+            print("Error while executing BASH command on Connect button")
+        else:
+            self.PB_connect.setText(QtCore.QCoreApplication.translate(
+                "NetworkSettingsWindow", "Connesso!"))
+            self.PB_connect.setEnabled(False)
+        #print("Process returncode:" + str(process.returncode))
+
+    def on_LE_networkSSID_clicked(self):
+        if (self.LE_networkSSID.isModified() or self.LE_networkPassword.isModified()):
+            self.PB_connect.setText(QtCore.QCoreApplication.translate(
+                "NetworkSettingsWindow", "Connetti..."))
+            self.PB_connect.setEnabled(True)
+
+    def on_LE_networkPassword_clicked(self):
+        if (self.LE_networkSSID.isModified() or self.LE_networkPassword.isModified()):
+            self.PB_connect.setText(QtCore.QCoreApplication.translate(
+                "NetworkSettingsWindow", "Connetti..."))
+            self.PB_connect.setEnabled(True)
+
+            # cursorPositionChanged
+
+    def __handleTextChanged(self, text):
+        if not self.LE_networkSSID.hasFocus:
+            self.LE_networkSSID._beforeSSID = text
+        if not self.LE_networkPassword.hasFocus:
+            self.LE_networkPassword._beforePWD = text
+
+    def __handleEditingFinished(self):
+        beforeSSID, afterSSID = self.LE_networkSSID._beforeSSID, self.LE_networkSSID.text()
+        if beforeSSID != afterSSID:
+            self.LE_networkSSID._beforeSSID = afterSSID
+            self.LE_networkSSID.textChanged.emit(afterSSID)
+            self.PB_connect.setText(QtCore.QCoreApplication.translate(
+                "NetworkSettingsWindow", "Connetti..."))
+            self.PB_connect.setEnabled(True)
+        beforePWD, afterPWD = self.LE_networkPassword._beforePWD, self.LE_networkPassword.text()
+        if beforePWD != afterPWD:
+            self.LE_networkPassword._beforePWD = afterPWD
+            self.LE_networkPassword.textChanged.emit(afterPWD)
+            self.PB_connect.setText(QtCore.QCoreApplication.translate(
+                "NetworkSettingsWindow", "Connetti..."))
+            self.PB_connect.setEnabled(True)
+
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
         self.PB_showPassword.pressed.connect(self.on_PB_showPassword_pressed)
         self.PB_showPassword.released.connect(self.on_PB_showPassword_released)
+        self.PB_connect.pressed.connect(self.on_PB_connect_clicked)
+        # self.LE_networkSSID.editingFinished.connect(
+        #     self.on_LE_networkSSID_clicked)
+        # self.LE_networkPassword.editingFinished.connect(
+        #     self.on_LE_networkPassword_clicked)
+
+        self.LE_networkSSID.editingFinished.connect(
+            self.__handleEditingFinished)
+        self.LE_networkSSID.textChanged.connect(self.__handleTextChanged)
+        self.LE_networkSSID._beforeSSID = ""
+
+        self.LE_networkPassword.editingFinished.connect(
+            self.__handleEditingFinished)
+        self.LE_networkPassword.textChanged.connect(self.__handleTextChanged)
+        self.LE_networkPassword._beforePWD = ""
+
+        # self.LE_networkSSID.mousePressEvent.connect(
+        #     self.on_LE_networkSSID_clicked)
+        # self.LE_networkPassword.mousePressEvent.connect(
+        #     self.on_LE_networkPassword_clicked)
 
     def close(self):
         self.networkSettingsWindow.close()
@@ -108,6 +179,7 @@ class Ui_NetworkSettingsWindow(object):
         self.PB_goBack.setObjectName("PB_goBack")
         self.PB_connect = QtWidgets.QPushButton(self.centralwidget)
         self.PB_connect.setGeometry(QtCore.QRect(220, 320, 361, 61))
+        self.PB_connect.setEnabled(False)
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
