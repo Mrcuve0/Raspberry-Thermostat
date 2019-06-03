@@ -6,10 +6,10 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-import subprocess
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import settingsWindow
+import networkConnection
 
 
 class Ui_NetworkSettingsWindow(object):
@@ -28,17 +28,23 @@ class Ui_NetworkSettingsWindow(object):
         self.LE_networkPassword.setEchoMode(QtWidgets.QLineEdit.Password)
 
     def on_PB_connect_clicked(self):
-        bashCommand = "whoami"
-        process = subprocess.run(bashCommand,
-                                 shell=True, check=True,
-                                 executable='/bin/bash')
-        if (process.returncode != 0):
-            print("Error while executing BASH command on Connect button")
+        net_SSID = self.LE_networkSSID.text()
+        net_PWD = self.LE_networkPassword.text()
+        if len(net_PWD) < 8 or len(net_PWD) > 63:
+            if len(net_PWD) != 0:
+                print("ERROR!! Password must be >= 8 characters and <= 63 characters")
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setInformativeText(
+                    "Password must be at least 8 characters and at most 63 characters")
+                msg.setWindowTitle("Error")
+                msg.exec_()
         else:
+            networkConnection.connectToNetwork(net_SSID, net_PWD)
+
             self.PB_connect.setText(QtCore.QCoreApplication.translate(
                 "NetworkSettingsWindow", "Connesso!"))
             self.PB_connect.setEnabled(False)
-        #print("Process returncode:" + str(process.returncode))
 
     def on_LE_networkSSID_clicked(self):
         if (self.LE_networkSSID.isModified() or self.LE_networkPassword.isModified()):
