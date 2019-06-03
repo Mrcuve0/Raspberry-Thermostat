@@ -27,7 +27,7 @@ int mqttServerc_index = 0;
 int test_index = 0;
 int wifi_timeout = 0;
 /////////////////////////////////////////////////////////////////////
-char ESPnames[] = "ESP32test";
+char ESPname[] = "ESP32test";
 /////////////////////////////////////////////////////////////////////
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -67,7 +67,7 @@ void loop() {
       test_index++;
     }
     Serial.println(test_index);
-    test_transmission[strlen(test_transmission)-2] = '\0';
+    test_transmission[strlen(test_transmission)] = '\0';
     Serial.println(test_transmission);
 
     if(strcmp(test_transmission, termo) == 0){
@@ -82,7 +82,7 @@ void loop() {
     }
 
     for(int i = 0 ; i < 9 ; i++){
-      SerialBT.write(ESPnames[i]);
+      SerialBT.write(ESPname[i]);
     }
     Serial.println("sent the ESP name");
 //////////////////////WIFI ssid///////////////////////////////
@@ -95,7 +95,7 @@ void loop() {
       ssidc_index++;
     }
     Serial.println(ssidc_index);
-    ssidc[strlen(ssidc)-2] = '\0';
+    ssidc[strlen(ssidc)] = '\0';
     Serial.println(ssid);
 //////////////////////WIFI psw///////////////////////////////    
     SerialBT.flush();
@@ -107,7 +107,7 @@ void loop() {
       pswc_index++;
     }
     Serial.println(pswc_index);
-    pswc[strlen(pswc)-2] = '\0';
+    pswc[strlen(pswc)] = '\0';
     Serial.println(pswc);
 
     SerialBT.flush();
@@ -117,7 +117,7 @@ void loop() {
     while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     wifi_timeout++;
-    if(wifi_timeout > 10){
+    if(wifi_timeout > 30){
      Serial.println("wrong credentials");  
      SerialBT.end();
      BluetoothSerial SerialBT;
@@ -140,7 +140,7 @@ void loop() {
       mqttServerc_index++;
     }
     Serial.println(mqttServerc_index);
-    mqttServerc[strlen(mqttServerc)-2] = '\0';
+    mqttServerc[strlen(mqttServerc)] = '\0';
     Serial.println(mqttServerc);
     
     setup_done = 1;
