@@ -1,0 +1,4 @@
+network={                
+	ssid="asd"
+	psk="3fe38e4ad759d564b7a4f44ce384faec83ab612b756b7312ea5a125e0b1a4156"
+}
