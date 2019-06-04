@@ -28,6 +28,7 @@ int test_index = 0;
 int wifi_timeout = 0;
 /////////////////////////////////////////////////////////////////////
 char ESPname[] = "ESP32test";
+char ack_char = '@';
 /////////////////////////////////////////////////////////////////////
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -65,6 +66,7 @@ void loop() {
       test_transmission[test_index] = SerialBT.read();
       Serial.println(test_transmission[test_index]);
       test_index++;
+      delay(40);
     }
     Serial.println(test_index);
     test_transmission[strlen(test_transmission)] = '\0';
@@ -81,10 +83,8 @@ void loop() {
      break;
     }
 
-    for(int i = 0 ; i < 9 ; i++){
-      SerialBT.write(ESPname[i]);
-    }
-    Serial.println("sent the ESP name");
+    SerialBT.write(ack_char);
+    Serial.println("sent the ack character");
 //////////////////////WIFI ssid///////////////////////////////
     SerialBT.flush();
     while(!SerialBT.available()){}
@@ -93,6 +93,7 @@ void loop() {
       ssidc[ssidc_index] = SerialBT.read();
       Serial.println(ssidc[ssidc_index]);
       ssidc_index++;
+      delay(40);
     }
     Serial.println(ssidc_index);
     ssidc[strlen(ssidc)] = '\0';
@@ -105,6 +106,7 @@ void loop() {
       pswc[pswc_index] = SerialBT.read();
       Serial.println(pswc[pswc_index]);
       pswc_index++;
+      delay(40);
     }
     Serial.println(pswc_index);
     pswc[strlen(pswc)] = '\0';
@@ -138,6 +140,7 @@ void loop() {
       mqttServerc[mqttServerc_index] = SerialBT.read();
       Serial.println(mqttServerc[mqttServerc_index]);
       mqttServerc_index++;
+      delay(40);
     }
     Serial.println(mqttServerc_index);
     mqttServerc[strlen(mqttServerc)] = '\0';
