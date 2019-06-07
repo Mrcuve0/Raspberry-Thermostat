@@ -18,14 +18,14 @@ class Ui_SettingsWindow(object):
         self.settingsWindow = QtWidgets.QMainWindow()
         self.uiMainWindow = mainWindow.Ui_MainWindow()
         self.uiMainWindow.setupUi(self.settingsWindow)
-        self.settingsWindow.show()
+        self.settingsWindow.showMaximized()
 
     def on_PB_network_clicked(self):
         self.close()
         self.settingsWindow = QtWidgets.QMainWindow()
         self.uiNetworkSettingsWindow = networkSettingsWindow.Ui_NetworkSettingsWindow()
         self.uiNetworkSettingsWindow.setupUi(self.settingsWindow)
-        self.settingsWindow.show()
+        self.settingsWindow.showMaximized()
 
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
@@ -37,6 +37,7 @@ class Ui_SettingsWindow(object):
     def setupUi(self, SettingsWindow):
 
         self.settingsWindow = SettingsWindow
+        self.settingsWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
         SettingsWindow.setObjectName("SettingsWindow")
         SettingsWindow.resize(800, 480)
