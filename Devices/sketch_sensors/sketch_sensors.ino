@@ -132,6 +132,7 @@ void loop() {
     }
  
     Serial.println("Connected to the WiFi network");
+    SerialBT.write(ack_char);
 //////////////////////mqtt Server///////////////////////////////
     SerialBT.flush();
     while(!SerialBT.available()){}
@@ -148,5 +149,5 @@ void loop() {
     
     setup_done = 1;
    }
-    
+  
 }
