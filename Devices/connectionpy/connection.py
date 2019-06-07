@@ -41,13 +41,16 @@ def lookUpNearbyBluetoothDevices():
   else:
       print "could not find target bluetooth device nearby"
 #########################################################################
-
-lookUpNearbyBluetoothDevices()
-sendIdentification(target_address)
-receiveMessages()
-print data
-if data == '@':
+def connection():
+  lookUpNearbyBluetoothDevices()
+  sendIdentification(target_address)
+  receiveMessages()
+  print data
+  if data == '@':
     sendCredentials(target_address)
     sendMQTT(target_address)
-else:
+  else:
     BTsocket.close()
+#########################################################################
+
+connection()
