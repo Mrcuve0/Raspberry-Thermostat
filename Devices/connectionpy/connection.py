@@ -11,21 +11,25 @@ def receiveMessages():
   global data
   data = BTsocket.recv(1)
 #########################################################################
-def sendIdentification(target_address):
+def connect(target_address):
   BTsocket.connect((target_address, 1))
-  BTsocket.send(":termo")
-  time.sleep(5)
 #########################################################################
-def sendCredentials(target_address):
-  BTsocket.send("ssid")
-  time.sleep(5)
-  BTsocket.send("psw")
-  time.sleep(5)
-#########################################################################
-def sendMQTT(target_address):
-  BTsocket.send("mqttserver")
-  time.sleep(5)
+def disconnect():
   BTsocket.close()
+#########################################################################
+def sendIdentification():
+  BTsocket.send(":termo")
+  time.sleep(1)
+#########################################################################
+def sendCredentials():
+  BTsocket.send("Trini")
+  time.sleep(1)
+  BTsocket.send("&TgH67@BjL#9")
+  time.sleep(1)
+#########################################################################
+def sendMQTT():
+  BTsocket.send("mqttserver")
+  time.sleep(1)
 #########################################################################
 def lookUpNearbyBluetoothDevices():
   nearby_devices = bluetooth.discover_devices()
@@ -43,14 +47,20 @@ def lookUpNearbyBluetoothDevices():
 #########################################################################
 def connection():
   lookUpNearbyBluetoothDevices()
-  sendIdentification(target_address)
+  connect(target_address)
+  sendIdentification()
   receiveMessages()
   print data
   if data == '@':
-    sendCredentials(target_address)
-    sendMQTT(target_address)
+    sendCredentials()
+    receiveMessages()
+    print data
+    if data == '@':
+      sendMQTT()
+    else:
+      disconnect()
   else:
-    BTsocket.close()
+    disconnect()
 #########################################################################
 
 connection()
