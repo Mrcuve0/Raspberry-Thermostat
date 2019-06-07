@@ -1,6 +1,9 @@
 import subprocess
 import re
 
+import os
+os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
+
 
 def connectToNetwork(net_SSID, net_PWD):
     bashCommand = "wpa_passphrase" + " " + \

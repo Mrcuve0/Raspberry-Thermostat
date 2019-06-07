@@ -5,12 +5,16 @@
 # Created by: PyQt5 UI code generator 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
-import sys
+import settingsWindow
+import addRoomSensorWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
+
+import os
+os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
+
 
 # from addRoomSensorWindow import Ui_AddRoomSensorWindow
-import addRoomSensorWindow
-import settingsWindow
 
 
 class Ui_MainWindow(object):
@@ -20,14 +24,14 @@ class Ui_MainWindow(object):
         self.mainWindow = QtWidgets.QMainWindow()
         self.uiRoomSensorWindow = addRoomSensorWindow.Ui_AddRoomSensorWindow()
         self.uiRoomSensorWindow.setupUi(self.mainWindow)
-        self.mainWindow.show()
+        self.mainWindow.showMaximized()
 
     def on_PB_settings_clicked(self):
         self.close()
         self.mainWindow = QtWidgets.QMainWindow()
         self.uiSettingsWindow = settingsWindow.Ui_SettingsWindow()
         self.uiSettingsWindow.setupUi(self.mainWindow)
-        self.mainWindow.show()
+        self.mainWindow.showMaximized()
 
     def activeFunctionsConnection(self):
         # PB_roomList
@@ -40,6 +44,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
 
         self.mainWindow = MainWindow
+        self.mainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 480)
