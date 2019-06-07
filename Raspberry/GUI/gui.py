@@ -1,10 +1,13 @@
+import mainWindow
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 
+import os
+os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
+
 # Importa classe definita con QTDesigner
 # from mainWindow import Ui_MainWindow
-import mainWindow
 
 
 class MainWindow(QMainWindow, mainWindow.Ui_MainWindow):
@@ -17,7 +20,7 @@ class MainWindow(QMainWindow, mainWindow.Ui_MainWindow):
 def main():
     app = QtWidgets.QApplication(sys.argv)
     raspyGUI = MainWindow()
-    raspyGUI.show()
+    raspyGUI.showMaximized()
     sys.exit(app.exec_())
 
 

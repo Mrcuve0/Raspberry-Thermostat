@@ -7,9 +7,26 @@
 # WARNING! All changes made in this file will be lost!
 
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-import settingsWindow
 import networkConnection
+import settingsWindow
+import subprocess
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+import os
+os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
+
+
+class MyQLineEdit(QtWidgets.QLineEdit):
+    def focusInEvent(self, e):
+        try:
+            subprocess.Popen(["onboard"])
+        except FileNotFoundError:
+            pass
+        super(MyQLineEdit, self).focusInEvent(e)
+
+    def focusOutEvent(self, e):
+        subprocess.Popen(["killall", "onboard"])
+        super(MyQLineEdit, self).focusOutEvent(e)
 
 
 class Ui_NetworkSettingsWindow(object):
@@ -19,7 +36,7 @@ class Ui_NetworkSettingsWindow(object):
         self.networkSettingsWindow = QtWidgets.QMainWindow()
         self.uiSettingsWindow = settingsWindow.Ui_SettingsWindow()
         self.uiSettingsWindow.setupUi(self.networkSettingsWindow)
-        self.networkSettingsWindow.show()
+        self.networkSettingsWindow.showMaximized()
 
     def on_PB_showPassword_pressed(self):
         self.LE_networkPassword.setEchoMode(QtWidgets.QLineEdit.Normal)
@@ -96,11 +113,16 @@ class Ui_NetworkSettingsWindow(object):
         self.LE_networkPassword.textChanged.connect(self.__handleTextChanged)
         self.LE_networkPassword._beforePWD = ""
 
+        self.LE_networkSSID.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.LE_networkPassword.setFocusPolicy(QtCore.Qt.StrongFocus)
+
     def close(self):
         self.networkSettingsWindow.close()
 
     def setupUi(self, NetworkSettingsWindow):
         self.networkSettingsWindow = NetworkSettingsWindow
+        self.networkSettingsWindow.setWindowFlags(
+            QtCore.Qt.FramelessWindowHint)
 
         NetworkSettingsWindow.setObjectName("NetworkSettingsWindow")
         NetworkSettingsWindow.resize(800, 480)
@@ -121,7 +143,8 @@ class Ui_NetworkSettingsWindow(object):
         self.dateEdit.setReadOnly(True)
         self.dateEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.dateEdit.setObjectName("dateEdit")
-        self.LE_networkSSID = QtWidgets.QLineEdit(self.centralwidget)
+        # self.LE_networkSSID = QtWidgets.QLineEdit(self.centralwidget)
+        self.LE_networkSSID = MyQLineEdit(self.centralwidget)
         self.LE_networkSSID.setGeometry(QtCore.QRect(110, 130, 581, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
@@ -151,7 +174,7 @@ class Ui_NetworkSettingsWindow(object):
         font.setWeight(75)
         self.PB_ok.setFont(font)
         self.PB_ok.setObjectName("PB_ok")
-        self.LE_networkPassword = QtWidgets.QLineEdit(self.centralwidget)
+        self.LE_networkPassword = MyQLineEdit(self.centralwidget)
         self.LE_networkPassword.setEchoMode(QtWidgets.QLineEdit.Password)
         self.LE_networkPassword.setGeometry(QtCore.QRect(110, 240, 581, 61))
         self.PB_showPassword = QtWidgets.QPushButton(self.centralwidget)

@@ -5,9 +5,22 @@
 # Created by: PyQt5 UI code generator 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
-
+import subprocess
 from PyQt5 import QtCore, QtGui, QtWidgets
 import mainWindow
+
+
+class MyQLineEdit(QtWidgets.QLineEdit):
+    def focusInEvent(self, e):
+        try:
+            subprocess.Popen(["onboard"])
+        except FileNotFoundError:
+            pass
+        super(MyQLineEdit, self).focusInEvent(e)
+
+    def focusOutEvent(self, e):
+        subprocess.Popen(["killall", "onboard"])
+        super(MyQLineEdit, self).focusOutEvent(e)
 
 
 class Ui_AddRoomSensorWindow(object):
@@ -17,16 +30,19 @@ class Ui_AddRoomSensorWindow(object):
         self.roomWindow = QtWidgets.QMainWindow()
         self.uiMainWindow = mainWindow.Ui_MainWindow()
         self.uiMainWindow.setupUi(self.roomWindow)
-        self.roomWindow.show()
+        self.roomWindow.showMaximized()
 
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
+        self.LE_room.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.LE_sensor.setFocusPolicy(QtCore.Qt.StrongFocus)
 
     def close(self):
         self.roomWindow.close()
 
     def setupUi(self, AddRoomSensorWindow):
         self.roomWindow = AddRoomSensorWindow
+        self.roomWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
         AddRoomSensorWindow.setObjectName("AddRoomSensorWindow")
         AddRoomSensorWindow.resize(800, 480)
@@ -80,7 +96,7 @@ class Ui_AddRoomSensorWindow(object):
         font.setWeight(75)
         self.PB_goBack.setFont(font)
         self.PB_goBack.setObjectName("PB_goBack")
-        self.LE_room = QtWidgets.QLineEdit(self.centralwidget)
+        self.LE_room = MyQLineEdit(self.centralwidget)
         self.LE_room.setGeometry(QtCore.QRect(110, 130, 581, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
@@ -88,7 +104,7 @@ class Ui_AddRoomSensorWindow(object):
         font.setWeight(75)
         self.LE_room.setFont(font)
         self.LE_room.setObjectName("LE_room")
-        self.LE_sensor = QtWidgets.QLineEdit(self.centralwidget)
+        self.LE_sensor = MyQLineEdit(self.centralwidget)
         self.LE_sensor.setGeometry(QtCore.QRect(110, 240, 581, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
