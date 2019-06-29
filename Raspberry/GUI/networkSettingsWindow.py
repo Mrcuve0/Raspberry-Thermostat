@@ -44,7 +44,11 @@ class Ui_NetworkSettingsWindow(object):
     def on_PB_showPassword_released(self):
         self.LE_networkPassword.setEchoMode(QtWidgets.QLineEdit.Password)
 
-    def on_PB_connect_clicked(self):
+    def on_PB_connect_pressed(self):
+        # self.PB_connect.setText(QtCore.QCoreApplication.translate("NetworkSettingsWindow", "Sto connettendo..."))
+        self.PB_connect.setText("Sto connettendo...")
+
+    def on_PB_connect_released(self):
         net_SSID = self.LE_networkSSID.text()
         net_PWD = self.LE_networkPassword.text()
         if len(net_PWD) < 8 or len(net_PWD) > 63:
@@ -101,7 +105,8 @@ class Ui_NetworkSettingsWindow(object):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
         self.PB_showPassword.pressed.connect(self.on_PB_showPassword_pressed)
         self.PB_showPassword.released.connect(self.on_PB_showPassword_released)
-        self.PB_connect.pressed.connect(self.on_PB_connect_clicked)
+        self.PB_connect.pressed.connect(self.on_PB_connect_pressed)
+        self.PB_connect.released.connect(self.on_PB_connect_released)
 
         self.LE_networkSSID.editingFinished.connect(
             self.__handleEditingFinished)
