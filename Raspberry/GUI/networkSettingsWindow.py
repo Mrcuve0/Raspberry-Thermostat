@@ -302,6 +302,7 @@ class Ui_NetworkSettingsWindow(object):
         else:
             self.PB_connect.setText(_translate(
                 "NetworkSettingsWindow", "Connetti..."))
+            self.PB_connect.setEnabled(False)
 
         self.label_NetworkSettings.setText(_translate("NetworkSettingsWindow", "Network\n"
                                                       "Settings"))
