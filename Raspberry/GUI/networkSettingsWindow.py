@@ -11,6 +11,7 @@ import networkConnection
 import settingsWindow
 import subprocess
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QTime, QDate, QTimer
 
 import os
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
@@ -147,6 +148,16 @@ class Ui_NetworkSettingsWindow(object):
         self.LE_networkSSID.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.LE_networkPassword.setFocusPolicy(QtCore.Qt.StrongFocus)
 
+        self.timer.timeout.connect(self.showTime)
+        self.showTime()
+        self.timer.start(1000)
+
+    def showTime(self):
+        date = QDate.currentDate()
+        time = QTime.currentTime()
+        self.timeEdit.setTime(time)
+        self.dateEdit.setDate(date)
+
     def close(self):
         self.networkSettingsWindow.close()
 
@@ -160,7 +171,7 @@ class Ui_NetworkSettingsWindow(object):
         self.centralwidget = QtWidgets.QWidget(NetworkSettingsWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.dateEdit = QtWidgets.QDateEdit(self.centralwidget)
-        self.dateEdit.setGeometry(QtCore.QRect(110, 0, 571, 61))
+        self.dateEdit.setGeometry(QtCore.QRect(120, 0, 571, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -190,6 +201,26 @@ class Ui_NetworkSettingsWindow(object):
         font.setBold(True)
         font.setWeight(75)
         font.setKerning(True)
+
+        # Date and Time widgets
+        self.dateEdit.setFont(font)
+        self.dateEdit.setInputMethodHints(QtCore.Qt.ImhDate)
+        self.dateEdit.setWrapping(False)
+        self.dateEdit.setFrame(False)
+        self.dateEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.dateEdit.setReadOnly(True)
+        self.dateEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+        self.dateEdit.setObjectName("dateEdit")
+        self.timeEdit = QtWidgets.QTimeEdit(self.centralwidget)
+        self.timeEdit.setGeometry(QtCore.QRect(687, 0, 121, 61))
+
+        self.timer = QTimer()
+
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        font.setKerning(True)
         self.timeEdit.setFont(font)
         self.timeEdit.setWrapping(False)
         self.timeEdit.setFrame(False)
@@ -197,6 +228,7 @@ class Ui_NetworkSettingsWindow(object):
         self.timeEdit.setReadOnly(True)
         self.timeEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.timeEdit.setObjectName("timeEdit")
+
         self.PB_ok = QtWidgets.QPushButton(self.centralwidget)
         self.PB_ok.setGeometry(QtCore.QRect(690, 350, 111, 100))
         font = QtGui.QFont()
