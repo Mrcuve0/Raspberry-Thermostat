@@ -7,14 +7,16 @@
 # WARNING! All changes made in this file will be lost!
 import settingsWindow
 import addRoomSensorWindow
-from PyQt5 import QtCore, QtGui, QtWidgets
-import sys
 
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QTime, QDate, QTimer
+
+import sys
 import os
-os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
 
 # from addRoomSensorWindow import Ui_AddRoomSensorWindow
+# Time and DateTime section
 
 
 class Ui_MainWindow(object):
@@ -37,6 +39,15 @@ class Ui_MainWindow(object):
         # PB_roomList
         self.PB_roomList.clicked.connect(self.on_PB_roomList_clicked)
         self.PB_settings.clicked.connect(self.on_PB_settings_clicked)
+        self.timer.timeout.connect(self.showTime)
+        self.showTime()
+        self.timer.start(1000)
+
+    def showTime(self):
+        date = QDate.currentDate()
+        time = QTime.currentTime()
+        self.timeEdit.setTime(time)
+        self.dateEdit.setDate(date)
 
     def close(self):
         self.mainWindow.close()
@@ -73,6 +84,8 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         font.setKerning(True)
+
+        # Date and Time widgets
         self.dateEdit.setFont(font)
         self.dateEdit.setInputMethodHints(QtCore.Qt.ImhDate)
         self.dateEdit.setWrapping(False)
@@ -83,6 +96,9 @@ class Ui_MainWindow(object):
         self.dateEdit.setObjectName("dateEdit")
         self.timeEdit = QtWidgets.QTimeEdit(self.centralwidget)
         self.timeEdit.setGeometry(QtCore.QRect(687, 0, 121, 61))
+
+        self.timer = QTimer()
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
