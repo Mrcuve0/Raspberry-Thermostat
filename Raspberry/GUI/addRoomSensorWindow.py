@@ -5,11 +5,24 @@
 # Created by: PyQt5 UI code generator 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
+
+import sys
+
+print(sys.path[0])  # <->/Raspberry-Thermostat/Raspberry/GUI
+sys.path.insert(0, sys.path[0] + "/../../") # /Raspberry-Thermostat/
+print(sys.path)
+
 import subprocess
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
 import mainWindow
+# from Devices.connectionpy import connection
+from Devices.connectionpy import connection
+
+
+roomName = ""
 
 
 class MyQLineEdit(QtWidgets.QLineEdit):
@@ -34,10 +47,24 @@ class Ui_AddRoomSensorWindow(object):
         self.uiMainWindow.setupUi(self.roomWindow)
         self.roomWindow.showMaximized()
 
+    # TODO:
+    def on_PB_connect_pressed(self):
+        self.PB_connect.setText(QtCore.QCoreApplication.translate(
+            "AddRoomSensorWindow", "Sto cercando..."))
+
+    # TODO:
+    def on_PB_connect_released(self):
+        self.PB_connect.setEnabled(False)
+        roomName = self.LE_room.text()
+        connection.connection()
+        
+
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
+        self.PB_connect.pressed.connect(self.on_PB_connect_pressed)
+        self.PB_connect.released.connect(self.on_PB_connect_released)
         self.LE_room.setFocusPolicy(QtCore.Qt.StrongFocus)
-        self.LE_sensor.setFocusPolicy(QtCore.Qt.StrongFocus)
+
         self.timer.timeout.connect(self.showTime)
         self.showTime()
         self.timer.start(1000)
@@ -122,14 +149,12 @@ class Ui_AddRoomSensorWindow(object):
         font.setWeight(75)
         self.LE_room.setFont(font)
         self.LE_room.setObjectName("LE_room")
-        self.LE_sensor = MyQLineEdit(self.centralwidget)
-        self.LE_sensor.setGeometry(QtCore.QRect(110, 240, 581, 61))
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        self.LE_sensor.setFont(font)
-        self.LE_sensor.setObjectName("LE_sensor")
+
         self.label_RoomSettings = QtWidgets.QLabel(self.centralwidget)
         self.label_RoomSettings.setGeometry(QtCore.QRect(-10, 0, 121, 61))
         font = QtGui.QFont()
@@ -148,15 +173,12 @@ class Ui_AddRoomSensorWindow(object):
         self.label_RoomName.setFont(font)
         self.label_RoomName.setAlignment(QtCore.Qt.AlignCenter)
         self.label_RoomName.setObjectName("label_RoomName")
-        self.label_SensorID = QtWidgets.QLabel(self.centralwidget)
-        self.label_SensorID.setGeometry(QtCore.QRect(90, 190, 140, 61))
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        self.label_SensorID.setFont(font)
-        self.label_SensorID.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_SensorID.setObjectName("label_SensorID")
+
         self.PB_connect = QtWidgets.QPushButton(self.centralwidget)
         self.PB_connect.setGeometry(QtCore.QRect(220, 320, 361, 61))
         font = QtGui.QFont()
@@ -186,13 +208,11 @@ class Ui_AddRoomSensorWindow(object):
         self.PB_goBack.setText(_translate("AddRoomSensorWindow", "<"))
         self.LE_room.setPlaceholderText(_translate(
             "AddRoomSensorWindow", "Inserire nome della stanza"))
-        self.LE_sensor.setPlaceholderText(_translate(
-            "AddRoomSensorWindow", "Inserire identificativo del sensore"))
+
         self.label_RoomSettings.setText(_translate("AddRoomSensorWindow", "Room\n"
                                                    "Settings"))
         self.label_RoomName.setText(_translate(
             "AddRoomSensorWindow", "Room Name:"))
-        self.label_SensorID.setText(_translate(
-            "AddRoomSensorWindow", "Sensor ID:"))
+
         self.PB_connect.setText(_translate(
-            "AddRoomSensorWindow", "Connetti..."))
+            "AddRoomSensorWindow", "Associa sensore..."))
