@@ -77,8 +77,7 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.PB_tempDecrease.setFont(font)
         self.PB_tempDecrease.setObjectName("PB_tempDecrease")
-        self.dateEdit = QtWidgets.QDateEdit(self.centralwidget)
-        self.dateEdit.setGeometry(QtCore.QRect(120, 0, 571, 61))
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -86,6 +85,8 @@ class Ui_MainWindow(object):
         font.setKerning(True)
 
         # Date and Time widgets
+        self.dateEdit = QtWidgets.QDateEdit(self.centralwidget)
+        self.dateEdit.setGeometry(QtCore.QRect(120, 0, 571, 61))
         self.dateEdit.setFont(font)
         self.dateEdit.setInputMethodHints(QtCore.Qt.ImhDate)
         self.dateEdit.setWrapping(False)

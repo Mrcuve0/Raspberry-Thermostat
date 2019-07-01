@@ -170,22 +170,13 @@ class Ui_NetworkSettingsWindow(object):
         NetworkSettingsWindow.resize(800, 480)
         self.centralwidget = QtWidgets.QWidget(NetworkSettingsWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.dateEdit = QtWidgets.QDateEdit(self.centralwidget)
-        self.dateEdit.setGeometry(QtCore.QRect(120, 0, 571, 61))
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
         font.setKerning(True)
-        self.dateEdit.setFont(font)
-        self.dateEdit.setInputMethodHints(QtCore.Qt.ImhDate)
-        self.dateEdit.setWrapping(False)
-        self.dateEdit.setFrame(False)
-        self.dateEdit.setAlignment(QtCore.Qt.AlignCenter)
-        self.dateEdit.setReadOnly(True)
-        self.dateEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
-        self.dateEdit.setObjectName("dateEdit")
-        # self.LE_networkSSID = QtWidgets.QLineEdit(self.centralwidget)
+
         self.LE_networkSSID = MyQLineEdit(self.centralwidget)
         self.LE_networkSSID.setGeometry(QtCore.QRect(110, 130, 581, 61))
         font = QtGui.QFont()
@@ -194,8 +185,7 @@ class Ui_NetworkSettingsWindow(object):
         font.setWeight(75)
         self.LE_networkSSID.setFont(font)
         self.LE_networkSSID.setObjectName("LE_networkSSID")
-        self.timeEdit = QtWidgets.QTimeEdit(self.centralwidget)
-        self.timeEdit.setGeometry(QtCore.QRect(677, 0, 121, 61))
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -203,6 +193,8 @@ class Ui_NetworkSettingsWindow(object):
         font.setKerning(True)
 
         # Date and Time widgets
+        self.dateEdit = QtWidgets.QDateEdit(self.centralwidget)
+        self.dateEdit.setGeometry(QtCore.QRect(120, 0, 571, 61))
         self.dateEdit.setFont(font)
         self.dateEdit.setInputMethodHints(QtCore.Qt.ImhDate)
         self.dateEdit.setWrapping(False)
