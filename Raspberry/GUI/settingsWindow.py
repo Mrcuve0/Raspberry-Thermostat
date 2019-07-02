@@ -11,6 +11,8 @@ from PyQt5.QtCore import QTime, QDate, QTimer
 
 import mainWindow
 import networkSettingsWindow
+import addRoomWindow
+import addActuatorWindow
 
 
 class Ui_SettingsWindow(object):
@@ -29,9 +31,26 @@ class Ui_SettingsWindow(object):
         self.uiNetworkSettingsWindow.setupUi(self.settingsWindow)
         self.settingsWindow.showMaximized()
 
+    def on_PB_AddRoom_clicked(self):
+        self.close()
+        self.settingsWindow = QtWidgets.QMainWindow()
+        self.uiAddRoomWindow = addRoomWindow.Ui_addRoomWindow()
+        self.uiAddRoomWindow.setupUi(self.settingsWindow)
+        self.settingsWindow.showMaximized()
+
+    def on_PB_AddActuator_clicked(self):
+        self.close()
+        self.settingsWindow = QtWidgets.QMainWindow()
+        self.uiAddActuatorWindow = addActuatorWindow.Ui_addActuatorWindow()
+        self.uiAddActuatorWindow.setupUi(self.settingsWindow)
+        self.settingsWindow.showMaximized()
+
+
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
         self.PB_network.clicked.connect(self.on_PB_network_clicked)
+        self.PB_AddRoom.clicked.connect(self.on_PB_AddRoom_clicked)
+        self.PB_AddActuator.clicked.connect(self.on_PB_AddActuator_clicked)
         self.timer.timeout.connect(self.showTime)
         self.showTime()
         self.timer.start(1000)
@@ -97,30 +116,34 @@ class Ui_SettingsWindow(object):
         font.setWeight(75)
         self.PB_goBack.setFont(font)
         self.PB_goBack.setObjectName("PB_goBack")
-        self.PB_ok = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_ok.setGeometry(QtCore.QRect(690, 350, 111, 100))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        self.PB_ok.setFont(font)
-        self.PB_ok.setObjectName("PB_ok")
         self.PB_network = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_network.setGeometry(QtCore.QRect(110, 110, 581, 61))
+        self.PB_network.setGeometry(QtCore.QRect(180, 80, 581, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
         self.PB_network.setFont(font)
         self.PB_network.setObjectName("PB_network")
-        self.PB_altro = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_altro.setGeometry(QtCore.QRect(110, 190, 581, 61))
+        self.PB_AddRoom = QtWidgets.QPushButton(self.centralwidget)
+        self.PB_AddRoom.setGeometry(QtCore.QRect(180, 160, 581, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        self.PB_altro.setFont(font)
-        self.PB_altro.setObjectName("PB_altro")
+        self.PB_AddRoom.setFont(font)
+        self.PB_AddRoom.setObjectName("PB_AddRoom")
+        self.PB_AddActuator = QtWidgets.QPushButton(self.centralwidget)
+        self.PB_AddActuator.setGeometry(QtCore.QRect(180, 240, 581, 61))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.PB_AddActuator.setFont(font)
+        self.PB_AddActuator.setObjectName("PB_AddActuator")
         SettingsWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(SettingsWindow)
         self.statusbar.setObjectName("statusbar")
@@ -138,6 +161,6 @@ class Ui_SettingsWindow(object):
         self.dateEdit.setDisplayFormat(
             _translate("SettingsWindow", "dd - MM - yyyy"))
         self.PB_goBack.setText(_translate("SettingsWindow", "<"))
-        self.PB_ok.setText(_translate("SettingsWindow", "Ok"))
         self.PB_network.setText(_translate("SettingsWindow", "Network"))
-        self.PB_altro.setText(_translate("SettingsWindow", "Altro"))
+        self.PB_AddRoom.setText(_translate("SettingsWindow", "Add Room"))
+        self.PB_AddActuator.setText(_translate("SettingsWindow", "Add Actuator"))
