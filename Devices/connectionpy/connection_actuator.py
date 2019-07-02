@@ -25,12 +25,11 @@ def sendIdentification():
 
 
 def sendCredentials():
-    BTsocket.send("Trini")
-    time.sleep(1)
-    BTsocket.send("&TgH67@BjL#9")
-    time.sleep(1)
-
-
+  BTsocket.send("wifissid")
+  time.sleep(1)
+  BTsocket.send("wifipsw")
+  time.sleep(1)
+#########################################################################
 def sendMQTT():
     BTsocket.send("mqttserver")
     time.sleep(1)
@@ -59,13 +58,13 @@ def connection():
     receiveMessages()
     print(data)
     if data == '@':
-        sendCredentials()
-        receiveMessages()
-        print(data)
-        if data == '@':
-            sendMQTT()
-        else:
-            disconnect()
+      sendMQTT()
+      receiveMessages()
+      print data
+      if data == '@':
+        disconnect()
+      else:
+        disconnect()
     else:
         disconnect()
 
