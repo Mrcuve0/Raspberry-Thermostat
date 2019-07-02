@@ -22,13 +22,17 @@ def sendIdentification():
   time.sleep(1)
 #########################################################################
 def sendCredentials():
-  BTsocket.send("Trini")
+  BTsocket.send("wifissid")
   time.sleep(1)
-  BTsocket.send("&TgH67@BjL#9")
+  BTsocket.send("wifipsw")
   time.sleep(1)
 #########################################################################
 def sendMQTT():
   BTsocket.send("mqttserver")
+  time.sleep(1)
+#########################################################################
+def sendname():
+  BTsocket.send("room_name")
   time.sleep(1)
 #########################################################################
 def lookUpNearbyBluetoothDevices():
@@ -57,6 +61,18 @@ def connection():
     print data
     if data == '@':
       sendMQTT()
+      receiveMessages()
+      print data
+      if data == '@':
+        sendname()
+        receiveMessages()
+        print data
+        if data == '@':
+          disconnect()
+        else:
+          disconnect()
+      else:
+        disconnect()
     else:
       disconnect()
   else:
