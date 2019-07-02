@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'addRoomSensorWindow.ui'
+# Form implementation generated from reading ui file 'addActuatorWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.12.2
 #
@@ -17,12 +17,10 @@ import subprocess
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
-import mainWindow
+import settingsWindow
 # from Devices.connectionpy import connection
 from Devices.connectionpy import connection
 
-
-roomName = ""
 
 
 class MyQLineEdit(QtWidgets.QLineEdit):
@@ -38,32 +36,26 @@ class MyQLineEdit(QtWidgets.QLineEdit):
         super(MyQLineEdit, self).focusOutEvent(e)
 
 
-class Ui_AddRoomSensorWindow(object):
+class Ui_addActuatorWindow(object):
 
     def on_PB_goBack_clicked(self):
         self.close()
-        self.roomWindow = QtWidgets.QMainWindow()
-        self.uiMainWindow = mainWindow.Ui_MainWindow()
-        self.uiMainWindow.setupUi(self.roomWindow)
-        self.roomWindow.showMaximized()
+        self.addActuatorWindow = QtWidgets.QMainWindow()
+        self.uiSettingsWindow = settingsWindow.Ui_SettingsWindow()
+        self.uiSettingsWindow.setupUi(self.addActuatorWindow)
+        self.addActuatorWindow.showMaximized()
 
-    # TODO:
-    def on_PB_connect_pressed(self):
-        self.PB_connect.setText(QtCore.QCoreApplication.translate(
-            "AddRoomSensorWindow", "Sto cercando..."))
-
-    # TODO:
-    def on_PB_connect_released(self):
-        self.PB_connect.setEnabled(False)
-        roomName = self.LE_room.text()
-        connection.connection()
+    # TODO: Aggiungo l'attuatore alla lista di attuatori gi\a inseriti nel sistemas
+    # Ritorna un errore se un attuatore è già presente con lo stesso nome nella lista
+    def on_PB_addActuator_clicked(self):
+        pass
         
-
+        
+        
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
-        self.PB_connect.pressed.connect(self.on_PB_connect_pressed)
-        self.PB_connect.released.connect(self.on_PB_connect_released)
-        self.LE_room.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.PB_addActuator.clicked.connect(self.on_PB_addActuator_clicked)
+        self.LE_actuator.setFocusPolicy(QtCore.Qt.StrongFocus)
 
         self.timer.timeout.connect(self.showTime)
         self.showTime()
@@ -76,18 +68,18 @@ class Ui_AddRoomSensorWindow(object):
         self.dateEdit.setDate(date)
 
     def close(self):
-        self.roomWindow.close()
+        self.actuatorWindow.close()
 
-    def setupUi(self, AddRoomSensorWindow):
-        self.roomWindow = AddRoomSensorWindow
-        self.roomWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+    def setupUi(self, addActuatorWindow):
+        self.actuatorWindow = addActuatorWindow
+        self.actuatorWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
-        AddRoomSensorWindow.setObjectName("AddRoomSensorWindow")
-        AddRoomSensorWindow.resize(800, 480)
+        addActuatorWindow.setObjectName("AddActuatorWindow")
+        addActuatorWindow.resize(800, 480)
         font = QtGui.QFont()
         font.setPointSize(10)
-        AddRoomSensorWindow.setFont(font)
-        self.centralwidget = QtWidgets.QWidget(AddRoomSensorWindow)
+        addActuatorWindow.setFont(font)
+        self.centralwidget = QtWidgets.QWidget(addActuatorWindow)
         self.centralwidget.setObjectName("centralwidget")
 
         self.dateEdit = QtWidgets.QDateEdit(self.centralwidget)
@@ -124,15 +116,12 @@ class Ui_AddRoomSensorWindow(object):
         self.timeEdit.setReadOnly(True)
         self.timeEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.timeEdit.setObjectName("timeEdit")
-
-        self.PB_ok = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_ok.setGeometry(QtCore.QRect(690, 350, 111, 100))
+        
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        self.PB_ok.setFont(font)
-        self.PB_ok.setObjectName("PB_ok")
+        
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
         self.PB_goBack.setGeometry(QtCore.QRect(0, 350, 111, 100))
         font = QtGui.QFont()
@@ -141,78 +130,77 @@ class Ui_AddRoomSensorWindow(object):
         font.setWeight(75)
         self.PB_goBack.setFont(font)
         self.PB_goBack.setObjectName("PB_goBack")
-        self.LE_room = MyQLineEdit(self.centralwidget)
-        self.LE_room.setGeometry(QtCore.QRect(110, 130, 581, 61))
+        self.LE_actuator = MyQLineEdit(self.centralwidget)
+        self.LE_actuator.setGeometry(QtCore.QRect(110, 130, 581, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        self.LE_room.setFont(font)
-        self.LE_room.setObjectName("LE_room")
+        self.LE_actuator.setFont(font)
+        self.LE_actuator.setObjectName("LE_actuator")
 
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
 
-        self.label_RoomSettings = QtWidgets.QLabel(self.centralwidget)
-        self.label_RoomSettings.setGeometry(QtCore.QRect(-10, 0, 121, 61))
+        self.label_ActuatorSettings = QtWidgets.QLabel(self.centralwidget)
+        self.label_ActuatorSettings.setGeometry(QtCore.QRect(-10, 0, 121, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        self.label_RoomSettings.setFont(font)
-        self.label_RoomSettings.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_RoomSettings.setObjectName("label_RoomSettings")
-        self.label_RoomName = QtWidgets.QLabel(self.centralwidget)
-        self.label_RoomName.setGeometry(QtCore.QRect(90, 80, 161, 61))
+        self.label_ActuatorSettings.setFont(font)
+        self.label_ActuatorSettings.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_ActuatorSettings.setObjectName("label_ActuatorSettings")
+        self.label_ActuatorName = QtWidgets.QLabel(self.centralwidget)
+        self.label_ActuatorName.setGeometry(QtCore.QRect(90, 80, 161, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        self.label_RoomName.setFont(font)
-        self.label_RoomName.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_RoomName.setObjectName("label_RoomName")
+        self.label_ActuatorName.setFont(font)
+        self.label_ActuatorName.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_ActuatorName.setObjectName("label_ActuatorName")
 
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
 
-        self.PB_connect = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_connect.setGeometry(QtCore.QRect(220, 320, 361, 61))
+        self.PB_addActuator = QtWidgets.QPushButton(self.centralwidget)
+        self.PB_addActuator.setGeometry(QtCore.QRect(220, 240, 361, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        self.PB_connect.setFont(font)
-        self.PB_connect.setObjectName("PB_connect")
-        AddRoomSensorWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(AddRoomSensorWindow)
+        self.PB_addActuator.setFont(font)
+        self.PB_addActuator.setObjectName("PB_addActuator")
+        addActuatorWindow.setCentralWidget(self.centralwidget)
+        self.statusbar = QtWidgets.QStatusBar(addActuatorWindow)
         self.statusbar.setObjectName("statusbar")
-        AddRoomSensorWindow.setStatusBar(self.statusbar)
+        addActuatorWindow.setStatusBar(self.statusbar)
 
         self.activeFunctionsConnection()
-        self.retranslateUi(AddRoomSensorWindow)
-        QtCore.QMetaObject.connectSlotsByName(AddRoomSensorWindow)
+        self.retranslateUi(addActuatorWindow)
+        QtCore.QMetaObject.connectSlotsByName(addActuatorWindow)
 
-    def retranslateUi(self, AddRoomSensorWindow):
+    def retranslateUi(self, addActuatorWindow):
         _translate = QtCore.QCoreApplication.translate
-        AddRoomSensorWindow.setWindowTitle(
-            _translate("AddRoomSensorWindow", "MainWindow"))
+        addActuatorWindow.setWindowTitle(
+            _translate("AddActuatorWindow", "MainWindow"))
         self.timeEdit.setDisplayFormat(
-            _translate("AddRoomSensorWindow", "HH : mm"))
+            _translate("AddActuatorWindow", "HH : mm"))
         self.dateEdit.setDisplayFormat(_translate(
-            "AddRoomSensorWindow", "dd - MM - yyyy"))
-        self.PB_ok.setText(_translate("AddRoomSensorWindow", "Ok"))
-        self.PB_goBack.setText(_translate("AddRoomSensorWindow", "<"))
-        self.LE_room.setPlaceholderText(_translate(
-            "AddRoomSensorWindow", "Inserire nome della stanza"))
+            "AddActuatorWindow", "dd - MM - yyyy"))
+        self.PB_goBack.setText(_translate("AddActuatorWindow", "<"))
+        self.LE_actuator.setPlaceholderText(_translate(
+            "AddActuatorWindow", "Inserire ID dell'attuatore"))
 
-        self.label_RoomSettings.setText(_translate("AddRoomSensorWindow", "Room\n"
+        self.label_ActuatorSettings.setText(_translate("AddActuatorWindow", "Actuator\n"
                                                    "Settings"))
-        self.label_RoomName.setText(_translate(
-            "AddRoomSensorWindow", "Room Name:"))
+        self.label_ActuatorName.setText(_translate(
+            "AddActuatorWindow", "Actuator Name:"))
 
-        self.PB_connect.setText(_translate(
-            "AddRoomSensorWindow", "Associa sensore..."))
+        self.PB_addActuator.setText(_translate(
+            "AddActuatorWindow", "Add Actuator..."))
