@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SensorValveProgramWindow</class>
- <widget class="QMainWindow" name="SensorValveProgramWindow">
+ <class>AddRoomSensorWindow</class>
+ <widget class="QMainWindow" name="AddRoomSensorWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -114,7 +114,36 @@
      <string>&lt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_RoomSettings">
+   <widget class="QPlainTextEdit" name="PT_sensor">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>200</y>
+      <width>581</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="sizeAdjustPolicy">
+     <enum>QAbstractScrollArea::AdjustIgnored</enum>
+    </property>
+    <property name="overwriteMode">
+     <bool>true</bool>
+    </property>
+    <property name="placeholderText">
+     <string>Inserire identificativo della valvola</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_ValveSettings">
     <property name="geometry">
      <rect>
       <x>-10</x>
@@ -131,18 +160,61 @@
      </font>
     </property>
     <property name="text">
-     <string>Room
+     <string>Valve
 Settings</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_RoomName">
+   <widget class="QLabel" name="label_ValveID">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>80</y>
+      <x>150</x>
+      <y>150</y>
+      <width>140</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Valve ID:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PB_connectValve">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>310</y>
+      <width>231</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Aggiungi</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_ValveName">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>90</y>
       <width>361</width>
       <height>61</height>
      </rect>
@@ -161,13 +233,13 @@ Settings</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="PB_sensor">
+   <widget class="QPushButton" name="PB_deleteValve">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>160</y>
-      <width>201</width>
-      <height>121</height>
+      <x>470</x>
+      <y>310</y>
+      <width>231</width>
+      <height>81</height>
      </rect>
     </property>
     <property name="font">
@@ -178,50 +250,7 @@ Settings</string>
      </font>
     </property>
     <property name="text">
-     <string>Imposta / Vedi
-Sensore</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="PB_valve">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>160</y>
-      <width>201</width>
-      <height>121</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Imposta / Vedi
-Valvole</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="PB_timeProgram">
-    <property name="geometry">
-     <rect>
-      <x>580</x>
-      <y>160</y>
-      <width>201</width>
-      <height>121</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Imposta / Vedi
-CronoProgramma</string>
+     <string>Elimina</string>
     </property>
    </widget>
   </widget>
