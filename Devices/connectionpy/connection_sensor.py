@@ -21,10 +21,12 @@ def sendIdentification():
   BTsocket.send(":termo")
   time.sleep(1)
 #########################################################################
-def sendCredentials():
-  BTsocket.send("wifissid")
+def sendssid():
+  BTsocket.send("AndroidAP")
   time.sleep(1)
-  BTsocket.send("wifipsw")
+#########################################################################
+def sendpsw():
+  BTsocket.send("diosalame")
   time.sleep(1)
 #########################################################################
 def sendMQTT():
@@ -56,26 +58,38 @@ def connection():
   receiveMessages()
   print data
   if data == '@':
-    sendCredentials()
+    sendssid()
     receiveMessages()
     print data
     if data == '@':
-      sendMQTT()
+      sendpsw()
       receiveMessages()
       print data
       if data == '@':
-        sendname()
+        sendMQTT()
         receiveMessages()
         print data
         if data == '@':
-          disconnect()
+          sendname()
+          receiveMessages()
+          print data
+          if data == '@':
+            print ("connection successful")
+            disconnect()
+          else:
+            print ("connection unsuccessful")
+            disconnect()
         else:
+          print ("connection unsuccessful")
           disconnect()
       else:
+        print ("connection unsuccessful")
         disconnect()
     else:
+      print ("connection unsuccessful")
       disconnect()
   else:
+    print ("connection unsuccessful")
     disconnect()
 #########################################################################
 
