@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SettingsWindow</class>
- <widget class="QMainWindow" name="SettingsWindow">
+ <class>SensorValveProgramWindow</class>
+ <widget class="QMainWindow" name="SensorValveProgramWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -9,6 +9,11 @@
     <width>800</width>
     <height>480</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>10</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -109,12 +114,36 @@
      <string>&lt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="PB_network">
+   <widget class="QLabel" name="label_RoomSettings">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>-10</x>
+      <y>0</y>
+      <width>121</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Room
+Settings</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_RoomName">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
       <y>80</y>
-      <width>581</width>
+      <width>361</width>
       <height>61</height>
      </rect>
     </property>
@@ -126,16 +155,19 @@
      </font>
     </property>
     <property name="text">
-     <string>Network</string>
+     <string>&lt;Room Name Here&gt;</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="PB_AddRoom">
+   <widget class="QPushButton" name="PB_sensor">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>20</x>
       <y>160</y>
-      <width>581</width>
-      <height>61</height>
+      <width>181</width>
+      <height>121</height>
      </rect>
     </property>
     <property name="font">
@@ -146,16 +178,17 @@
      </font>
     </property>
     <property name="text">
-     <string>Add Room</string>
+     <string>Imposta / Vedi
+Sensore</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="PB_AddActuator">
+   <widget class="QPushButton" name="PB_valve">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>240</y>
-      <width>581</width>
-      <height>61</height>
+      <x>320</x>
+      <y>160</y>
+      <width>181</width>
+      <height>121</height>
      </rect>
     </property>
     <property name="font">
@@ -166,7 +199,29 @@
      </font>
     </property>
     <property name="text">
-     <string>Add Actuator</string>
+     <string>Imposta / Vedi
+Valvole</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PB_timeProgram">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>160</y>
+      <width>181</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Imposta / Vedi
+CronoProgramma</string>
     </property>
    </widget>
   </widget>
