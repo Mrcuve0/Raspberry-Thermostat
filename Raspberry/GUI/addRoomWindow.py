@@ -18,8 +18,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
 import settingsWindow
+
+# TODO: reinserire questa dipendenza
 # from Devices.connectionpy import connection
-from Devices.connectionpy import connection
 
 
 
