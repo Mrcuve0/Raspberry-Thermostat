@@ -6,7 +6,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 import settingsWindow
-import addRoomSensorWindow
+import addRoomWindow
+import sensorValveProgramWindow
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
@@ -15,7 +16,7 @@ import sys
 import os
 
 
-# from addRoomSensorWindow import Ui_AddRoomSensorWindow
+# from addRoomWindow import Ui_addRoomWindow
 # Time and DateTime section
 
 
@@ -24,8 +25,8 @@ class Ui_MainWindow(object):
     def on_PB_roomList_clicked(self):
         self.close()
         self.mainWindow = QtWidgets.QMainWindow()
-        self.uiRoomSensorWindow = addRoomSensorWindow.Ui_AddRoomSensorWindow()
-        self.uiRoomSensorWindow.setupUi(self.mainWindow)
+        self.uiSensorValveProgramWindow = sensorValveProgramWindow.Ui_SensorValveProgramWindow()
+        self.uiSensorValveProgramWindow.setupUi(self.mainWindow)
         self.mainWindow.showMaximized()
 
     def on_PB_settings_clicked(self):

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AddRoomSensorWindow</class>
- <widget class="QMainWindow" name="AddRoomSensorWindow">
+ <class>SensorValveProgramWindow</class>
+ <widget class="QMainWindow" name="SensorValveProgramWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -94,26 +94,6 @@
      <string>dd - MM - yyyy</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="PB_ok">
-    <property name="geometry">
-     <rect>
-      <x>690</x>
-      <y>350</y>
-      <width>111</width>
-      <height>100</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Ok</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="PB_goBack">
     <property name="geometry">
      <rect>
@@ -132,64 +112,6 @@
     </property>
     <property name="text">
      <string>&lt;</string>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="PT_room">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>130</y>
-      <width>581</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="sizeAdjustPolicy">
-     <enum>QAbstractScrollArea::AdjustIgnored</enum>
-    </property>
-    <property name="overwriteMode">
-     <bool>true</bool>
-    </property>
-    <property name="placeholderText">
-     <string>Inserire nome della stanza</string>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="PT_sensor">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>240</y>
-      <width>581</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="sizeAdjustPolicy">
-     <enum>QAbstractScrollArea::AdjustIgnored</enum>
-    </property>
-    <property name="overwriteMode">
-     <bool>true</bool>
-    </property>
-    <property name="placeholderText">
-     <string>Inserire identificativo del sensore</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_RoomSettings">
@@ -219,9 +141,9 @@ Settings</string>
    <widget class="QLabel" name="label_RoomName">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>80</y>
-      <width>161</width>
+      <x>200</x>
+      <y>60</y>
+      <width>361</width>
       <height>61</height>
      </rect>
     </property>
@@ -233,30 +155,7 @@ Settings</string>
      </font>
     </property>
     <property name="text">
-     <string>Room Name:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_SensorID">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>190</y>
-      <width>140</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Sensor ID:</string>
+     <string>&lt;Room Name Here&gt;</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -266,7 +165,7 @@ Settings</string>
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>320</y>
+      <y>370</y>
       <width>361</width>
       <height>61</height>
      </rect>
@@ -280,6 +179,48 @@ Settings</string>
     </property>
     <property name="text">
      <string>Connetti...</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PB_sensor">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>120</y>
+      <width>141</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Imposta / Vedi
+Sensore</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PB_valve">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>120</y>
+      <width>141</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Imposta / Vedi
+Valvole</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PB_timeProgram">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>120</y>
+      <width>141</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Imposta / Vedi
+CronoProgramma</string>
     </property>
    </widget>
   </widget>
