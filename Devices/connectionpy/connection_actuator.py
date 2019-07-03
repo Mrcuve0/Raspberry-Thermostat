@@ -66,7 +66,7 @@ def connection():
         receiveMessages()
         print data
         if data == '@':
-          print ("connection unsuccessful")
+          print ("connection successful")
           disconnect()
         else:
           print ("connection unsuccessful")
