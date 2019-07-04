@@ -23,6 +23,8 @@ IPAddress mqttServer;
 char termo[] = ":termo";
 char test_transmission[20];
 /////////////////////////////////////////////////////////////////////
+float temperature;
+/////////////////////////////////////////////////////////////////////
 char ssidc[20] = "";
 char pswc[20] = "";
 char mqttHostnamec[20] = "";
@@ -226,14 +228,11 @@ void setup() {
 
 /////////////////////////////////////////////////////////////////////
 void loop() {
-  float temperature = dht.readTemperature();
-  Serial.print("temperature ");
-  Serial.print(t);
-
-  
   if (millis() - start_time > time_interval){
-    client.publish(ESPname, temperature);
+    temperature = dht.readTemperature();
+    Serial.print("temperature ");
+    Serial.print(t);
+    client.publish("temperature/ESPname", temperature);       //ESPname has to be changed with a number (the ID)
     start_time = millis();
   }
- 
 }
