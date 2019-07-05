@@ -1,7 +1,23 @@
+import subprocess
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
 import sensorValveProgramWindow
+from Devices.connectionpy import connection_sensor
+
+
+class MyQLineEdit(QtWidgets.QLineEdit):
+    def focusInEvent(self, e):
+        try:
+            subprocess.Popen(["onboard"])
+        except FileNotFoundError:
+            pass
+        super(MyQLineEdit, self).focusInEvent(e)
+
+    def focusOutEvent(self, e):
+        subprocess.Popen(["killall", "onboard"])
+        super(MyQLineEdit, self).focusOutEvent(e)
 
 
 class Ui_SensorSettingsWindow(object):
@@ -15,7 +31,7 @@ class Ui_SensorSettingsWindow(object):
 
     # TODO: Aggiungere metodo per la connessione del sensore
     def on_PB_connectSensor_clicked(self):
-        pass
+        connection_sensor.connection()
 
     # TODO: Aggiungere metodo per l'eliminazione del sensore
     def on_PB_deleteSensor_clicked(self):
@@ -23,7 +39,7 @@ class Ui_SensorSettingsWindow(object):
 
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
-        self.PB_connectSensor.clicked.connect(self.on_PB_deleteSensor_clicked)
+        self.PB_connectSensor.clicked.connect(self.on_PB_connectSensor_clicked)
         self.PB_deleteSensor.clicked.connect(self.on_PB_deleteSensor_clicked)
         self.timer.timeout.connect(self.showTime)
         self.showTime()

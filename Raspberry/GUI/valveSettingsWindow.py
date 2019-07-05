@@ -1,7 +1,23 @@
+import subprocess
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
 import sensorValveProgramWindow
+from Devices.connectionpy import connection_sensor
+
+
+class MyQLineEdit(QtWidgets.QLineEdit):
+    def focusInEvent(self, e):
+        try:
+            subprocess.Popen(["onboard"])
+        except FileNotFoundError:
+            pass
+        super(MyQLineEdit, self).focusInEvent(e)
+
+    def focusOutEvent(self, e):
+        subprocess.Popen(["killall", "onboard"])
+        super(MyQLineEdit, self).focusOutEvent(e)
 
 
 class Ui_ValveSettingsWindow(object):

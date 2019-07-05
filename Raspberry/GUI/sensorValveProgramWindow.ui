@@ -166,7 +166,7 @@ Settings</string>
      <rect>
       <x>20</x>
       <y>160</y>
-      <width>201</width>
+      <width>181</width>
       <height>121</height>
      </rect>
     </property>
@@ -185,9 +185,9 @@ Sensore</string>
    <widget class="QPushButton" name="PB_valve">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>320</x>
       <y>160</y>
-      <width>201</width>
+      <width>181</width>
       <height>121</height>
      </rect>
     </property>
@@ -206,9 +206,9 @@ Valvole</string>
    <widget class="QPushButton" name="PB_timeProgram">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>600</x>
       <y>160</y>
-      <width>201</width>
+      <width>181</width>
       <height>121</height>
      </rect>
     </property>
