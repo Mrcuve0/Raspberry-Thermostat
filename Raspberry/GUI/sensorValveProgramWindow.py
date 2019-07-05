@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'sensorValveProgramWindow.ui'
+#
+# Created by: PyQt5 UI code generator 5.12.2
+#
+# WARNING! All changes made in this file will be lost!
+
 import os
 import sys
 
@@ -6,33 +14,21 @@ from PyQt5.QtCore import QTime, QDate, QTimer
 
 # TODO: Add window imports here
 import mainWindow
-import sensorSettingsWindow
-import valveSettingsWindow
-import programSettingsWindow
 
 
 class Ui_SensorValveProgramWindow(object):
 
+    # TODO: aggiungi apertura della finestra dove puoi aggiungere un sensore alla stanza
     def on_PB_sensor_clicked(self):
-        self.close()
-        self.sensorValveProgramWindow = QtWidgets.QMainWindow()
-        self.uiSensorSettingsWindow = sensorSettingsWindow.Ui_SensorSettingsWindow()
-        self.uiSensorSettingsWindow.setupUi(self.sensorValveProgramWindow)
-        self.sensorValveProgramWindow.showMaximized()
-
+        pass
+    
+    # TODO: aggiungi apertura della finestra dove puoi aggiungere un relè all'attuatore che preferisci
     def on_PB_valve_clicked(self):
-        self.close()
-        self.sensorValveProgramWindow = QtWidgets.QMainWindow()
-        self.uiValveSettingsWindow = valveSettingsWindow.Ui_ValveSettingsWindow()
-        self.uiValveSettingsWindow.setupUi(self.sensorValveProgramWindow)
-        self.sensorValveProgramWindow.showMaximized()
+        pass
 
+    # TODO: aggiungi apertura della finestra dove puoi aggiungere il cronoprogramma relativo a questa finestra
     def on_PB_program_clicked(self):
-        self.close()
-        self.sensorValveProgramWindow = QtWidgets.QMainWindow()
-        self.uiProgramSettingsWindow = programSettingsWindow.Ui_ProgramSettingsWindow()
-        self.uiProgramSettingsWindow.setupUi(self.sensorValveProgramWindow)
-        self.sensorValveProgramWindow.showMaximized()
+        pass
 
     def on_PB_goBack_clicked(self):
         self.close()
@@ -62,8 +58,7 @@ class Ui_SensorValveProgramWindow(object):
     def setupUi(self, SensorValveProgramWindow):
 
         self.sensorValveProgramWindow = SensorValveProgramWindow
-        self.sensorValveProgramWindow.setWindowFlags(
-            QtCore.Qt.FramelessWindowHint)
+        self.sensorValveProgramWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
         SensorValveProgramWindow.setObjectName("SensorValveProgramWindow")
         SensorValveProgramWindow.resize(800, 480)
@@ -140,13 +135,13 @@ class Ui_SensorValveProgramWindow(object):
         self.label_RoomName.setAlignment(QtCore.Qt.AlignCenter)
         self.label_RoomName.setObjectName("label_RoomName")
         self.PB_sensor = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_sensor.setGeometry(QtCore.QRect(20, 160, 201, 121))
+        self.PB_sensor.setGeometry(QtCore.QRect(20, 160, 181, 121))
         self.PB_sensor.setObjectName("PB_sensor")
         self.PB_valve = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_valve.setGeometry(QtCore.QRect(300, 160, 201, 121))
+        self.PB_valve.setGeometry(QtCore.QRect(320, 160, 181, 121))
         self.PB_valve.setObjectName("PB_valve")
         self.PB_timeProgram = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_timeProgram.setGeometry(QtCore.QRect(580, 160, 201, 121))
+        self.PB_timeProgram.setGeometry(QtCore.QRect(600, 160, 181, 121))
         self.PB_timeProgram.setObjectName("PB_timeProgram")
         SensorValveProgramWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(SensorValveProgramWindow)
@@ -160,20 +155,16 @@ class Ui_SensorValveProgramWindow(object):
     def retranslateUi(self, SensorValveProgramWindow):
 
         _translate = QtCore.QCoreApplication.translate
-        SensorValveProgramWindow.setWindowTitle(
-            _translate("SensorValveProgramWindow", "MainWindow"))
-        self.timeEdit.setDisplayFormat(_translate(
-            "SensorValveProgramWindow", "HH : mm"))
-        self.dateEdit.setDisplayFormat(_translate(
-            "SensorValveProgramWindow", "dd - MM - yyyy"))
+        SensorValveProgramWindow.setWindowTitle(_translate("SensorValveProgramWindow", "MainWindow"))
+        self.timeEdit.setDisplayFormat(_translate("SensorValveProgramWindow", "HH : mm"))
+        self.dateEdit.setDisplayFormat(_translate("SensorValveProgramWindow", "dd - MM - yyyy"))
         self.PB_goBack.setText(_translate("SensorValveProgramWindow", "<"))
         self.label_RoomSettings.setText(_translate("SensorValveProgramWindow", "Room\n"
-                                                   "Settings"))
-        self.label_RoomName.setText(_translate(
-            "SensorValveProgramWindow", "<Room Name Here>"))
+"Settings"))
+        self.label_RoomName.setText(_translate("SensorValveProgramWindow", "<Room Name Here>"))
         self.PB_sensor.setText(_translate("SensorValveProgramWindow", "Imposta / Vedi\n"
-                                          "Sensore"))
+"Sensore"))
         self.PB_valve.setText(_translate("SensorValveProgramWindow", "Imposta / Vedi\n"
-                                         "Valvole"))
+"Valvole"))
         self.PB_timeProgram.setText(_translate("SensorValveProgramWindow", "Imposta / Vedi\n"
-                                               "CronoProgramma"))
+"CronoProgramma"))
