@@ -1,0 +1,21 @@
+tools used:
+	avahi-daemon	needed for MDNS services
+	mosquitto		mqtt broker
+	paho			mqtt libraries for mosquitto
+	mongodb			db used to store configuration and logs
+	pymongo			python libraries for mongodb
+
+commands:
+	/* Modify hostname of raspberry into 'thermostat' */  
+	sudo /etc/init.d/hostname.sh
+	sudo reboot
+	/* Install avahi */
+	sudo apt-get install avahi-daemon
+	/* Install mosquitto */
+	sudo apt-get install mosquitto mosquitto-clients
+	/* Install paho */
+	pip install paho-mqtt
+	/* Install mongodb */
+	sudo apt-get install mongodb
+	/* Install mongodb libraries */
+	pip install pymongo==2.7

@@ -22,7 +22,7 @@ mqtt_manager.mqtt_connect()
 # Get last temperatures received through mqtt
 last_temperatures = mqtt_manager.get_last_temperatures()
 # Get configuration from the db
-configuration = {'rooms_settings': [{'room': 'stanzetta', 'mode': 'manual', 'info': 25}], 'backup_config': 'none'}
+configuration = {'rooms_settings': [{'room': 'stanzetta', 'mode': 'manual', 'info': 25, 'extra': 'weekend'}], 'backup_config': 'none'}
 
 def find_room_in_list(room, room_list):
 	result = None
