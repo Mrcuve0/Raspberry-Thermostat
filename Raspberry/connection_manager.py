@@ -1,9 +1,8 @@
 import paho.mqtt.client as mqtt
 import ast
+import constants
 
 class connection_manager:   
-    temperature_topic = 'logs'
-    actuator_topic = 'actuators'
     # Mqtt broker will run on the raspberry, so the address to use will be 'localhost'
     MQTT_SERVER = '192.168.43.154' #'localhost'
     MQTT_PORT = 1883
