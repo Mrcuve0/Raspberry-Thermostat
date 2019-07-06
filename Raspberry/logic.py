@@ -2,27 +2,43 @@ import time
 import connection_manager
 import db_manager
 import json
+import constants
 
-# Room settings constants
-manual_settings = 'manual'
-antifreeze_settings = 'antifreeze'
-# Actuator constants
-actuator_hot = 'hot'
-actuator_hot_topic = 'actuator/hot'
-actuator_cold = 'cold'
-actuator_cold_topic = 'actuator/cold'
-# Power constants
-power_on = 'on'
-power_off = 'off'
+# Define callbacks for MQTT client
+def on_connect(self, client, userdata, flags, rc):
+    print('Connected with result code {0}'.format(rc))
+    # Subscribe (or renew if reconnect).
+    client.subscribe(temperature_topic)
+
+def on_message(self, client, userdata, msg):
+    last_temperatures = db_manager.get_last_temperatures()
+    self.last_msg = msg.payload
+    #print(msg.topic+" "+str(msg.payload))
+    if (msg.topic == temperature_topic):
+        # Insert log in the database
+        # Update the corresponding entry in the last temperatures structure
+        room_found = False
+        payload = ast.literal_eval(msg.payload)
+        room_name = payload['room']
+        new_temp = payload['temperature']
+        for entry in last_temperatures:
+            if entry['room'] == room_name:
+                entry['temperature'] = new_temp
+                room_found = True
+        if (not room_found):
+            #update_temperatures_struct from db
+            new_entry = {'room': room_name, 'temperature': new_temp}
+            print(new_entry)
+            last_temperatures.append(new_entry)
+        db_manager.update_last_temperatures(last_temperatures)
+        log = {'type': 'temperature', 'room': room_name, 'val': new_temp, 'timestamp': millis()}
+        db_manager.insert_log(log)
 
 # Start mqtt connection
-mqtt_manager = connection_manager.get_instance() 
-mqtt_manager.mqtt_connect()
-
-# Get last temperatures received through mqtt
-last_temperatures = mqtt_manager.get_last_temperatures()
-# Get configuration from the db
-configuration = {'rooms_settings': [{'room': 'stanzetta', 'mode': 'manual', 'info': 25}], 'backup_config': 'none'}
+mqtt_manager = connection_manager()
+mqtt_manager.mqtt_connect(on_connect, on_message)
+# Define db manager
+db_manager = database_manager()
 
 def find_room_in_list(room, room_list):
 	result = None
@@ -41,6 +57,12 @@ def drive_actuator(room, actuator_type, power):
 	mqtt_manager.mqtt_publish(topic, msg)
 
 while True:
+	# Get last temperatures received through mqtt
+	last_temperatures = db_manager.get_last_temperatures()
+	# Get configuration from the db
+	configuration = db_manager.get_configuration()
+	#configuration = {'rooms_settings': [{'room': 'stanzetta', 'mode': 'manual', 'info': 25, 'extra': 'weekend'}], 'backup_config': 'none'}
+
 	# Manage only rooms from which temperatures are received since the last power-on
 	#for entry in last_temperatures:
 	#	temp_room = entry['room']
@@ -68,6 +90,3 @@ while True:
 				else:
 					drive_actuator(temp_room, actuator_hot, power_off)
 	time.sleep(10)
-	last_temperatures = mqtt_manager.get_last_temperatures()
-	#result = db_manager.insert_log({'msg': last_msg})
-	#print(result)
