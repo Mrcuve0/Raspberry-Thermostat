@@ -2,30 +2,19 @@ import time
 import connection_manager
 import db_manager
 import json
-
-# Room settings constants
-manual_settings = 'manual'
-antifreeze_settings = 'antifreeze'
-# Actuator constants
-actuator_hot = 'hot'
-actuator_hot_topic = 'actuator/hot'
-actuator_cold = 'cold'
-actuator_cold_topic = 'actuator/cold'
-# Power constants
-power_on = 'on'
-power_off = 'off'
+import constants
 
 # Define callbacks for MQTT client
 def on_connect(self, client, userdata, flags, rc):
     print('Connected with result code {0}'.format(rc))
     # Subscribe (or renew if reconnect).
-    client.subscribe(self.temperature_topic)
+    client.subscribe(temperature_topic)
 
 def on_message(self, client, userdata, msg):
     last_temperatures = db_manager.get_last_temperatures()
     self.last_msg = msg.payload
     #print(msg.topic+" "+str(msg.payload))
-    if (msg.topic == self.temperature_topic):
+    if (msg.topic == temperature_topic):
         # Insert log in the database
         # Update the corresponding entry in the last temperatures structure
         room_found = False

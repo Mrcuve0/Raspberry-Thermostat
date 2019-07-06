@@ -1,0 +1,1 @@
+#popola database se vuoto (con info sulla stanza di default accoppiata al sensore del raspberry)
