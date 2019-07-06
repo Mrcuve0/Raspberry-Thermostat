@@ -1,26 +1,18 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'addActuatorWindow.ui'
-#
-# Created by: PyQt5 UI code generator 5.12.2
-#
-# WARNING! All changes made in this file will be lost!
-
 import sys
+import subprocess
 
 print(sys.path[0])  # <->/Raspberry-Thermostat/Raspberry/GUI
 sys.path.insert(0, sys.path[0] + "/../../") # /Raspberry-Thermostat/
 print(sys.path)
 
-import subprocess
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
 import settingsWindow
 # from Devices.connectionpy import connection
-from Devices.connectionpy import connection
-
+from Devices.connectionpy import connection_actuator
+import networkConnection
 
 
 class MyQLineEdit(QtWidgets.QLineEdit):
@@ -48,8 +40,146 @@ class Ui_addActuatorWindow(object):
     # TODO: Aggiungo l'attuatore alla lista di attuatori gi\a inseriti nel sistemas
     # Ritorna un errore se un attuatore è già presente con lo stesso nome nella lista
     def on_PB_addActuator_clicked(self):
-        pass
-        
+        actuatorID = self.LE_actuator.text()
+
+        if (actuatorID == ""):
+            print("Actuator ID cannot be empty!")
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setInformativeText(
+                "Inserire un ID attuatore, ID obbligatorio")
+            msg.setWindowTitle("Errore")
+            msg.exec_()
+
+        else: # ID attuatore inserito
+            net_SSID = networkConnection.net_SSID
+            net_PWD = networkConnection.net_PWD
+
+            if (net_SSID == "" or net_PWD == ""):
+                print("Net SSID and NET PWD cannot be empty! Maybe Raspone is not connected to network...")
+
+                print("No SSID and PWD found when connecting actuator")
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setInformativeText(
+                    "Connettere il termostato al WiFi di casa prima di aggiungere un attuatore!")
+                msg.setWindowTitle("Errore")
+                msg.exec_()
+
+            else: 
+                returnID = connection_actuator.connection(actuatorID, networkConnection.net_SSID, networkConnection.net_PWD)    
+                if (returnID == 0):
+                    print("OK! Actuator is being connected!")
+
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Information)
+                    msg.setInformativeText(
+                        "Attuatore collegato!")
+                    msg.setWindowTitle("Connesso!")
+                    msg.exec_()
+
+                    self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
+                            "AddActuatorWindow", "Connesso!"))
+                    self.PB_addActuator.setEnabled(False)
+
+                elif (returnID == -1):
+                    print("Actuator not found in BT proximity, check actuator ID pliz")
+
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setInformativeText(
+                        "ID Attuatore non trovato, riprovare")
+                    msg.setWindowTitle("Errore")
+                    msg.exec_()
+                    
+                    self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
+                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                    self.PB_addActuator.setEnabled(True)
+
+                elif (returnID == -2):
+                    print("Cannot connect, Bluetooth Socket error.")
+
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setInformativeText(
+                        "Attuatore non connesso, errore nel socket BT")
+                    msg.setWindowTitle("Errore")
+                    msg.exec_()
+
+                    self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
+                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                    self.PB_addActuator.setEnabled(True)
+
+                elif (returnID == -3):
+                    print("Nothing received from actuator, did you pushed the button?")
+
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setInformativeText(
+                        "Premere il tasto sull'attuatore PRIMA del tentativo di connessione")
+                    msg.setWindowTitle("Errore")
+                    msg.exec_()
+
+                    self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
+                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                    self.PB_addActuator.setEnabled(True)
+
+                elif (returnID == -4):
+                    print("Cannot connect, no transmission from actuator")
+
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setInformativeText(
+                        "Nessuna trasmissione dall'attuatore")
+                    msg.setWindowTitle("Errore")
+                    msg.exec_()
+
+                    self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
+                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                    self.PB_addActuator.setEnabled(True)
+
+                elif (returnID == -5):
+                    print("Cannot connect, error transmitting SSID")
+
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setInformativeText(
+                        "Errore nella trasmissione del SSID di rete all'attuatore")
+                    msg.setWindowTitle("Errore")
+                    msg.exec_()
+
+                    self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
+                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                    self.PB_addActuator.setEnabled(True)
+
+                elif (returnID == -6):
+                    print("Cannot connect, error transmitting WIFI Password")
+
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setInformativeText(
+                        "Errore nella trasmissione della password di rete all'attuatore")
+                    msg.setWindowTitle("Errore")
+                    msg.exec_()
+
+                    self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
+                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                    self.PB_addActuator.setEnabled(True)
+
+                elif (returnID == -7):
+                    print("Cannot connect, error transmitting MQTT Info")
+
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setInformativeText(
+                        "Errore nella trasmissione delle info MQTT all'attuatore")
+                    msg.setWindowTitle("Error")
+                    msg.exec_()
+
+                    self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
+                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                    self.PB_addActuator.setEnabled(True)
+
         
         
     def activeFunctionsConnection(self):
