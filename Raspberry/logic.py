@@ -15,9 +15,35 @@ actuator_cold_topic = 'actuator/cold'
 power_on = 'on'
 power_off = 'off'
 
+# Define callbacks for MQTT client
+def on_connect(self, client, userdata, flags, rc):
+    print('Connected with result code {0}'.format(rc))
+    # Subscribe (or renew if reconnect).
+    client.subscribe(self.temperature_topic)
+
+def on_message(self, client, userdata, msg):
+    self.last_msg = msg.payload
+    #print(msg.topic+" "+str(msg.payload))
+    if (msg.topic == self.temperature_topic):
+        # Insert log in the database
+        # Update the corresponding entry in the last temperatures structure
+        room_found = False
+        payload = ast.literal_eval(msg.payload)
+        room_name = payload['room']
+        new_temp = payload['temperature']
+        for entry in self.last_temperatures:
+            if entry['room'] == room_name:
+                entry['temperature'] = new_temp
+                room_found = True
+        if (not room_found):
+            #update_temperatures_struct from db
+            new_entry = {'room': room_name, 'temperature': new_temp}
+            print(new_entry)
+            self.last_temperatures.append(new_entry)
+
 # Start mqtt connection
-mqtt_manager = connection_manager.get_instance() 
-mqtt_manager.mqtt_connect()
+mqtt_manager = connection_manager()
+mqtt_manager.mqtt_connect(on_connect, on_message)
 
 # Get last temperatures received through mqtt
 last_temperatures = mqtt_manager.get_last_temperatures()
