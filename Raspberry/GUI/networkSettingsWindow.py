@@ -58,6 +58,7 @@ class Ui_NetworkSettingsWindow(object):
                 msg.setWindowTitle("Error")
                 msg.exec_()
         else:
+            subprocess.Popen(["killall", "onboard"])
             returnID = networkConnection.connectToNetwork()
             if (returnID == 0):
                 print("Connected to network")
