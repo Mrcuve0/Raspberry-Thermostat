@@ -1,26 +1,15 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'addRoomWindow.ui'
-#
-# Created by: PyQt5 UI code generator 5.12.2
-#
-# WARNING! All changes made in this file will be lost!
-
 import sys
+import subprocess
 
 print(sys.path[0])  # <->/Raspberry-Thermostat/Raspberry/GUI
 sys.path.insert(0, sys.path[0] + "/../../") # /Raspberry-Thermostat/
 print(sys.path)
 
-import subprocess
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
 import settingsWindow
-# from Devices.connectionpy import connection
-from Devices.connectionpy import connection
-
 
 
 class MyQLineEdit(QtWidgets.QLineEdit):

@@ -114,35 +114,6 @@
      <string>&lt;</string>
     </property>
    </widget>
-   <widget class="QPlainTextEdit" name="PT_sensor">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>200</y>
-      <width>581</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="sizeAdjustPolicy">
-     <enum>QAbstractScrollArea::AdjustIgnored</enum>
-    </property>
-    <property name="overwriteMode">
-     <bool>true</bool>
-    </property>
-    <property name="placeholderText">
-     <string>Inserire identificativo del sensore</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_SensorSettings">
     <property name="geometry">
      <rect>
@@ -251,6 +222,26 @@ Settings</string>
     </property>
     <property name="text">
      <string>Elimina</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="LE_sensor">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>200</y>
+      <width>531</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="placeholderText">
+     <string>Inserire identificativo del sensore</string>
     </property>
    </widget>
   </widget>
