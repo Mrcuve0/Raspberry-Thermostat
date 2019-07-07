@@ -4,7 +4,7 @@ import constants
 
 class connection_manager:   
     # Mqtt broker will run on the raspberry, so the address to use will be 'localhost'
-    MQTT_SERVER = '192.168.43.154' #'localhost'
+    MQTT_SERVER = 'localhost'
     MQTT_PORT = 1883
     #mqtt_client = mqtt.Client()
     mqtt_client = None
@@ -12,22 +12,24 @@ class connection_manager:
     on_message_callback = None
 
     def __init__(self):
-        mqtt_client = mqtt.Client()
+        self.mqtt_client = mqtt.Client()
 
     def mqtt_publish(self, topic, msg):
         self.mqtt_client.publish(topic, msg)
 
     def mqtt_publish_actuators(self, msg):
-        self.mqtt_client.publish(self.actuator_topic, msg)        
+        self.mqtt_client.publish(constants.actuator_topic, msg)        
 
     def mqtt_connect(self):
         self.mqtt_client.connect(self.MQTT_SERVER, self.MQTT_PORT, 60)  # Connect to MQTT broker (also running on Pi).
         # Start connection loop in a separate thread
         self.mqtt_client.loop_start()
 
-    def mqtt_connect(self, on_conn, on_mess):
-        self.on_connect_callback = on_conn
-        self.on_message_callback = on_mess
+    def mqtt_connect(self, on_conn = None, on_mess = None):
+        if on_conn is not None:
+            self.on_connect_callback = on_conn
+        if on_mess is not None:
+            self.on_message_callback = on_mess
         self.mqtt_client.connect(self.MQTT_SERVER, self.MQTT_PORT, 60)  # Connect to MQTT broker (also running on Pi).
         # Start connection loop in a separate thread
         self.mqtt_client.loop_start()
