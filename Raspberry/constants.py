@@ -4,6 +4,7 @@ actuator_topic = 'actuators'
 # Room settings constants
 manual_settings = 'manual'
 antifreeze_settings = 'antifreeze'
+programmable_settings = 'programmable'
 # Actuator constants
 actuator_hot = 'hot'
 actuator_hot_topic = 'actuator/hot'
