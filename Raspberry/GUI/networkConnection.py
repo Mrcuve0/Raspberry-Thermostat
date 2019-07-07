@@ -50,25 +50,25 @@ def connectToNetwork():
 
         # bashCheckConnection = "echo \"Check rete\" >> loggino && sleep 10 && echo \"ho dormito 5 secs\" >> loggino && iw dev wlan0 link | grep SSID && echo \"SSID letto, finito\" >> loggino"
 
-    time.sleep(10)
+        time.sleep(10)
 
-    if (is_connected() == True):
-        print("Connesso!")
-        msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Information)
-        msg.setInformativeText(
-            "Connesso alla rete!")
-        msg.setWindowTitle("Info")
-        msg.exec_()
-        return 0
-    else:
-        msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Critical)
-        msg.setInformativeText(
-            "Errore nella connesione alla rete!")
-        msg.setWindowTitle("Error")
-        msg.exec_()
-        return -1
+        if (is_connected() == True):
+            print("Connesso!")
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setInformativeText(
+                "Connesso alla rete!")
+            msg.setWindowTitle("Info")
+            msg.exec_()
+            return 0
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setInformativeText(
+                "Errore nella connesione alla rete!")
+            msg.setWindowTitle("Error")
+            msg.exec_()
+            return -1
 
     # vecchia roba, funzionava con il secondo comando
 
@@ -110,15 +110,15 @@ def connectToNetwork():
     #         print("SSID NON esistente")
     #         return -1
 
-    # else:  # Not OK, ĺSSID era errato
-    #     print("ERRORE! Rete non trovata...")
-    #     msg = QtWidgets.QMessageBox()
-    #     msg.setIcon(QtWidgets.QMessageBox.Critical)
-    #     msg.setInformativeText(
-    #         "SSID non trovato, sistema non connesso alla rete")
-    #     msg.setWindowTitle("Error")
-    #     msg.exec_()
-    #     return -1
+    else:  # Not OK, ĺSSID era errato
+        print("ERRORE! Rete non trovata...")
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setInformativeText(
+            "SSID non trovato, sistema non connesso alla rete")
+        msg.setWindowTitle("Error")
+        msg.exec_()
+        return -1
 
 
 def is_connected():
@@ -136,7 +136,7 @@ def checkSSID(net_SSID):
 
     print("Faccio il pre-check del SSID")
 
-    bashCommand = "sudo iwlist wlan0 scan | grep \"" + str(net_SSID) + "\" && exit"
+    bashCommand = "sudo iwlist wlan0 scan | grep \"" + str(net_SSID) + "\""
 
     try:
         process = subprocess.run(bashCommand, shell=True, check=True,
