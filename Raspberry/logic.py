@@ -1,6 +1,6 @@
 import time
-import connection_manager
-import db_manager
+from connection_manager import *
+from database_manager import *
 import json
 import constants
 import datetime
@@ -9,35 +9,35 @@ import datetime
 def on_connect(self, client, userdata, flags, rc):
     print('Connected with result code {0}'.format(rc))
     # Subscribe (or renew if reconnect).
-    client.subscribe(temperature_topic)
+    client.subscribe(constants.temperature_topic)
 
 def on_message(self, client, userdata, msg):
-    last_temperatures = db_manager.get_last_temperatures()
-    self.last_msg = msg.payload
-    #print(msg.topic+" "+str(msg.payload))
-    if (msg.topic == temperature_topic):
-        # Insert log in the database
-        # Update the corresponding entry in the last temperatures structure
-        room_found = False
-        payload = ast.literal_eval(msg.payload)
-        room_name = payload['room']
-        new_temp = payload['temperature']
+	last_temperatures = db_manager.get_last_temperatures()
+	self.last_msg = msg.payload
+	#print(msg.topic+" "+str(msg.payload))
+	if (msg.topic == constants.temperature_topic):
+		# Insert log in the database
+		# Update the corresponding entry in the last temperatures structure
+		room_found = False
+		payload = ast.literal_eval(msg.payload)
+		room_name = payload['room']
+		new_temp = payload['temperature']
 		new_timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-        for entry in last_temperatures:
-            if entry['room'] == room_name:
-                entry['temperature'] = new_temp
-                entry['timestamp'] = new_timestamp
-                room_found = True
-        if (not room_found):
-            #update_temperatures_struct from db
-            new_entry = {'room': room_name, 'temperature': new_temp, 'timestamp': timestamp}
-            print(new_entry)
-            last_temperatures.append(new_entry)
-        db_manager.update_last_temperatures(last_temperatures)
-        timestamp =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-        log = {'type': 'temperature', 'room': room_name, 'val': new_temp, 'timestamp': timestamp}
-        log_db_entry = {'log' : log, 'flag': 0}
-        db_manager.insert_log(log)
+		for entry in last_temperatures:
+			if entry['room'] == room_name:
+				entry['temperature'] = new_temp
+				entry['timestamp'] = new_timestamp
+				room_found = True
+		if (not room_found):
+			#update_temperatures_struct from db
+			new_entry = {'room': room_name, 'temperature': new_temp, 'timestamp': timestamp}
+			print(new_entry)
+			last_temperatures.append(new_entry)
+		db_manager.update_last_temperatures(last_temperatures)
+		timestamp =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+		log = {'type': 'temperature', 'room': room_name, 'val': new_temp, 'timestamp': timestamp}
+		log_db_entry = {'log' : log, 'flag': 0}
+		db_manager.insert_log(log)
 
 def find_room_in_list(room, room_list):
 	result = None
@@ -48,10 +48,10 @@ def find_room_in_list(room, room_list):
 
 def drive_actuator(room, actuator_type, power):
 	topic = ''
-	if (actuator_type == actuator_hot):
-		topic = actuator_hot_topic
-	elif (actuator_type == actuator_cold):
-		topic = actuator_cold_topic
+	if (actuator_type == constants.actuator_hot):
+		topic = constants.actuator_hot_topic
+	elif (actuator_type == constants.actuator_cold):
+		topic = constants.actuator_cold_topic
 	msg = json.dumps({'room': room, 'power': power})
 	mqtt_manager.mqtt_publish(topic, msg)
 
@@ -76,22 +76,22 @@ def manual_mode(room, temperature, info):
 	if info['season'] == 'cold':
 		# Enable the hot-actuator
 		if temperature < requested_temperature:
-			drive_actuator(room, actuator_hot, power_on)						
+			drive_actuator(room, constants.actuator_hot, constants.power_on)						
 		else:
-			drive_actuator(room, actuator_hot, power_off)
+			drive_actuator(room, constants.actuator_hot, constants.power_off)
 	# If it is a hot season, cold actuators must be used
 	elif info['season'] == 'hot':
 		if temperature > requested_temperature:
-			drive_actuator(room, actuator_cold, power_on)
+			drive_actuator(room, constants.actuator_cold, constants.power_on)
 		else:
-			drive_actuator(room, actuator_cold, power_off)
+			drive_actuator(room, constants.actuator_cold, constants.power_off)
 
 def antifreeze_mode(room, temperature):
 	if temperature < 15:
 		# Enable the hot-actuator
-		drive_actuator(room, actuator_hot, power_on)
+		drive_actuator(room, constants.actuator_hot, constants.power_on)
 	else:
-		drive_actuator(room, actuator_hot, power_off)
+		drive_actuator(room, constants.actuator_hot, constants.power_off)
 
 def programmable_mode(room, temperature, info):
 	day = datetime.datetime.now().isoweekday()
@@ -102,15 +102,15 @@ def programmable_mode(room, temperature, info):
 	if info['season'] == 'cold':
 		# Enable the hot-actuator
 		if temperature < requested_temperature:
-			drive_actuator(room, actuator_hot, power_on)						
+			drive_actuator(room, constants.actuator_hot, constants.power_on)						
 		else:
-			drive_actuator(room, actuator_hot, power_off)
+			drive_actuator(room, constants.actuator_hot, constants.power_off)
 	# If it is a hot season, cold actuators must be used
 	elif info['season'] == 'hot':
 		if temperature > requested_temperature:
-			drive_actuator(room, actuator_cold, power_on)
+			drive_actuator(room, constants.actuator_cold, constants.power_on)
 		else:
-			drive_actuator(room, actuator_cold, power_off)
+			drive_actuator(room, constants.actuator_cold, constants.power_off)
 
 # Start mqtt connection
 mqtt_manager = connection_manager()
@@ -145,12 +145,12 @@ while True:
 				temp_temperature = temp_elem['temperature']
 				temp_info = room_settings['info']
 				# Manual mode
-				if (room_settings['mode'] == manual_settings):
+				if (room_settings['mode'] == constants.manual_settings):
 					manual_mode(temp_room, temp_temperature, temp_info)
 				# Antifreeze mode
-				elif (room_settings['mode'] == antifreeze_settings):
+				elif (room_settings['mode'] == constants.antifreeze_settings):
 					antifreeze_mode(temp_room, temp_temperature)
 				# Programmable mode
-				elif (room_settings['mode'] == programmable_settings):
+				elif (room_settings['mode'] == constants.programmable_settings):
 					programmable_mode(temp_room, temp_temperature, temp_info)
 	time.sleep(30)
