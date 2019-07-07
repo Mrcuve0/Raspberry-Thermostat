@@ -15,32 +15,42 @@ def connectToNetwork():
 
     if (checkSSID(net_SSID) == 0):  # Ok, il SSID è corretto
 
-        bashCommand = "sudo echo \"ctrl_interface=/run/wpa_supplicant\nupdate_config=1\ncountry=IT\n\" > /etc/wpa_supplicant/wpa_supplicant.conf && echo \"Prima parte conf scritta\" > loggino && sudo su && echo \"Sudo su fatto\" >> loggino && sudo wpa_passphrase \"" + \
+        # bashCommand = "sudo echo \"ctrl_interface=/run/wpa_supplicant\nupdate_config=1\ncountry=IT\n\" > /etc/wpa_supplicant/wpa_supplicant.conf && echo \"Prima parte conf scritta\" > loggino && sudo su && echo \"Sudo su fatto\" >> loggino && sudo wpa_passphrase \"" + \
+        #     str(net_SSID) + "\" \"" + str(net_PWD) + \
+        #     "\" >> /etc/wpa_supplicant/wpa_supplicant.conf && echo \"Passphrase e scrittura fatta\" >> loggino && sudo wpa_cli terminate >> loggino && echo \"Wpa_cli terminate fatto\" >> loggino && sleep 2 && sudo wpa_supplicant -B -Dnl80211,wext -iwlan0 -c/etc/wpa_supplicant/wpa_supplicant.conf >> loggino && echo \"Wpa_supplicant ricaricato\" >> loggino && sleep 2 && sudo wpa_cli reassociate >> loggino && echo \"Reassociate fatto, finito\" >> loggino"
+
+        # Per fare il seguente comando eseguire sul rasp (non c'è bisogno di sudo su):
+        # sudo chmod 777 /etc/wpa_supplicant/wpa_supplicant.conf
+        # runnare la gui lanciando il comando sudo python3 ..../gui.py &
+        bashCommand = "sudo echo \"ctrl_interface=/run/wpa_supplicant\nupdate_config=1\ncountry=IT\n\" > /etc/wpa_supplicant/wpa_supplicant.conf && echo \"Prima parte conf scritta\" > loggino && sudo wpa_passphrase \"" + \
             str(net_SSID) + "\" \"" + str(net_PWD) + \
             "\" >> /etc/wpa_supplicant/wpa_supplicant.conf && echo \"Passphrase e scrittura fatta\" >> loggino && sudo wpa_cli terminate >> loggino && echo \"Wpa_cli terminate fatto\" >> loggino && sleep 2 && sudo wpa_supplicant -B -Dnl80211,wext -iwlan0 -c/etc/wpa_supplicant/wpa_supplicant.conf >> loggino && echo \"Wpa_supplicant ricaricato\" >> loggino && sleep 2 && sudo wpa_cli reassociate >> loggino && echo \"Reassociate fatto, finito\" >> loggino"
+
+        print("Tentativo di connessione in corso, eseguo i comandi Bash")
 
         try:
             connectionProcess = subprocess.run(bashCommand, shell=True, check=True,
                                                executable="/bin/bash", stdout=subprocess.PIPE)
         except subprocess.CalledProcessError:
+            print("Eccezione durante il tentativo di connessione, ritorno 1")
             return 1
 
         print("Ora faccio il check rete")
 
         # bashCheckConnection = "echo \"Check rete\" >> loggino && sleep 5 && echo \"ho dormito 5 secs\" >> loggino && iw dev wlan0 link | grep SSID && echo \"SSID letto, finito\" >> loggino"
 
-        bashCheckConnection = "echo \"Check rete\" >> loggino && sleep 5 && echo \"ho dormito 5 secs\" >> loggino && iwconfig wlan0 | grep ESSID && echo \"SSID letto, finito\" >> loggino"
+        bashCheckConnection = "echo \"Check rete\" >> loggino && sleep 10 && echo \"ho dormito 5 secs\" >> loggino && iwconfig wlan0 | grep ESSID && echo \"SSID letto, finito\" >> loggino"
 
         checkConnectionProcess = subprocess.run(bashCheckConnection, shell=True, check=True,
                                                 executable="/bin/bash", stdout=subprocess.PIPE)
 
         returnedString = str(checkConnectionProcess.stdout)
-        print(returnedString)
+        print("Stringa ritornata da iwconfig wlan0: " + returnedString)
         pattern = "ESSID:\"([\\x20-\\x5B \\x5D-\\x7F]+)\""
 
         matchList = re.findall(pattern, returnedString)
         print(matchList)
-        print(net_SSID)
+        print("SSID trovato: " + net_SSID)
 
         if len(matchList) != 0:
             if (net_SSID in matchList):

@@ -47,6 +47,7 @@ class Ui_NetworkSettingsWindow(object):
         self.PB_connect.setEnabled(False)
         networkConnection.net_SSID = self.LE_networkSSID.text()
         networkConnection.net_PWD = self.LE_networkPassword.text()
+
         if len(networkConnection.net_PWD) < 8 or len(networkConnection.net_PWD) > 63:
             if len(networkConnection.net_PWD) != 0:
                 print("ERROR!! Password must be >= 8 characters and <= 63 characters")
