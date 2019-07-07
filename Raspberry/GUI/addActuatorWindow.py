@@ -10,9 +10,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
 import settingsWindow
-# from Devices.connectionpy import connection
 from Devices.connectionpy import connection_actuator
 import networkConnection
+import data
 
 
 class MyQLineEdit(QtWidgets.QLineEdit):
@@ -37,9 +37,14 @@ class Ui_addActuatorWindow(object):
         self.uiSettingsWindow.setupUi(self.addActuatorWindow)
         self.addActuatorWindow.showMaximized()
 
-    # TODO: Aggiungo l'attuatore alla lista di attuatori gi\a inseriti nel sistemas
+    def on_PB_addActuator_pressed(self):
+        self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
+            "AddActuatorWindow", "Sto connettendo..."))
+
+    # TODO: Aggiungo l'attuatore alla lista di attuatori già inseriti nel sistema
     # Ritorna un errore se un attuatore è già presente con lo stesso nome nella lista
-    def on_PB_addActuator_clicked(self):
+    def on_PB_addActuator_released(self):
+        self.PB_addActuator.setEnabled(False)
         actuatorID = self.LE_actuator.text()
 
         if (actuatorID == ""):
@@ -52,8 +57,8 @@ class Ui_addActuatorWindow(object):
             msg.exec_()
 
         else: # ID attuatore inserito
-            net_SSID = networkConnection.net_SSID
-            net_PWD = networkConnection.net_PWD
+            net_SSID = data.networkData["net_SSID"]
+            net_PWD = data.networkData["net_PWD"]
 
             if (net_SSID == "" or net_PWD == ""):
                 print("Net SSID and NET PWD cannot be empty! Maybe Raspone is not connected to network...")
@@ -67,7 +72,7 @@ class Ui_addActuatorWindow(object):
                 msg.exec_()
 
             else: 
-                returnID = connection_actuator.connection(actuatorID, networkConnection.net_SSID, networkConnection.net_PWD)    
+                returnID = connection_actuator.connection(actuatorID, net_SSID, net_PWD)    
                 if (returnID == 0):
                     print("OK! Actuator is being connected!")
 
@@ -184,7 +189,8 @@ class Ui_addActuatorWindow(object):
         
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
-        self.PB_addActuator.clicked.connect(self.on_PB_addActuator_clicked)
+        self.PB_addActuator.pressed.connect(self.on_PB_addActuator_pressed)
+        self.PB_addActuator.released.connect(self.on_PB_addActuator_released)
         self.LE_actuator.setFocusPolicy(QtCore.Qt.StrongFocus)
 
         self.timer.timeout.connect(self.showTime)
