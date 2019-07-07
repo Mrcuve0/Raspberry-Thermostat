@@ -2,9 +2,9 @@ from pymongo import MongoClient
 
 class database_manager
 	DB_ADDRESS = '192.168.43.154' #'localhost'
-	logs_collection = client['logs']
-	config_collection = client['new_coll']
-	temperatures_collection = client['tempe_coll']
+	logs_collection = client['logs_coll']
+	config_collection = client['config_coll']
+	temperatures_collection = client['temp_coll']
 	test_collection = client['test']
 	client = None
 
