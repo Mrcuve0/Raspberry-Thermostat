@@ -1,11 +1,16 @@
-import networkConnection
-import settingsWindow
-import subprocess
+import os
+import json
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
-import os
+
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
+
+import networkConnection
+import settingsWindow
+import subprocess
+import data
 
 
 class MyQLineEdit(QtWidgets.QLineEdit):
@@ -22,9 +27,6 @@ class MyQLineEdit(QtWidgets.QLineEdit):
 
 
 class Ui_NetworkSettingsWindow(object):
-
-    def showEvent(self):
-        self.checkNetworkConnection()
 
     def on_PB_goBack_clicked(self):
         self.close()
@@ -65,6 +67,9 @@ class Ui_NetworkSettingsWindow(object):
                 self.PB_connect.setText(QtCore.QCoreApplication.translate(
                     "NetworkSettingsWindow", "Connesso!"))
                 self.PB_connect.setEnabled(False)
+
+                print("Tutto OK, salvo le credenziali nel file...")
+                self.saveNetCredentials(networkConnection.net_SSID, networkConnection.net_PWD)
 
             elif (returnID == 1):
                 print("Not connected, no feedback received from iwgetid")
@@ -118,6 +123,19 @@ class Ui_NetworkSettingsWindow(object):
             self.PB_connect.setText(QtCore.QCoreApplication.translate(
                 "NetworkSettingsWindow", "Connetti..."))
             self.PB_connect.setEnabled(True)
+
+    def saveNetCredentials(self, net_SSID, net_PWD):
+        data.networkData["net_SSID"] = net_SSID
+        data.networkData["net_PWD"] = net_PWD
+
+        print("net_SSID salvato: " + str(data.networkData["net_SSID"]))
+        print("net_PWD salvato: " + str(data.networkData["net_PWD"]))
+        scriptpath = os.path.dirname(__file__)
+        filename = os.path.join(scriptpath, './../netCredentials.json')
+
+        print("Salvo i dati nel file JSON")
+        with open(filename, 'w') as json_file:  
+            json.dump(data.networkData, json_file)
 
     def activeFunctionsConnection(self):
         networkConnection.isConnected = False
