@@ -5,6 +5,7 @@
 #include <WiFiClient.h>
 #include "Adafruit_Sensor.h"
 #include "DHT.h"
+#include <IRremote.h>
 /////////////////////////////////////////////////////////////////////
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
@@ -29,18 +30,22 @@ char ssidc[20] = "";
 char pswc[20] = "";
 char mqttHostnamec[20] = "";
 char roomNamec[20] = "";
+char commandc[20] = "";
 /////////////////////////////////////////////////////////////////////
 char* ssid = ssidc;
 char* psw =  pswc;
 char* mqttHostname = mqttHostnamec;
 char* roomName = roomNamec;
+char* command = commandc;
 /////////////////////////////////////////////////////////////////////
+long int commands;
 int pswc_index = 0;
 int ssidc_index = 0;
 int mqttHostnamec_index = 0;
 int test_index = 0;
 int wifi_timeout = 0;
 int roomNamec_index = 0;
+int commandc_index = 0;
 /////////////////////////////////////////////////////////////////////
 char ESPname[] = "ESP32test";
 char ack_char = '@';
@@ -50,6 +55,7 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 BluetoothSerial SerialBT;
 DHT dht(DHTPIN, DHTTYPE);
+IRsend irsend;
 /////////////////////////////////////////////////////////////////////
 /* Stupid mechanism to wait time without stopping the cpu */
 int start_time;
@@ -59,13 +65,25 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived in topic: ");
   Serial.println(topic);
  
-  Serial.print("Message:");
   for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
  
-  Serial.println();
-  Serial.println("-----------------------");
+  if (String(topic) == "airconditioning/ESPID") {
+    Serial.println("mqtt message recieved on topic airconditioning");
+    commands = strtol(command, NULL, 16);
+    Serial.print("command is");
+    Serial.println(commands);
+    if(messageTemp == "ON"){
+      irsend.sendSony(commands, 12);
+      Serial.println("command sent ON");
+    }else if(messageTemp == "OFF"){
+      irsend.sendSony(commands, 12);
+      Serial.println("command sent OFF");
+    }
+  }
+
+  
 }
 /////////////////////////////////////////////////////////////////////
 void setup() {
@@ -217,9 +235,25 @@ void setup() {
   Serial.println(roomNamec);
   SerialBT.write(ack_char);
 
+//////////////////////////////COMMAND////////////////////////////////
+  while(!SerialBT.available()){}
+  while(SerialBT.available()){
+    commandc[commandc_index] = SerialBT.read();
+    Serial.println(commandc[commandc_index]);
+    commandc_index++;
+    delay(40);
+  }
+  Serial.println(commandc_index);
+  commandc[strlen(commandc)] = '\0';
+  Serial.println(commandc);
+  SerialBT.write(ack_char);
+
   Serial.println("setup done, everything is connected");
   SerialBT.end();
   Serial.println("SerialBT ended");
+
+  client.subscribe("airconditioning/ESPID");      //ESPID to be changed with 1,2,3,4
+  Serial.println("ESP subscribed to air conditioning topic");
   
   start_time = millis();
   Serial.println("initialized the start time");
@@ -232,7 +266,7 @@ void loop() {
     temperature = dht.readTemperature();
     Serial.print("temperature ");
     Serial.print(t);
-    client.publish("temperature/ESPname", temperature);       //ESPname has to be changed with a number (the ID)
+    client.publish("temperature/ESPID", temperature);       //ESPID has to be changed with a number (the ID)
     start_time = millis();
   }
 }
