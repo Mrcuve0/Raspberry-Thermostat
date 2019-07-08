@@ -5,16 +5,23 @@ import json
 import constants
 import datetime
 
+#variables
+mqtt_manager = None
+db_manager = None
+
 # Define callbacks for MQTT client
-def on_connect(self, client, userdata, flags, rc):
-    print('Connected with result code {0}'.format(rc))
+#def on_connect(self, client, userdata, flags, rc):
+def on_connect(client, userdata, flags, rc):
+    #print('Connected with result code {0}'.format(rc))
     # Subscribe (or renew if reconnect).
     client.subscribe(constants.temperature_topic)
 
-def on_message(self, client, userdata, msg):
+#def on_message(self, client, userdata, msg):
+def on_message(client, userdata, msg):
+	global db_manager
 	last_temperatures = db_manager.get_last_temperatures()
-	self.last_msg = msg.payload
-	#print(msg.topic+" "+str(msg.payload))
+	#self.last_msg = msg.payload
+	#print("msg received:  " + msg.topic+" "+str(msg.payload))
 	if (msg.topic == constants.temperature_topic):
 		# Insert log in the database
 		# Update the corresponding entry in the last temperatures structure
@@ -30,12 +37,10 @@ def on_message(self, client, userdata, msg):
 				room_found = True
 		if (not room_found):
 			#update_temperatures_struct from db
-			new_entry = {'room': room_name, 'temperature': new_temp, 'timestamp': timestamp}
-			print(new_entry)
+			new_entry = {'room': room_name, 'temperature': new_temp, 'timestamp': new_timestamp}
 			last_temperatures.append(new_entry)
 		db_manager.update_last_temperatures(last_temperatures)
-		timestamp =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-		log = {'type': 'temperature', 'room': room_name, 'val': new_temp, 'timestamp': timestamp}
+		log = {'type': 'temperature', 'room': room_name, 'val': new_temp, 'timestamp': new_timestamp}
 		log_db_entry = {'log' : log, 'flag': 0}
 		db_manager.insert_log(log)
 
@@ -47,6 +52,7 @@ def find_room_in_list(room, room_list):
 	return result
 
 def drive_actuator(room, actuator_type, power):
+	global mqtt_manager
 	topic = ''
 	if (actuator_type == constants.actuator_hot):
 		topic = constants.actuator_hot_topic
@@ -67,20 +73,20 @@ def programmable_time_classification(day, hour):
 		hour_str = 'n'
 	return day_str + '_' + hour_str
 
-def manual_mode(room, temperature, info):
+def manual_mode(room, temperature, season, info):
 	requested_temperature = info['temp']
 	# Check weekend settings
 	if info['weekend'] == 1 and datetime.datetime.now().isoweekday() >= 6:
 		requested_temperature -= 2
 	# If it is a cold season, hot actuators must be used 
-	if info['season'] == 'cold':
+	if season == 'cold':
 		# Enable the hot-actuator
 		if temperature < requested_temperature:
 			drive_actuator(room, constants.actuator_hot, constants.power_on)						
 		else:
 			drive_actuator(room, constants.actuator_hot, constants.power_off)
 	# If it is a hot season, cold actuators must be used
-	elif info['season'] == 'hot':
+	elif season == 'hot':
 		if temperature > requested_temperature:
 			drive_actuator(room, constants.actuator_cold, constants.power_on)
 		else:
@@ -93,20 +99,20 @@ def antifreeze_mode(room, temperature):
 	else:
 		drive_actuator(room, constants.actuator_hot, constants.power_off)
 
-def programmable_mode(room, temperature, info):
+def programmable_mode(room, temperature, season, info):
 	day = datetime.datetime.now().isoweekday()
 	hour = datetime.datetime.now().day
 	prog_time = programmable_time_classification(day, hour)
 	requested_temperature = info['temp'][prog_time]
 	# If it is a cold season, hot actuators must be used 
-	if info['season'] == 'cold':
+	if season == 'cold':
 		# Enable the hot-actuator
 		if temperature < requested_temperature:
 			drive_actuator(room, constants.actuator_hot, constants.power_on)						
 		else:
 			drive_actuator(room, constants.actuator_hot, constants.power_off)
 	# If it is a hot season, cold actuators must be used
-	elif info['season'] == 'hot':
+	elif season == 'hot':
 		if temperature > requested_temperature:
 			drive_actuator(room, constants.actuator_cold, constants.power_on)
 		else:
@@ -138,19 +144,20 @@ while True:
 			# Check if the last temperature received is recent or not
 			time_now = int(datetime.datetime.now().strftime("%Y%m%d%H"))
 			prev_timestamp = temp_elem['timestamp']
-			prev_date = datetime.datetime.strptime(prev_date, "%Y-%m-%d %H:%M:%S.%f")
+			prev_date = datetime.datetime.strptime(prev_timestamp, "%Y-%m-%d %H:%M:%S.%f")
 			prev_time = int(prev_date.strftime("%Y%m%d%H"))
 			if prev_time == time_now:
 				# Take the room's last temperature
 				temp_temperature = temp_elem['temperature']
+				temp_season = room_settings['season'] 
 				temp_info = room_settings['info']
 				# Manual mode
 				if (room_settings['mode'] == constants.manual_settings):
-					manual_mode(temp_room, temp_temperature, temp_info)
+					manual_mode(temp_room, temp_temperature, temp_season, temp_info)
 				# Antifreeze mode
 				elif (room_settings['mode'] == constants.antifreeze_settings):
 					antifreeze_mode(temp_room, temp_temperature)
 				# Programmable mode
 				elif (room_settings['mode'] == constants.programmable_settings):
-					programmable_mode(temp_room, temp_temperature, temp_info)
+					programmable_mode(temp_room, temp_temperature, temp_season, temp_info)
 	time.sleep(30)

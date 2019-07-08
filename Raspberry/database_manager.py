@@ -47,7 +47,7 @@ class database_manager:
 
 	def update_last_temperatures(self, new_list):
 		new_item = {'list': new_list}
-		item = self.get_last_temperatures()
+		item = self.temperatures_collection.find_one()
 		if item is not None:
 			new_item['_id'] = item['_id']
 		self.temperatures_collection.save(new_item)
