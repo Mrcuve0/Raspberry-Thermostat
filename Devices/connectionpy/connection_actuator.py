@@ -61,7 +61,7 @@ def sendpsw(BTsocket, net_PWD):
   time.sleep(1)
 
 def sendMQTT(BTsocket):
-  BTsocket.send("mqttserver")
+  BTsocket.send("thermostat")   # thermostat.local (hostname del raspone)
   time.sleep(1)
 
 def disconnect(BTsocket):

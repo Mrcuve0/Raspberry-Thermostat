@@ -325,10 +325,17 @@ void setup()
   }
 
   Serial.println("mDNS responder started");
-  // Look for the local IP of the rasbperry pi
   mqttServer = MDNS.queryHost(mqttHostname);
+  while (mqttServer.toString() == "0.0.0.0")
+  {
+    Serial.println("Trying again to resolve mDNS");
+    delay(250);
+    mqttServer = MDNS.queryHost(mqttHostname);
+  }
   Serial.print("IP address of server: ");
   Serial.println(mqttServer.toString());
+  Serial.println("Done finding the mDNS details...");
+
   // Connect to the MQTT broker
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
@@ -356,8 +363,8 @@ void setup()
   }
 
   Serial.println("setup done, everything is connected");
-  SerialBT.end();
-  Serial.println("SerialBT ended");
+  // SerialBT.end();
+  Serial.println("SerialBT NOT ended");
   /*subscribe to 8 topic, we have 8 rele*/
   client.subscribe("1");
   client.subscribe("2");
