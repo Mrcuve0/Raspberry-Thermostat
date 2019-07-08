@@ -8,8 +8,8 @@ class connection_manager:
     MQTT_PORT = 1883
     #mqtt_client = mqtt.Client()
     mqtt_client = None
-    on_connect_callback = None
-    on_message_callback = None
+    #on_connect_callback = None
+    #on_message_callback = None
 
     def __init__(self):
         self.mqtt_client = mqtt.Client()
@@ -20,16 +20,11 @@ class connection_manager:
     def mqtt_publish_actuators(self, msg):
         self.mqtt_client.publish(constants.actuator_topic, msg)        
 
-    def mqtt_connect(self):
-        self.mqtt_client.connect(self.MQTT_SERVER, self.MQTT_PORT, 60)  # Connect to MQTT broker (also running on Pi).
-        # Start connection loop in a separate thread
-        self.mqtt_client.loop_start()
-
     def mqtt_connect(self, on_conn = None, on_mess = None):
         if on_conn is not None:
-            self.on_connect_callback = on_conn
+            self.mqtt_client.on_connect = on_conn
         if on_mess is not None:
-            self.on_message_callback = on_mess
+            self.mqtt_client.on_message = on_mess
         self.mqtt_client.connect(self.MQTT_SERVER, self.MQTT_PORT, 60)  # Connect to MQTT broker (also running on Pi).
         # Start connection loop in a separate thread
         self.mqtt_client.loop_start()
