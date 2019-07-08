@@ -1,23 +1,14 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'MainWindow.ui'
-#
-# Created by: PyQt5 UI code generator 5.12.2
-#
-# WARNING! All changes made in this file will be lost!
-import settingsWindow
-import addRoomWindow
-import sensorValveProgramWindow
+import sys
+import os
+import json
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
-import sys
-import os
-
-
-# from addRoomWindow import Ui_addRoomWindow
-# Time and DateTime section
+import settingsWindow
+import addRoomWindow
+import sensorValveProgramWindow
+import data
 
 
 class Ui_MainWindow(object):
@@ -52,6 +43,14 @@ class Ui_MainWindow(object):
 
     def close(self):
         self.mainWindow.close()
+
+    def initLoadData(self):
+        scriptpath = os.path.dirname(__file__)
+        filename = os.path.join(scriptpath, './../netCredentials.json')
+
+        with open(filename, 'r') as json_file:  
+            # json.dump(my_details, json_file)
+            data.networkData = json.load(json_file)
 
     def setupUi(self, MainWindow):
 
@@ -186,6 +185,8 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.activeFunctionsConnection()
+        self.initLoadData()
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 

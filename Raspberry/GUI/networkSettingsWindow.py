@@ -1,20 +1,16 @@
-# -*- coding: utf-8 -*-
+import os
+import json
 
-# Form implementation generated from reading ui file 'networkSettingsWindow.ui'
-#
-# Created by: PyQt5 UI code generator 5.12.2
-#
-# WARNING! All changes made in this file will be lost!
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QTime, QDate, QTimer
 
+
+os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
 import networkConnection
 import settingsWindow
 import subprocess
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTime, QDate, QTimer
-
-import os
-os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
+import data
 
 
 class MyQLineEdit(QtWidgets.QLineEdit):
@@ -31,9 +27,6 @@ class MyQLineEdit(QtWidgets.QLineEdit):
 
 
 class Ui_NetworkSettingsWindow(object):
-
-    def showEvent(self):
-        self.checkNetworkConnection()
 
     def on_PB_goBack_clicked(self):
         self.close()
@@ -56,6 +49,7 @@ class Ui_NetworkSettingsWindow(object):
         self.PB_connect.setEnabled(False)
         networkConnection.net_SSID = self.LE_networkSSID.text()
         networkConnection.net_PWD = self.LE_networkPassword.text()
+
         if len(networkConnection.net_PWD) < 8 or len(networkConnection.net_PWD) > 63:
             if len(networkConnection.net_PWD) != 0:
                 print("ERROR!! Password must be >= 8 characters and <= 63 characters")
@@ -66,12 +60,16 @@ class Ui_NetworkSettingsWindow(object):
                 msg.setWindowTitle("Error")
                 msg.exec_()
         else:
+            subprocess.Popen(["killall", "onboard"])
             returnID = networkConnection.connectToNetwork()
             if (returnID == 0):
                 print("Connected to network")
                 self.PB_connect.setText(QtCore.QCoreApplication.translate(
                     "NetworkSettingsWindow", "Connesso!"))
                 self.PB_connect.setEnabled(False)
+
+                print("Tutto OK, salvo le credenziali nel file...")
+                self.saveNetCredentials(networkConnection.net_SSID, networkConnection.net_PWD)
 
             elif (returnID == 1):
                 print("Not connected, no feedback received from iwgetid")
@@ -125,6 +123,19 @@ class Ui_NetworkSettingsWindow(object):
             self.PB_connect.setText(QtCore.QCoreApplication.translate(
                 "NetworkSettingsWindow", "Connetti..."))
             self.PB_connect.setEnabled(True)
+
+    def saveNetCredentials(self, net_SSID, net_PWD):
+        data.networkData["net_SSID"] = net_SSID
+        data.networkData["net_PWD"] = net_PWD
+
+        print("net_SSID salvato: " + str(data.networkData["net_SSID"]))
+        print("net_PWD salvato: " + str(data.networkData["net_PWD"]))
+        scriptpath = os.path.dirname(__file__)
+        filename = os.path.join(scriptpath, './../netCredentials.json')
+
+        print("Salvo i dati nel file JSON")
+        with open(filename, 'w') as json_file:  
+            json.dump(data.networkData, json_file)
 
     def activeFunctionsConnection(self):
         networkConnection.isConnected = False

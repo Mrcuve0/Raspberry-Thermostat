@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'sensorValveProgramWindow.ui'
-#
-# Created by: PyQt5 UI code generator 5.12.2
-#
-# WARNING! All changes made in this file will be lost!
-
 import os
 import sys
 
@@ -14,21 +6,36 @@ from PyQt5.QtCore import QTime, QDate, QTimer
 
 # TODO: Add window imports here
 import mainWindow
+import sensorSettingsWindow
+import valveSettingsWindow
+import programSettingsWindow
 
 
 class Ui_SensorValveProgramWindow(object):
 
     # TODO: aggiungi apertura della finestra dove puoi aggiungere un sensore alla stanza
     def on_PB_sensor_clicked(self):
-        pass
+        self.close()
+        self.sensorValveProgramWindow = QtWidgets.QMainWindow()
+        self.uiSensorSettingsWindow = sensorSettingsWindow.Ui_SensorSettingsWindow()
+        self.uiSensorSettingsWindow.setupUi(self.sensorValveProgramWindow)
+        self.sensorValveProgramWindow.showMaximized()
     
     # TODO: aggiungi apertura della finestra dove puoi aggiungere un relè all'attuatore che preferisci
     def on_PB_valve_clicked(self):
-        pass
+        self.close()
+        self.sensorValveProgramWindow = QtWidgets.QMainWindow()
+        self.uiValveSettingsWindow = valveSettingsWindow.Ui_ValveSettingsWindow()
+        self.uiValveSettingsWindow.setupUi(self.sensorValveProgramWindow)
+        self.sensorValveProgramWindow.showMaximized()
 
     # TODO: aggiungi apertura della finestra dove puoi aggiungere il cronoprogramma relativo a questa finestra
     def on_PB_program_clicked(self):
-        pass
+        self.close()
+        self.sensorValveProgramWindow = QtWidgets.QMainWindow()
+        self.uiProgramSettingsWindow = programSettingsWindow.Ui_ProgramSettingsWindow()
+        self.uiProgramSettingsWindow.setupUi(self.sensorValveProgramWindow)
+        self.sensorValveProgramWindow.showMaximized()
 
     def on_PB_goBack_clicked(self):
         self.close()
