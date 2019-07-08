@@ -1,9 +1,9 @@
 import sys
 import subprocess
 
-print(sys.path[0])  # <->/Raspberry-Thermostat/Raspberry/GUI
-sys.path.insert(0, sys.path[0] + "/../../") # /Raspberry-Thermostat/
-print(sys.path)
+# print(sys.path[0])  # <->/Raspberry-Thermostat/Raspberry/GUI
+# sys.path.insert(0, sys.path[0] + "/../../") # /Raspberry-Thermostat/
+# print(sys.path)
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -55,6 +55,9 @@ class Ui_addActuatorWindow(object):
                 "Inserire un ID attuatore, ID obbligatorio")
             msg.setWindowTitle("Errore")
             msg.exec_()
+            self.PB_addActuator.setEnabled(True)
+            self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
+                            "AddActuatorWindow", "Add Actuator..."))
 
         else: # ID attuatore inserito
             net_SSID = data.networkData["net_SSID"]
