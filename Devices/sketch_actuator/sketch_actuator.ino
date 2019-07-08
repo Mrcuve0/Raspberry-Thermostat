@@ -278,11 +278,18 @@ void setup()
   Serial.println(pswc);
 
   WiFi.begin(ssid, psw);
-
+  delay(500);
+  wifi_timeout = 0;
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
+    Serial.println("Connecting to WiFi..");
     wifi_timeout++;
+    if (wifi_timeout % 10 == 0)
+    {
+      Serial.println("\t--> Retry...");
+      WiFi.begin(ssid, psw);
+    }
     if (wifi_timeout > 60)
     {
       Serial.println("wrong credentials");
@@ -292,8 +299,21 @@ void setup()
       SerialBT.end();
       ESP.restart();
     }
-    Serial.println("Connecting to WiFi..");
   }
+
+  // WiFi.begin(ssid, psw);
+  // int timeout = 10;
+  // while (WiFi.status() != WL_CONNECTED)
+  // {
+  //   delay(500);
+  //   Serial.println("Connecting to WiFi..");
+  //   timeout--;
+  //   if (!timeout)
+  //   {
+  //     WiFi.begin(ssid, psw);
+  //     timeout = 10;
+  //   }
+  // }
 
   Serial.println("Connected to the WiFi network");
   SerialBT.write(ack_char);
@@ -324,13 +344,25 @@ void setup()
     ESP.restart();
   }
 
+  int mDNS_timeout = 0;
   Serial.println("mDNS responder started");
   mqttServer = MDNS.queryHost(mqttHostname);
   while (mqttServer.toString() == "0.0.0.0")
   {
+    mDNS_timeout++;
     Serial.println("Trying again to resolve mDNS");
     delay(250);
     mqttServer = MDNS.queryHost(mqttHostname);
+    if (mDNS_timeout > 20)
+    {
+      Serial.println("Error setting up MDNS responder!");
+      delay(1000);
+      SerialBT.write(no_ack_char);
+      Serial.println("sent the no ack char");
+      delay(1000);
+      SerialBT.end();
+      ESP.restart();
+    }
   }
   Serial.print("IP address of server: ");
   Serial.println(mqttServer.toString());
