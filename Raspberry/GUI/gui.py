@@ -3,8 +3,17 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 
+print(sys.path[0])  # <->/Raspberry-Thermostat/Raspberry/GUI
+# sys.path.insert(0, sys.path[0] + "/../../") # /Raspberry-Thermostat/
+sys.path.append(sys.path[0] + "/../../")
+sys.path.append(sys.path[0] + "/../")
+sys.path.append("/home/pi/.local/lib/python3.5/site-packages")
+sys.path.append("/home/pi/.local/lib/python2.7/site-packages")
+print(sys.path)
+
 import mainWindow
 import BlankBGWindow
+import init_script
 
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
