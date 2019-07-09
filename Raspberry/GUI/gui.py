@@ -15,6 +15,8 @@ import mainWindow
 import BlankBGWindow
 import init_script
 
+from database_manager import database_manager
+
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
 # Importa classe definita con QTDesigner
@@ -23,9 +25,10 @@ os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
 class MainWindow(QMainWindow, mainWindow.Ui_MainWindow):
 
-    def __init__(self):
+    def __init__(self, db):
         super(self.__class__, self).__init__()
-        self.setupUi(self)
+        self.setupUi(self, db)
+        # self.initDB(db)
 
 
 class BlankWindow(QMainWindow, BlankBGWindow.Ui_BlankWindow):
@@ -36,10 +39,11 @@ class BlankWindow(QMainWindow, BlankBGWindow.Ui_BlankWindow):
 
 
 def main():
+    db = database_manager()
     app = QtWidgets.QApplication(sys.argv)
     blank = BlankWindow()
     blank.showMaximized()
-    raspyGUI = MainWindow()
+    raspyGUI = MainWindow(db)
     raspyGUI.showMaximized()
     sys.exit(app.exec_())
 
