@@ -2,10 +2,9 @@ import subprocess
 
 import database_manager
 
-print("Chicco sono entrato nell'init")
 #popola database se vuoto (con info sulla stanza di default accoppiata al sensore del raspberry)
 db = database_manager.database_manager()
-print("passato errore strano")
+
 # Check and init configuration
 config = db.get_configuration()
 if config == None:
@@ -17,5 +16,11 @@ if last_t == None:
 	last_t = []
 	db.update_last_temperatures(last_t)
 
-subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/logic.py'])
-subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/sensor.py'])
+# Raspberry config
+# subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/logic.py'])
+# subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/sensor.py'])
+
+# TODO: Comment/Uncomment device dependent paths
+# Sem PC config
+# subprocess.Popen(['python', '/home/sem/OneDrive/Politecnico di Torino/01 - Magistrale/Anno 1 -- 2018-2019/Secondo Semestre/Projects and Laboratory on Communicatons Systems/Labs/Raspberry-Thermostat/Raspberry/logic.py'])
+# subprocess.Popen(['python2.7', '/home/sem/OneDrive/Politecnico di Torino/01 - Magistrale/Anno 1 -- 2018-2019/Secondo Semestre/Projects and Laboratory on Communicatons Systems/Labs/Raspberry-Thermostat/Raspberry/sensor.py'])
