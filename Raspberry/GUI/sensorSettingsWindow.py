@@ -46,6 +46,9 @@ class Ui_SensorSettingsWindow(object):
                 "Inserire un ID sensore, ID obbligatorio")
             msg.setWindowTitle("Errore")
             msg.exec_()
+            self.PB_connectSensor.setEnabled(True)
+            self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
+                            "SensorSettingsWindow", "Add Sensor..."))
 
         else: # ID sensore inserito
             net_SSID = data.networkData["net_SSID"]
@@ -58,7 +61,7 @@ class Ui_SensorSettingsWindow(object):
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Critical)
                 msg.setInformativeText(
-                    "Connettere il termostato al WiFi di casa prima di aggiungere un attuatore!")
+                    "Connettere il termostato al WiFi di casa prima di aggiungere un Sensore!")
                 msg.setWindowTitle("Errore")
                 msg.exec_()
 
@@ -75,7 +78,7 @@ class Ui_SensorSettingsWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Information)
                     msg.setInformativeText(
-                        "Attuatore collegato!")
+                        "Sensore collegato!")
                     msg.setWindowTitle("Connesso!")
                     msg.exec_()
 
@@ -89,7 +92,7 @@ class Ui_SensorSettingsWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "ID Attuatore non trovato, riprovare")
+                        "ID Sensore non trovato, riprovare")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
                     
