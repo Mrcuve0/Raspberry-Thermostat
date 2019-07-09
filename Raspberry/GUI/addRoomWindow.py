@@ -1,9 +1,9 @@
 import sys
 import subprocess
 
-print(sys.path[0])  # <->/Raspberry-Thermostat/Raspberry/GUI
-sys.path.insert(0, sys.path[0] + "/../../") # /Raspberry-Thermostat/
-print(sys.path)
+# print(sys.path[0])  # <->/Raspberry-Thermostat/Raspberry/GUI
+# sys.path.insert(0, sys.path[0] + "/../../") # /Raspberry-Thermostat/
+# print(sys.path)
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets

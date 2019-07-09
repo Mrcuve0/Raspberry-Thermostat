@@ -129,13 +129,13 @@
      <string>HH : mm</string>
     </property>
    </widget>
-   <widget class="QLCDNumber" name="lcdNumber">
+   <widget class="QLCDNumber" name="LCDTempSet">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>140</y>
-      <width>281</width>
-      <height>181</height>
+      <x>380</x>
+      <y>160</y>
+      <width>291</width>
+      <height>151</height>
      </rect>
     </property>
    </widget>
@@ -162,10 +162,10 @@
    <widget class="QPushButton" name="PB_program">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>340</y>
-      <width>71</width>
-      <height>50</height>
+      <x>120</x>
+      <y>320</y>
+      <width>111</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
@@ -182,10 +182,10 @@
    <widget class="QPushButton" name="PB_manual">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>340</y>
-      <width>71</width>
-      <height>50</height>
+      <x>250</x>
+      <y>320</y>
+      <width>111</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
@@ -202,10 +202,10 @@
    <widget class="QPushButton" name="PB_winterSummer">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>340</y>
-      <width>71</width>
-      <height>50</height>
+      <x>380</x>
+      <y>320</y>
+      <width>111</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
@@ -222,10 +222,10 @@
    <widget class="QPushButton" name="PB_onOff">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>340</y>
-      <width>71</width>
-      <height>50</height>
+      <x>510</x>
+      <y>320</y>
+      <width>111</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
@@ -242,10 +242,10 @@
    <widget class="QPushButton" name="PB_roomList">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>420</y>
-      <width>701</width>
-      <height>34</height>
+      <x>80</x>
+      <y>393</y>
+      <width>641</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
@@ -263,9 +263,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>420</y>
-      <width>51</width>
-      <height>34</height>
+      <y>393</y>
+      <width>81</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
@@ -282,10 +282,10 @@
    <widget class="QPushButton" name="PB_nextRoom">
     <property name="geometry">
      <rect>
-      <x>750</x>
-      <y>420</y>
-      <width>51</width>
-      <height>34</height>
+      <x>720</x>
+      <y>393</y>
+      <width>81</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
@@ -297,6 +297,56 @@
     </property>
     <property name="text">
      <string>&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="LCDTempAct">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>120</y>
+      <width>341</width>
+      <height>191</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelTempAct">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>70</y>
+      <width>341</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Temperatura attuale:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>110</y>
+      <width>271</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Temperatura impostata:</string>
     </property>
    </widget>
   </widget>
