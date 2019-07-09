@@ -23,7 +23,10 @@ IPAddress mqttServer;
 char termo[] = ":termo";
 char test_transmission[20];
 
-float *temperature;
+// float *temperature;
+float temperature;
+char temp[6];
+String temp_str;
 
 char ssidc[64] = "";
 char pswc[64] = "";
@@ -154,11 +157,18 @@ void setup()
   Serial.println(pswc);
 
   WiFi.begin(ssid, psw);
-
+  delay(500);
+  wifi_timeout = 0;
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
+    Serial.println("Connecting to WiFi..");
     wifi_timeout++;
+    if (wifi_timeout % 10 == 0)
+    {
+      Serial.println("\t--> Retry...");
+      WiFi.begin(ssid, psw);
+    }
     if (wifi_timeout > 60)
     {
       Serial.println("wrong credentials");
@@ -168,8 +178,21 @@ void setup()
       SerialBT.end();
       ESP.restart();
     }
-    Serial.println("Connecting to WiFi..");
   }
+
+  // WiFi.begin(ssid, psw);
+  // int timeout = 10;
+  // while (WiFi.status() != WL_CONNECTED)
+  // {
+  //   delay(500);
+  //   Serial.println("Connecting to WiFi..");
+  //   timeout--;
+  //   if (!timeout)
+  //   {
+  //     WiFi.begin(ssid, psw);
+  //     timeout = 10;
+  //   }
+  // }
 
   Serial.println("Connected to the WiFi network");
   SerialBT.write(ack_char);
@@ -201,11 +224,30 @@ void setup()
     ESP.restart();
   }
 
+  int mDNS_timeout = 0;
   Serial.println("mDNS responder started");
-  // Look for the local IP of the rasbperry pi
   mqttServer = MDNS.queryHost(mqttHostname);
+  while (mqttServer.toString() == "0.0.0.0")
+  {
+    mDNS_timeout++;
+    Serial.println("Trying again to resolve mDNS");
+    delay(250);
+    mqttServer = MDNS.queryHost(mqttHostname);
+    if (mDNS_timeout > 20)
+    {
+      Serial.println("Error setting up MDNS responder!");
+      delay(1000);
+      SerialBT.write(no_ack_char);
+      Serial.println("sent the no ack char");
+      delay(1000);
+      SerialBT.end();
+      ESP.restart();
+    }
+  }
   Serial.print("IP address of server: ");
   Serial.println(mqttServer.toString());
+  Serial.println("Done finding the mDNS details...");
+
   // Connect to the MQTT broker
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
@@ -249,8 +291,8 @@ void setup()
   SerialBT.write(ack_char);
 
   Serial.println("setup done, everything is connected");
-  SerialBT.end();
-  Serial.println("SerialBT ended");
+  // SerialBT.end();
+  Serial.println("SerialBT NOT ended");
 
   start_time = millis();
   Serial.println("initialized the start time");
@@ -260,10 +302,14 @@ void loop()
 {
   if (millis() - start_time > time_interval)
   {
-    *temperature = dht.readTemperature();
-    Serial.print("temperature ");
-    Serial.print(*temperature);
-    client.publish("temperature/ESPname", (char *)&temperature, 5); //ESPname has to be changed with a number (the ID)
+    temperature = dht.readTemperature();
+
+    temp_str = String(temperature);
+    temp_str.toCharArray(temp, temp_str.length() + 1);
+
+    Serial.print("temperature: ");
+    Serial.println(temperature);
+    client.publish("temperature/ESPname", temp); //ESPname has to be changed with a number (the ID)
     start_time = millis();
   }
 }
