@@ -68,8 +68,11 @@ void callback(char *topic, byte *payload, unsigned int length)
     messageTemp += (char)payload[i];
   }
   Serial.println();
+
+  //topic rele/IDattuatore/numeroRele
+  
   /*topic one*/
-  if (String(topic) == "1")
+  if (String(topic) == "rele/IDatt/1")
   {
     Serial.println("mqtt message recieved on topic one");
     if (messageTemp == "ON")
@@ -84,7 +87,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
   }
   /*topic two*/
-  if (String(topic) == "2")
+  if (String(topic) == "rele/IDatt/2")
   {
     Serial.println("mqtt message recieved on topic two");
     if (messageTemp == "ON")
@@ -99,7 +102,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
   }
   /*topic three*/
-  if (String(topic) == "3")
+  if (String(topic) == "rele/IDatt/3")
   {
     Serial.println("mqtt message recieved on topic three");
     if (messageTemp == "ON")
@@ -114,7 +117,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
   }
   /*topic four*/
-  if (String(topic) == "4")
+  if (String(topic) == "rele/IDatt/4")
   {
     Serial.println("mqtt message recieved on topic four");
     if (messageTemp == "ON")
@@ -129,7 +132,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
   }
   /*topic five*/
-  if (String(topic) == "5")
+  if (String(topic) == "rele/IDatt/5")
   {
     Serial.println("mqtt message recieved on topic five");
     if (messageTemp == "ON")
@@ -144,7 +147,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
   }
   /*topic six*/
-  if (String(topic) == "six")
+  if (String(topic) == "rele/IDatt/6")
   {
     Serial.println("mqtt message recieved on topic six");
     if (messageTemp == "ON")
@@ -159,7 +162,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
   }
   /*topic seven*/
-  if (String(topic) == "7")
+  if (String(topic) == "rele/IDatt/7")
   {
     Serial.println("mqtt message recieved on topic seven");
     if (messageTemp == "ON")
@@ -174,7 +177,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
   }
   /*topic eight*/
-  if (String(topic) == "8")
+  if (String(topic) == "rele/IDatt/8")
   {
     Serial.println("mqtt message recieved on topic eight");
     if (messageTemp == "ON")
@@ -398,14 +401,14 @@ void setup()
   // SerialBT.end();
   Serial.println("SerialBT NOT ended");
   /*subscribe to 8 topic, we have 8 rele*/
-  client.subscribe("1");
-  client.subscribe("2");
-  client.subscribe("3");
-  client.subscribe("4");
-  client.subscribe("5");
-  client.subscribe("6");
-  client.subscribe("7");
-  client.subscribe("8");
+  client.subscribe("rele/IDatt/1");
+  client.subscribe("rele/IDatt/2");
+  client.subscribe("rele/IDatt/3");
+  client.subscribe("rele/IDatt/4");
+  client.subscribe("rele/IDatt/5");
+  client.subscribe("rele/IDatt/6");
+  client.subscribe("rele/IDatt/7");
+  client.subscribe("rele/IDatt/8");
 
   start_time = millis();
   Serial.println("initialized the start time");
