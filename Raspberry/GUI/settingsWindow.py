@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'settingsWindow.ui'
-#
-# Created by: PyQt5 UI code generator 5.12.2
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
@@ -17,11 +9,16 @@ import addActuatorWindow
 
 class Ui_SettingsWindow(object):
 
+    db = None
+
+    def initDB(self, db):
+        self.db = db
+
     def on_PB_goBack_clicked(self):
         self.close()
         self.settingsWindow = QtWidgets.QMainWindow()
         self.uiMainWindow = mainWindow.Ui_MainWindow()
-        self.uiMainWindow.setupUi(self.settingsWindow)
+        self.uiMainWindow.setupUi(self.settingsWindow, self.db)
         self.settingsWindow.showMaximized()
 
     def on_PB_network_clicked(self):
@@ -64,10 +61,12 @@ class Ui_SettingsWindow(object):
     def close(self):
         self.settingsWindow.close()
 
-    def setupUi(self, SettingsWindow):
+    def setupUi(self, SettingsWindow, db):
 
         self.settingsWindow = SettingsWindow
         self.settingsWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+
+        self.initDB(db)
 
         SettingsWindow.setObjectName("SettingsWindow")
         SettingsWindow.resize(800, 480)
