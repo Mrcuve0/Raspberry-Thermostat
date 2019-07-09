@@ -138,6 +138,18 @@
       <height>151</height>
      </rect>
     </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="smallDecimalPoint">
+     <bool>true</bool>
+    </property>
+    <property name="digitCount">
+     <number>4</number>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
+    </property>
    </widget>
    <widget class="QPushButton" name="PB_settings">
     <property name="geometry">
@@ -162,9 +174,9 @@
    <widget class="QPushButton" name="PB_program">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>130</x>
       <y>320</y>
-      <width>111</width>
+      <width>81</width>
       <height>61</height>
      </rect>
     </property>
@@ -175,16 +187,28 @@
       <bold>true</bold>
      </font>
     </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::ActionsContextMenu</enum>
+    </property>
     <property name="text">
      <string>P</string>
+    </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="PB_manual">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>220</x>
       <y>320</y>
-      <width>111</width>
+      <width>81</width>
       <height>61</height>
      </rect>
     </property>
@@ -198,11 +222,14 @@
     <property name="text">
      <string>M</string>
     </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
    </widget>
-   <widget class="QPushButton" name="PB_winterSummer">
+   <widget class="QPushButton" name="PB_winter">
     <property name="geometry">
      <rect>
-      <x>380</x>
+      <x>440</x>
       <y>320</y>
       <width>111</width>
       <height>61</height>
@@ -212,18 +239,25 @@
      <font>
       <pointsize>16</pointsize>
       <weight>75</weight>
+      <italic>false</italic>
       <bold>true</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+      <kerning>false</kerning>
      </font>
     </property>
     <property name="text">
-     <string>Inv/Est</string>
+     <string>Inverno</string>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="PB_onOff">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>320</y>
+      <x>0</x>
+      <y>300</y>
       <width>111</width>
       <height>61</height>
      </rect>
@@ -308,12 +342,33 @@
       <height>191</height>
      </rect>
     </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <property name="smallDecimalPoint">
+     <bool>true</bool>
+    </property>
+    <property name="digitCount">
+     <number>4</number>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
+    </property>
+    <property name="value" stdset="0">
+     <double>0.000000000000000</double>
+    </property>
+    <property name="intValue" stdset="0">
+     <number>0</number>
+    </property>
    </widget>
    <widget class="QLabel" name="labelTempAct">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>70</y>
+      <y>100</y>
       <width>341</width>
       <height>51</height>
      </rect>
@@ -329,7 +384,7 @@
      <string>Temperatura attuale:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="labelTempSet">
     <property name="geometry">
      <rect>
       <x>380</x>
@@ -349,6 +404,70 @@
      <string>Temperatura impostata:</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="PB_summer">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>320</y>
+      <width>111</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Estate</string>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PB_antiFreeze">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>320</y>
+      <width>91</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>AntiF</string>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <zorder>LCDTempAct</zorder>
+   <zorder>PB_tempIncrease</zorder>
+   <zorder>PB_tempDecrease</zorder>
+   <zorder>dateEdit</zorder>
+   <zorder>timeEdit</zorder>
+   <zorder>LCDTempSet</zorder>
+   <zorder>PB_settings</zorder>
+   <zorder>PB_program</zorder>
+   <zorder>PB_manual</zorder>
+   <zorder>PB_winter</zorder>
+   <zorder>PB_onOff</zorder>
+   <zorder>PB_roomList</zorder>
+   <zorder>PB_prevRoom</zorder>
+   <zorder>PB_nextRoom</zorder>
+   <zorder>labelTempAct</zorder>
+   <zorder>labelTempSet</zorder>
+   <zorder>PB_summer</zorder>
+   <zorder>PB_antiFreeze</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
