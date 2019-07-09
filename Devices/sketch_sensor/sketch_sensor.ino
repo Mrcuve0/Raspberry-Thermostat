@@ -72,6 +72,16 @@ void callback(char *topic, byte *payload, unsigned int length)
 
   Serial.println();
   Serial.println("-----------------------");
+
+  if (String(topic) == "airconditioning/ESPname"){      //ESPname is the ID
+    if (messageTemp == "ON"){
+      irsend.sendSony(0xa90, 12);
+      Serial.println("command sent");
+    }else if (messageTemp == "OFF"){
+      irsend.sendSony(0xa90, 12);
+      Serial.println("command sent");
+    }
+  }
 }
 
 void setup()
@@ -294,6 +304,9 @@ void setup()
   // SerialBT.end();
   Serial.println("SerialBT NOT ended");
 
+  client.subscribe("airconditioning/ESPname");                    //ESPname has to be changed with a number (the ID)
+  Serial.println("Subscribed to airconditioning topic");
+  
   start_time = millis();
   Serial.println("initialized the start time");
 }
