@@ -5,7 +5,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
 import settingsWindow
-
+from database_manager import database_manager
 
 class MyQLineEdit(QtWidgets.QLineEdit):
     def focusInEvent(self, e):
@@ -23,9 +23,16 @@ class MyQLineEdit(QtWidgets.QLineEdit):
 class Ui_addRoomWindow(object):
 
     db = None
+    configuration = None
+    newConfiguration = None
+
+    actualNumRooms = 0
 
     def initDB(self, db):
         self.db = db
+
+    def reloadRoomData(self):
+        self.configuration = database_manager.get_configuration(self.db)
 
     def on_PB_goBack_clicked(self):
         self.close()
@@ -37,8 +44,46 @@ class Ui_addRoomWindow(object):
     # TODO: Aggiungo la stanza alla lista di stanze già disponibili nel sistema
     # Ritorna un errore se una stanza è già presente con lo stesso nome nella lista
     def on_PB_addRoom_clicked(self):
-        pass
-        
+        self.actualNumRooms = len(self.configuration["rooms_settings"])
+        roomName = self.LE_room.text()
+        if (roomName == ""):
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setInformativeText(
+                "Room name cannot be empty!")
+            msg.setWindowTitle("Error")
+            msg.exec_()
+            return
+
+        # Aggiungi stanza alla configurazione
+        # FIXME: la chiave room che tipo di dato vuole? 
+        # Per ora gli passo il nome della stanza, ma è ridondante con la chiave 
+        # "room_name"
+        self.configuration["rooms_settings"].append({"room" : self.actualNumRooms, "room_name" : roomName, "mode" : "manual", "info" : {"temp" : 25, "weekend" : 0}, "season" : "hot"})
+
+        self.newConfiguration = self.configuration
+        database_manager.update_configuration(self.db, self.newConfiguration)
+
+        print("\t --> COMMIT: Stanza aggiunta")
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setInformativeText(
+            "Room added!")
+        msg.setWindowTitle("Info")
+        msg.exec_()
+          
+    def __handleTextChanged(self, text):
+        if not self.LE_room.hasFocus:
+            self.LE_room._beforeRoomName = text
+
+    def __handleEditingFinished(self):
+        beforeRoomName, afterRoomName = self.LE_room._beforeRoomName, self.LE_room.text()
+        if beforeRoomName != afterRoomName:
+            self.LE_room._beforeRoomName = afterRoomName
+            self.LE_room.textChanged.emit(afterRoomName)
+            self.PB_addRoom.setText(QtCore.QCoreApplication.translate(
+                "AddRoomWindow", "Add Room"))
+            self.PB_addRoom.setEnabled(True)
         
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
@@ -48,6 +93,8 @@ class Ui_addRoomWindow(object):
         self.timer.timeout.connect(self.showTime)
         self.showTime()
         self.timer.start(1000)
+
+        self.reloadRoomData()
 
     def showTime(self):
         date = QDate.currentDate()
