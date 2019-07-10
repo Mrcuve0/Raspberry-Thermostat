@@ -23,11 +23,18 @@ class MyQLineEdit(QtWidgets.QLineEdit):
 
 class Ui_SensorSettingsWindow(object):
 
+    db = None
+    actualRoomID = 0
+    actualRoomName = ""
+    
+    def initDB(self, db):
+        self.db = db
+
     def on_PB_goBack_clicked(self):
         self.close()
         self.sensorSettingsWindow = QtWidgets.QMainWindow()
         self.uiSensorValveProgramWindow = sensorValveProgramWindow.Ui_SensorValveProgramWindow()
-        self.uiSensorValveProgramWindow.setupUi(self.sensorSettingsWindow)
+        self.uiSensorValveProgramWindow.setupUi(self.sensorSettingsWindow, self.db, self.actualRoomID, self.actualRoomName)
         self.sensorSettingsWindow.showMaximized()
 
     def on_PB_connectSensor_pressed(self):
@@ -67,11 +74,7 @@ class Ui_SensorSettingsWindow(object):
 
             else: 
                 
-                # TODO: Il nome della stanza deve venire dalle finestre chiamanti!
-                # Usare la struttura dati generale o creare una lista di stanze inserite
-                roomName = "Cucina"
-
-                returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, roomName)    
+                returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, self.actualRoomName)    
                 if (returnID == 0):
                     print("OK! Actuator is being connected!")
 
@@ -210,6 +213,7 @@ class Ui_SensorSettingsWindow(object):
         self.PB_connectSensor.pressed.connect(self.on_PB_connectSensor_pressed)
         self.PB_connectSensor.released.connect(self.on_PB_connectSensor_released)
         self.PB_deleteSensor.clicked.connect(self.on_PB_deleteSensor_clicked)
+
         self.timer.timeout.connect(self.showTime)
         self.showTime()
         self.timer.start(1000)
@@ -223,7 +227,7 @@ class Ui_SensorSettingsWindow(object):
     def close(self):
         self.sensorSettingsWindow.close()
 
-    def setupUi(self, SensorSettingsWindow):
+    def setupUi(self, SensorSettingsWindow, db, actualRoomID, actualRoomName):
 
         self.sensorSettingsWindow = SensorSettingsWindow
         self.sensorSettingsWindow.setWindowFlags(
@@ -257,8 +261,6 @@ class Ui_SensorSettingsWindow(object):
         self.dateEdit.setObjectName("dateEdit")
         self.timeEdit = QtWidgets.QTimeEdit(self.centralwidget)
         self.timeEdit.setGeometry(QtCore.QRect(687, 0, 121, 61))
-
-        self.timer = QTimer()
 
         font = QtGui.QFont()
         font.setPointSize(16)
@@ -337,9 +339,15 @@ class Ui_SensorSettingsWindow(object):
         self.statusbar.setObjectName("statusbar")
         SensorSettingsWindow.setStatusBar(self.statusbar)
 
+        self.initDB(db)
+        self.actualRoomID = actualRoomID
+        self.actualRoomName = actualRoomName
+
+        self.timer = QTimer()
+
         self.activeFunctionsConnection()
+
         self.retranslateUi(SensorSettingsWindow)
-        QtCore.QMetaObject.connectSlotsByName(SensorSettingsWindow)
 
     def retranslateUi(self, SensorSettingsWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -358,6 +366,6 @@ class Ui_SensorSettingsWindow(object):
         self.PB_connectSensor.setText(
             _translate("SensorSettingsWindow", "Aggiungi"))
         self.label_RoomName.setText(_translate(
-            "SensorSettingsWindow", "<Room Name Here>"))
+            "SensorSettingsWindow", "Actual Room: " + str(self.actualRoomName)))
         self.PB_deleteSensor.setText(
             _translate("SensorSettingsWindow", "Elimina"))
