@@ -93,7 +93,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>350</y>
+      <y>380</y>
       <width>111</width>
       <height>100</height>
      </rect>
@@ -134,7 +134,7 @@
      <rect>
       <x>180</x>
       <y>160</y>
-      <width>581</width>
+      <width>281</width>
       <height>61</height>
      </rect>
     </property>
@@ -154,7 +154,7 @@
      <rect>
       <x>180</x>
       <y>240</y>
-      <width>581</width>
+      <width>281</width>
       <height>61</height>
      </rect>
     </property>
@@ -169,8 +169,47 @@
      <string>Add Actuator</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="PB_DeleteRoom">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>160</y>
+      <width>281</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Delete Room</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PB_DeleteActuator">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>240</y>
+      <width>281</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Delete Actuator</string>
+    </property>
+   </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
