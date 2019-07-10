@@ -4,7 +4,6 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
-# TODO: Add window imports here
 import mainWindow
 import sensorSettingsWindow
 import valveSettingsWindow
@@ -13,35 +12,39 @@ import programSettingsWindow
 
 class Ui_SensorValveProgramWindow(object):
 
-    # TODO: aggiungi apertura della finestra dove puoi aggiungere un sensore alla stanza
+    db = None
+    actualRoomID = 0
+    actualRoomName = ""
+
+    def initDB(self, db):
+        self.db = db
+
     def on_PB_sensor_clicked(self):
         self.close()
         self.sensorValveProgramWindow = QtWidgets.QMainWindow()
         self.uiSensorSettingsWindow = sensorSettingsWindow.Ui_SensorSettingsWindow()
-        self.uiSensorSettingsWindow.setupUi(self.sensorValveProgramWindow)
+        self.uiSensorSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomID, self.actualRoomName)
         self.sensorValveProgramWindow.showMaximized()
     
-    # TODO: aggiungi apertura della finestra dove puoi aggiungere un relè all'attuatore che preferisci
     def on_PB_valve_clicked(self):
         self.close()
         self.sensorValveProgramWindow = QtWidgets.QMainWindow()
         self.uiValveSettingsWindow = valveSettingsWindow.Ui_ValveSettingsWindow()
-        self.uiValveSettingsWindow.setupUi(self.sensorValveProgramWindow)
+        self.uiValveSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomID, self.actualRoomName)
         self.sensorValveProgramWindow.showMaximized()
 
-    # TODO: aggiungi apertura della finestra dove puoi aggiungere il cronoprogramma relativo a questa finestra
     def on_PB_program_clicked(self):
         self.close()
         self.sensorValveProgramWindow = QtWidgets.QMainWindow()
         self.uiProgramSettingsWindow = programSettingsWindow.Ui_ProgramSettingsWindow()
-        self.uiProgramSettingsWindow.setupUi(self.sensorValveProgramWindow)
+        self.uiProgramSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomID, self.actualRoomName)
         self.sensorValveProgramWindow.showMaximized()
 
     def on_PB_goBack_clicked(self):
         self.close()
         self.sensorValveProgramWindow = QtWidgets.QMainWindow()
         self.uiMainWindow = mainWindow.Ui_MainWindow()
-        self.uiMainWindow.setupUi(self.sensorValveProgramWindow)
+        self.uiMainWindow.setupUi(self.sensorValveProgramWindow, self.db)
         self.sensorValveProgramWindow.showMaximized()
 
     def activeFunctionsConnection(self):
@@ -49,9 +52,12 @@ class Ui_SensorValveProgramWindow(object):
         self.PB_valve.clicked.connect(self.on_PB_valve_clicked)
         self.PB_timeProgram.clicked.connect(self.on_PB_program_clicked)
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
+
+        # Timer for data and time
         self.timer.timeout.connect(self.showTime)
         self.showTime()
         self.timer.start(1000)
+
 
     def showTime(self):
         date = QDate.currentDate()
@@ -62,7 +68,7 @@ class Ui_SensorValveProgramWindow(object):
     def close(self):
         self.sensorValveProgramWindow.close()
 
-    def setupUi(self, SensorValveProgramWindow):
+    def setupUi(self, SensorValveProgramWindow, db, actualRoomID, actualRoomName):
 
         self.sensorValveProgramWindow = SensorValveProgramWindow
         self.sensorValveProgramWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -99,8 +105,6 @@ class Ui_SensorValveProgramWindow(object):
         self.dateEdit.setObjectName("dateEdit")
         self.timeEdit = QtWidgets.QTimeEdit(self.centralwidget)
         self.timeEdit.setGeometry(QtCore.QRect(687, 0, 121, 61))
-
-        self.timer = QTimer()
 
         font = QtGui.QFont()
         font.setPointSize(16)
@@ -142,22 +146,28 @@ class Ui_SensorValveProgramWindow(object):
         self.label_RoomName.setAlignment(QtCore.Qt.AlignCenter)
         self.label_RoomName.setObjectName("label_RoomName")
         self.PB_sensor = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_sensor.setGeometry(QtCore.QRect(20, 160, 181, 121))
+        self.PB_sensor.setGeometry(QtCore.QRect(20, 160, 221, 151))
         self.PB_sensor.setObjectName("PB_sensor")
         self.PB_valve = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_valve.setGeometry(QtCore.QRect(320, 160, 181, 121))
+        self.PB_valve.setGeometry(QtCore.QRect(290, 160, 221, 151))
         self.PB_valve.setObjectName("PB_valve")
         self.PB_timeProgram = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_timeProgram.setGeometry(QtCore.QRect(600, 160, 181, 121))
+        self.PB_timeProgram.setGeometry(QtCore.QRect(560, 160, 221, 151))
         self.PB_timeProgram.setObjectName("PB_timeProgram")
         SensorValveProgramWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(SensorValveProgramWindow)
         self.statusbar.setObjectName("statusbar")
         SensorValveProgramWindow.setStatusBar(self.statusbar)
 
+        self.initDB(db)
+        self.actualRoomID = actualRoomID
+        self.actualRoomName = actualRoomName
+
+        self.timer = QTimer()
+
         self.activeFunctionsConnection()
+
         self.retranslateUi(SensorValveProgramWindow)
-        QtCore.QMetaObject.connectSlotsByName(SensorValveProgramWindow)
 
     def retranslateUi(self, SensorValveProgramWindow):
 
@@ -168,7 +178,7 @@ class Ui_SensorValveProgramWindow(object):
         self.PB_goBack.setText(_translate("SensorValveProgramWindow", "<"))
         self.label_RoomSettings.setText(_translate("SensorValveProgramWindow", "Room\n"
 "Settings"))
-        self.label_RoomName.setText(_translate("SensorValveProgramWindow", "<Room Name Here>"))
+        self.label_RoomName.setText(_translate("SensorValveProgramWindow", "Actual Room: " + str(self.actualRoomName)))
         self.PB_sensor.setText(_translate("SensorValveProgramWindow", "Imposta / Vedi\n"
 "Sensore"))
         self.PB_valve.setText(_translate("SensorValveProgramWindow", "Imposta / Vedi\n"

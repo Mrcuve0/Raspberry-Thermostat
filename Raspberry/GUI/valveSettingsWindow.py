@@ -22,11 +22,18 @@ class MyQLineEdit(QtWidgets.QLineEdit):
 
 class Ui_ValveSettingsWindow(object):
 
+    db = None
+    actualRoomID = 0
+    actualRoomName = ""
+
+    def initDB(self, db):
+        self.db = db
+
     def on_PB_goBack_clicked(self):
         self.close()
         self.valveSettingsWindow = QtWidgets.QMainWindow()
         self.uiSensorValveProgramWindow = sensorValveProgramWindow.Ui_SensorValveProgramWindow()
-        self.uiSensorValveProgramWindow.setupUi(self.valveSettingsWindow)
+        self.uiSensorValveProgramWindow.setupUi(self.valveSettingsWindow, self.db, self.actualRoomID, self.actualRoomName)
         self.valveSettingsWindow.showMaximized()
 
     # TODO: Aggiungere metodo per la connessione della valvola
@@ -54,7 +61,7 @@ class Ui_ValveSettingsWindow(object):
     def close(self):
         self.valveSettingsWindow.close()
 
-    def setupUi(self, ValveSettingsWindow):
+    def setupUi(self, ValveSettingsWindow, db, actualRoomID, actualRoomName):
 
         self.valveSettingsWindow = ValveSettingsWindow
         self.valveSettingsWindow.setWindowFlags(
@@ -88,8 +95,6 @@ class Ui_ValveSettingsWindow(object):
         self.dateEdit.setObjectName("dateEdit")
         self.timeEdit = QtWidgets.QTimeEdit(self.centralwidget)
         self.timeEdit.setGeometry(QtCore.QRect(687, 0, 121, 61))
-
-        self.timer = QTimer()
 
         font = QtGui.QFont()
         font.setPointSize(16)
@@ -168,9 +173,14 @@ class Ui_ValveSettingsWindow(object):
         self.statusbar.setObjectName("statusbar")
         ValveSettingsWindow.setStatusBar(self.statusbar)
 
+        self.initDB(db)
+        self.actualRoomID = actualRoomID
+        self.actualRoomName = actualRoomName
+
+        self.timer = QTimer()
+
         self.activeFunctionsConnection()
         self.retranslateUi(ValveSettingsWindow)
-        QtCore.QMetaObject.connectSlotsByName(ValveSettingsWindow)
 
     def retranslateUi(self, ValveSettingsWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -182,14 +192,14 @@ class Ui_ValveSettingsWindow(object):
             "ValveSettingsWindow", "dd - MM - yyyy"))
         self.PB_goBack.setText(_translate("ValveSettingsWindow", "<"))
         self.PT_sensor.setPlaceholderText(_translate(
-            "ValveSettingsWindow", "Inserire identificativo della valvola"))
+            "ValveSettingsWindow", "Insert valve identifier"))
         self.label_ValveSettings.setText(_translate("ValveSettingsWindow", "Valve\n"
                                                     "Settings"))
         self.label_ValveID.setText(_translate(
             "ValveSettingsWindow", "Valve ID:"))
         self.PB_connectValve.setText(
-            _translate("ValveSettingsWindow", "Aggiungi"))
+            _translate("ValveSettingsWindow", "Add"))
         self.label_RoomName.setText(_translate(
-            "ValveSettingsWindow", "<Room Name Here>"))
+            "ValveSettingsWindow", "Actual Room: " + str(self.actualRoomName)))
         self.PB_deleteValve.setText(
-            _translate("ValveSettingsWindow", "Elimina"))
+            _translate("ValveSettingsWindow", "Delete"))
