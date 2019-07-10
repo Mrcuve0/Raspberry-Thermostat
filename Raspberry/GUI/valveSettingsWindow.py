@@ -110,7 +110,7 @@ class Ui_ValveSettingsWindow(object):
         self.timeEdit.setObjectName("timeEdit")
 
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_goBack.setGeometry(QtCore.QRect(0, 350, 111, 100))
+        self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         self.PB_goBack.setFont(font)
         self.PB_goBack.setObjectName("PB_goBack")
         self.PT_sensor = QtWidgets.QPlainTextEdit(self.centralwidget)
@@ -169,9 +169,6 @@ class Ui_ValveSettingsWindow(object):
         self.PB_deleteValve.setFont(font)
         self.PB_deleteValve.setObjectName("PB_deleteValve")
         ValveSettingsWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(ValveSettingsWindow)
-        self.statusbar.setObjectName("statusbar")
-        ValveSettingsWindow.setStatusBar(self.statusbar)
 
         self.initDB(db)
         self.actualRoomID = actualRoomID

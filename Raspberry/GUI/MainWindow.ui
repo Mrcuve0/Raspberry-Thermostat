@@ -175,7 +175,7 @@
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>320</y>
+      <y>340</y>
       <width>81</width>
       <height>61</height>
      </rect>
@@ -207,7 +207,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>320</y>
+      <y>340</y>
       <width>81</width>
       <height>61</height>
      </rect>
@@ -230,7 +230,7 @@
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>320</y>
+      <y>340</y>
       <width>111</width>
       <height>61</height>
      </rect>
@@ -257,7 +257,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>300</y>
+      <y>320</y>
       <width>111</width>
       <height>61</height>
      </rect>
@@ -277,7 +277,7 @@
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>393</y>
+      <y>420</y>
       <width>641</width>
       <height>61</height>
      </rect>
@@ -297,7 +297,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>393</y>
+      <y>420</y>
       <width>81</width>
       <height>61</height>
      </rect>
@@ -317,7 +317,7 @@
     <property name="geometry">
      <rect>
       <x>720</x>
-      <y>393</y>
+      <y>420</y>
       <width>81</width>
       <height>61</height>
      </rect>
@@ -408,7 +408,7 @@
     <property name="geometry">
      <rect>
       <x>560</x>
-      <y>320</y>
+      <y>340</y>
       <width>111</width>
       <height>61</height>
      </rect>
@@ -431,7 +431,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>320</y>
+      <y>340</y>
       <width>91</width>
       <height>61</height>
      </rect>
@@ -469,7 +469,6 @@
    <zorder>PB_summer</zorder>
    <zorder>PB_antiFreeze</zorder>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

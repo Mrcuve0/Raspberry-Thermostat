@@ -53,11 +53,11 @@ def connectToNetwork():
         time.sleep(10)
 
         if (is_connected() == True):
-            print("Connesso!")
+            print("Connected!")
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
             msg.setInformativeText(
-                "Connesso alla rete!")
+                "Connected to network!")
             msg.setWindowTitle("Info")
             msg.exec_()
             return 0
@@ -65,7 +65,7 @@ def connectToNetwork():
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Critical)
             msg.setInformativeText(
-                "Errore nella connesione alla rete!")
+                "Error while connecting to network!")
             msg.setWindowTitle("Error")
             msg.exec_()
             return -1
@@ -115,7 +115,7 @@ def connectToNetwork():
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Critical)
         msg.setInformativeText(
-            "SSID non trovato, sistema non connesso alla rete")
+            "SSID not found, not connected to network")
         msg.setWindowTitle("Error")
         msg.exec_()
         return -1
@@ -186,7 +186,7 @@ def checkNetworkConnection():
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Information)
         msg.setInformativeText(
-            "Connesso alla rete \"" + str(net_SSID) + "\"!")
+            "Connected to network \"" + str(net_SSID) + "\"!")
         msg.setWindowTitle("Info")
         msg.exec_()
         return 0
@@ -197,7 +197,7 @@ def checkNetworkConnection():
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Critical)
         msg.setInformativeText(
-            "Il sistema non è connesso alla rete")
+            "NOT connected to network")
         msg.setWindowTitle("Error")
         msg.exec_()
         return -1

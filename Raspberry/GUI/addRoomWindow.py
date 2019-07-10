@@ -1,11 +1,6 @@
 import sys
 import subprocess
 
-# print(sys.path[0])  # <->/Raspberry-Thermostat/Raspberry/GUI
-# sys.path.insert(0, sys.path[0] + "/../../") # /Raspberry-Thermostat/
-# print(sys.path)
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
@@ -27,18 +22,22 @@ class MyQLineEdit(QtWidgets.QLineEdit):
 
 class Ui_addRoomWindow(object):
 
+    db = None
+
+    def initDB(self, db):
+        self.db = db
+
     def on_PB_goBack_clicked(self):
         self.close()
         self.roomWindow = QtWidgets.QMainWindow()
         self.uiSettingsWindow = settingsWindow.Ui_SettingsWindow()
-        self.uiSettingsWindow.setupUi(self.roomWindow)
+        self.uiSettingsWindow.setupUi(self.roomWindow, self.db)
         self.roomWindow.showMaximized()
 
     # TODO: Aggiungo la stanza alla lista di stanze già disponibili nel sistema
     # Ritorna un errore se una stanza è già presente con lo stesso nome nella lista
     def on_PB_addRoom_clicked(self):
         pass
-        
         
         
     def activeFunctionsConnection(self):
@@ -59,7 +58,7 @@ class Ui_addRoomWindow(object):
     def close(self):
         self.roomWindow.close()
 
-    def setupUi(self, addRoomWindow):
+    def setupUi(self, addRoomWindow, db):
         self.roomWindow = addRoomWindow
         self.roomWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
@@ -112,7 +111,7 @@ class Ui_addRoomWindow(object):
         font.setWeight(75)
         
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_goBack.setGeometry(QtCore.QRect(0, 350, 111, 100))
+        self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -166,13 +165,11 @@ class Ui_addRoomWindow(object):
         self.PB_addRoom.setFont(font)
         self.PB_addRoom.setObjectName("PB_addRoom")
         addRoomWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(addRoomWindow)
-        self.statusbar.setObjectName("statusbar")
-        addRoomWindow.setStatusBar(self.statusbar)
+
+        self.initDB(db)
 
         self.activeFunctionsConnection()
         self.retranslateUi(addRoomWindow)
-        QtCore.QMetaObject.connectSlotsByName(addRoomWindow)
 
     def retranslateUi(self, addRoomWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -184,7 +181,7 @@ class Ui_addRoomWindow(object):
             "AddRoomWindow", "dd - MM - yyyy"))
         self.PB_goBack.setText(_translate("AddRoomWindow", "<"))
         self.LE_room.setPlaceholderText(_translate(
-            "AddRoomWindow", "Inserire nome della stanza"))
+            "AddRoomWindow", "Insert room name"))
 
         self.label_RoomSettings.setText(_translate("AddRoomWindow", "Room\n"
                                                    "Settings"))

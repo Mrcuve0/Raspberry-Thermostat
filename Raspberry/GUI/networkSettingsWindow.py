@@ -28,11 +28,16 @@ class MyQLineEdit(QtWidgets.QLineEdit):
 
 class Ui_NetworkSettingsWindow(object):
 
+    db = None
+
+    def initDB(self, db):
+        self.db = db
+
     def on_PB_goBack_clicked(self):
         self.close()
         self.networkSettingsWindow = QtWidgets.QMainWindow()
         self.uiSettingsWindow = settingsWindow.Ui_SettingsWindow()
-        self.uiSettingsWindow.setupUi(self.networkSettingsWindow)
+        self.uiSettingsWindow.setupUi(self.networkSettingsWindow, self.db)
         self.networkSettingsWindow.showMaximized()
 
     def on_PB_showPassword_pressed(self):
@@ -43,7 +48,7 @@ class Ui_NetworkSettingsWindow(object):
 
     def on_PB_connect_pressed(self):
         self.PB_connect.setText(QtCore.QCoreApplication.translate(
-            "NetworkSettingsWindow", "Sto connettendo..."))
+            "NetworkSettingsWindow", "Connecting, please wait..."))
 
     def on_PB_connect_released(self):
         self.PB_connect.setEnabled(False)
@@ -65,7 +70,7 @@ class Ui_NetworkSettingsWindow(object):
             if (returnID == 0):
                 print("Connected to network")
                 self.PB_connect.setText(QtCore.QCoreApplication.translate(
-                    "NetworkSettingsWindow", "Connesso!"))
+                    "NetworkSettingsWindow", "Connected!"))
                 self.PB_connect.setEnabled(False)
 
                 print("Tutto OK, salvo le credenziali nel file...")
@@ -74,13 +79,13 @@ class Ui_NetworkSettingsWindow(object):
             elif (returnID == 1):
                 print("Not connected, no feedback received from iwgetid")
                 self.PB_connect.setText(QtCore.QCoreApplication.translate(
-                    "NetworkSettingsWindow", "Non connesso, riprovare"))
+                    "NetworkSettingsWindow", "Not connected, retry"))
                 self.PB_connect.setEnabled(True)
 
             elif (returnID == -1):
                 print("Not connected, SSID not found")
                 self.PB_connect.setText(QtCore.QCoreApplication.translate(
-                    "NetworkSettingsWindow", "Non connesso, riprovare"))
+                    "NetworkSettingsWindow", "Not connected, retry"))
                 self.PB_connect.setEnabled(True)
 
     def checkNetworkConnection(self):
@@ -93,13 +98,13 @@ class Ui_NetworkSettingsWindow(object):
     def on_LE_networkSSID_clicked(self):
         if (self.LE_networkSSID.isModified() or self.LE_networkPassword.isModified()):
             self.PB_connect.setText(QtCore.QCoreApplication.translate(
-                "NetworkSettingsWindow", "Connetti..."))
+                "NetworkSettingsWindow", "Connect..."))
             self.PB_connect.setEnabled(True)
 
     def on_LE_networkPassword_clicked(self):
         if (self.LE_networkSSID.isModified() or self.LE_networkPassword.isModified()):
             self.PB_connect.setText(QtCore.QCoreApplication.translate(
-                "NetworkSettingsWindow", "Connetti..."))
+                "NetworkSettingsWindow", "Connect..."))
             self.PB_connect.setEnabled(True)
 
     def __handleTextChanged(self, text):
@@ -114,14 +119,14 @@ class Ui_NetworkSettingsWindow(object):
             self.LE_networkSSID._beforeSSID = afterSSID
             self.LE_networkSSID.textChanged.emit(afterSSID)
             self.PB_connect.setText(QtCore.QCoreApplication.translate(
-                "NetworkSettingsWindow", "Connetti..."))
+                "NetworkSettingsWindow", "Connect..."))
             self.PB_connect.setEnabled(True)
         beforePWD, afterPWD = self.LE_networkPassword._beforePWD, self.LE_networkPassword.text()
         if beforePWD != afterPWD:
             self.LE_networkPassword._beforePWD = afterPWD
             self.LE_networkPassword.textChanged.emit(afterPWD)
             self.PB_connect.setText(QtCore.QCoreApplication.translate(
-                "NetworkSettingsWindow", "Connetti..."))
+                "NetworkSettingsWindow", "Connect..."))
             self.PB_connect.setEnabled(True)
 
     def saveNetCredentials(self, net_SSID, net_PWD):
@@ -172,7 +177,7 @@ class Ui_NetworkSettingsWindow(object):
     def close(self):
         self.networkSettingsWindow.close()
 
-    def setupUi(self, NetworkSettingsWindow):
+    def setupUi(self, NetworkSettingsWindow, db):
         self.networkSettingsWindow = NetworkSettingsWindow
         self.networkSettingsWindow.setWindowFlags(
             QtCore.Qt.FramelessWindowHint)
@@ -232,14 +237,10 @@ class Ui_NetworkSettingsWindow(object):
         self.timeEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.timeEdit.setObjectName("timeEdit")
 
-        self.PB_ok = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_ok.setGeometry(QtCore.QRect(690, 350, 111, 100))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        self.PB_ok.setFont(font)
-        self.PB_ok.setObjectName("PB_ok")
         self.LE_networkPassword = MyQLineEdit(self.centralwidget)
         self.LE_networkPassword.setEchoMode(QtWidgets.QLineEdit.Password)
         self.LE_networkPassword.setGeometry(QtCore.QRect(110, 240, 581, 61))
@@ -254,7 +255,7 @@ class Ui_NetworkSettingsWindow(object):
         self.LE_networkPassword.setFont(font)
         self.LE_networkPassword.setObjectName("LE_networkPassword")
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_goBack.setGeometry(QtCore.QRect(0, 350, 111, 100))
+        self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -298,9 +299,8 @@ class Ui_NetworkSettingsWindow(object):
         self.label_NetworkPassword.setAlignment(QtCore.Qt.AlignCenter)
         self.label_NetworkPassword.setObjectName("label_NetworkPassword")
         NetworkSettingsWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(NetworkSettingsWindow)
-        self.statusbar.setObjectName("statusbar")
-        NetworkSettingsWindow.setStatusBar(self.statusbar)
+
+        self.initDB(db)
 
         self.activeFunctionsConnection()
 
@@ -316,12 +316,11 @@ class Ui_NetworkSettingsWindow(object):
         self.dateEdit.setDisplayFormat(
             _translate("NetworkSettingsWindow", "dd - MM - yyyy"))
         self.LE_networkSSID.setPlaceholderText(
-            _translate("NetworkSettingsWindow", "Inserire Network SSID"))
+            _translate("NetworkSettingsWindow", "Insert Network name"))
         self.timeEdit.setDisplayFormat(
             _translate("NetworkSettingsWindow", "HH : mm"))
-        self.PB_ok.setText(_translate("NetworkSettingsWindow", "Ok"))
         self.LE_networkPassword.setPlaceholderText(
-            _translate("NetworkSettingsWindow", "Inserire Network Password"))
+            _translate("NetworkSettingsWindow", "Insert Network password"))
         self.PB_goBack.setText(_translate("NetworkSettingsWindow", "<"))
 
         # Controlla se il sistema è già connesso a una rete oppure no
@@ -329,14 +328,14 @@ class Ui_NetworkSettingsWindow(object):
             # Se è connesso disabilita il tasto per connettere, per riabilitarlo
             # sarà necessario inserire del testo nei lineEdit
             self.PB_connect.setText(_translate(
-                "NetworkSettingsWindow", "Attualmente connesso!"))
+                "NetworkSettingsWindow", "Connected!"))
             self.PB_connect.setEnabled(False)
             self.LE_networkSSID.setPlaceholderText(
                 _translate("NetworkSettingsWindow",
-                           "Connesso!"))
+                           "Connected!"))
         else:
             self.PB_connect.setText(_translate(
-                "NetworkSettingsWindow", "Connetti..."))
+                "NetworkSettingsWindow", "Connect..."))
             self.PB_connect.setEnabled(False)
 
         self.label_NetworkSettings.setText(_translate("NetworkSettingsWindow", "Network\n"

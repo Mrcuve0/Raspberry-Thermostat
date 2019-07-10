@@ -120,7 +120,7 @@ class Ui_SensorValveProgramWindow(object):
         self.timeEdit.setObjectName("timeEdit")
 
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_goBack.setGeometry(QtCore.QRect(0, 350, 111, 100))
+        self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -155,9 +155,6 @@ class Ui_SensorValveProgramWindow(object):
         self.PB_timeProgram.setGeometry(QtCore.QRect(560, 160, 221, 151))
         self.PB_timeProgram.setObjectName("PB_timeProgram")
         SensorValveProgramWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(SensorValveProgramWindow)
-        self.statusbar.setObjectName("statusbar")
-        SensorValveProgramWindow.setStatusBar(self.statusbar)
 
         self.initDB(db)
         self.actualRoomID = actualRoomID
@@ -179,9 +176,9 @@ class Ui_SensorValveProgramWindow(object):
         self.label_RoomSettings.setText(_translate("SensorValveProgramWindow", "Room\n"
 "Settings"))
         self.label_RoomName.setText(_translate("SensorValveProgramWindow", "Actual Room: " + str(self.actualRoomName)))
-        self.PB_sensor.setText(_translate("SensorValveProgramWindow", "Imposta / Vedi\n"
-"Sensore"))
-        self.PB_valve.setText(_translate("SensorValveProgramWindow", "Imposta / Vedi\n"
-"Valvole"))
-        self.PB_timeProgram.setText(_translate("SensorValveProgramWindow", "Imposta / Vedi\n"
-"CronoProgramma"))
+        self.PB_sensor.setText(_translate("SensorValveProgramWindow", "Set\n"
+"Sensor"))
+        self.PB_valve.setText(_translate("SensorValveProgramWindow", "Set\n"
+"Valves"))
+        self.PB_timeProgram.setText(_translate("SensorValveProgramWindow", "Set\n"
+"Program"))
