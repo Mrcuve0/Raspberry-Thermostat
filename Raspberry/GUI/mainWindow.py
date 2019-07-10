@@ -13,18 +13,13 @@ import data
 from database_manager import database_manager
 
 # TODO: Gestionedelle stanze:
-# 1) Scorrere la stanza cliccando i pulsanti, mostrare la stanza giusta nel placeholder
-# 2) La stanza 0 è la stanza di default
+# 1) TESTARE! --> Scorrere la stanza cliccando i pulsanti, mostrare la stanza giusta nel placeholder
 # 3) Quando si aggiunge una stanza si aggiunge un elemento all'interno di configuration
-# Questo vagestito correttamente in ogni tasto di questa finestra (increase, decrease ecc)
+# Questo va gestito correttamente in ogni tasto di questa finestra (increase, decrease ecc)
 # Magari passare come parametro l'ID della stanza (che sarà incrementale) che ovviamente 
 # si riferirà alla stanza attualmente visualizzata nel placeholder. (la temperatura se 
 # incrementata va associata alla stanza giusta)
-# 4) Impostare una mode iniziale e predefinita all'avvio, così come se estate o inverno.
-# Agire di conseguenza sui pulsanti (e l'underline)
-
-# FIXME: Fixare il passaggio da una finestra all'altra, l'andata è corretta, 
-# al ritorno però i tasti smettono di funzionare. Legato alla setup?
+# 4) Passare alla roomSettings il DB
 
 
 class Ui_MainWindow(object):
@@ -36,6 +31,7 @@ class Ui_MainWindow(object):
     roomTemp = 0.0
     newRoomTemp = 0.0
     repetitions = 0
+    actualRoomID = 0
 
     season = None # can be "hot" or "cold"
     mode = None # can be "manual", "antifreeze" or "programmable"
@@ -52,7 +48,7 @@ class Ui_MainWindow(object):
             # Quale è stata l'ultima temperatura impostata per questa stanza?
             # Uso questa temperature come base di partenza per poi decrementarla
             self.configuration = database_manager.get_configuration(self.db)
-            self.roomTemp = self.configuration["rooms_settings"][0]["info"]["temp"]
+            self.roomTemp = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
         
         print("OLD temp value: " + str(self.roomTemp))
         self.roomTemp = self.roomTemp + 0.5   
@@ -72,7 +68,7 @@ class Ui_MainWindow(object):
             # Quale è stata l'ultima temperatura impostata per questa stanza?
             # Uso questa temperature come base di partenza per poi decrementarla
             self.configuration = database_manager.get_configuration(self.db)
-            self.roomTemp = self.configuration["rooms_settings"][0]["info"]["temp"]
+            self.roomTemp = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
         
         print("OLD temp value: " + str(self.roomTemp))
         self.roomTemp = self.roomTemp - 0.5   
@@ -82,12 +78,13 @@ class Ui_MainWindow(object):
 
         self.repetitions = self.repetitions + 1
 
-
     # Season
     def on_PB_winter_pressed(self):
         self.season = "cold"
         self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][0]["season"] = self.season
+        self.newConfiguration["rooms_settings"][self.actualRoomID]["season"] = self.season
+        database_manager.update_configuration(self.db, self.newConfiguration)
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -103,7 +100,9 @@ class Ui_MainWindow(object):
     def on_PB_summer_pressed(self):
         self.season = "hot"
         self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][0]["season"] = self.season
+        self.newConfiguration["rooms_settings"][self.actualRoomID]["season"] = self.season
+        database_manager.update_configuration(self.db, self.newConfiguration)
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -120,7 +119,9 @@ class Ui_MainWindow(object):
     def on_PB_program_pressed(self):
         self.mode = "program"
         self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][0]["mode"] = self.mode
+        self.newConfiguration["rooms_settings"][self.actualRoomID]["mode"] = self.mode
+        database_manager.update_configuration(self.db, self.newConfiguration)
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -131,11 +132,15 @@ class Ui_MainWindow(object):
         font.setUnderline(False)
         self.PB_manual.setFont(font)
         self.PB_antiFreeze.setFont(font)
+
+        self.disableProgramAntiFreezeButtons()
 
     def on_PB_manual_pressed(self):
         self.mode = "manual"
         self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][0]["mode"] = self.mode
+        self.newConfiguration["rooms_settings"][self.actualRoomID]["mode"] = self.mode
+        database_manager.update_configuration(self.db, self.newConfiguration)
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -146,11 +151,15 @@ class Ui_MainWindow(object):
         font.setUnderline(False)
         self.PB_program.setFont(font)
         self.PB_antiFreeze.setFont(font)
+
+        self.enableManualButtons()
 
     def on_PB_antiFreeze_pressed(self):
         self.mode = "antifreeze"
         self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][0]["mode"] = self.mode
+        self.newConfiguration["rooms_settings"][self.actualRoomID]["mode"] = self.mode
+        database_manager.update_configuration(self.db, self.newConfiguration)
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -161,6 +170,22 @@ class Ui_MainWindow(object):
         font.setUnderline(False)
         self.PB_program.setFont(font)
         self.PB_manual.setFont(font)
+
+        self.disableProgramAntiFreezeButtons()
+        # TODO: La temperatura dell'Antifreeze è 15?
+        self.LCDTempSet.display(15.0)
+
+    def disableProgramAntiFreezeButtons(self):
+        # Se è in modalità programma/antifreeze alcuni tasti devono essere disabilitati
+        self.PB_tempIncrease.setDisabled(True)
+        self.PB_tempDecrease.setDisabled(True)
+        self.LCDTempSet.setDisabled(True)
+
+    def enableManualButtons(self):
+        # Se è in modalità manuale alcuni tasti devono essere abilitati
+        self.PB_tempIncrease.setDisabled(False)
+        self.PB_tempDecrease.setDisabled(False)
+        self.LCDTempSet.setDisabled(False)
 
     def on_PB_roomList_clicked(self):
         self.close()
@@ -169,6 +194,43 @@ class Ui_MainWindow(object):
         self.uiSensorValveProgramWindow.setupUi(self.mainWindow)
         self.mainWindow.showMaximized()
 
+    def on_PB_nextRoom_clicked(self):
+        if (self.actualRoomID < len(self.configuration["rooms_settings"]) - 1):    # Posso scorrere ancora
+            self.actualRoomID = self.actualRoomID + 1
+        self.reloadRoomData()
+
+    def on_PB_prevRoom_clicked(self):   
+        if (self.actualRoomID > 0):    # Posso scorrere ancora
+            self.actualRoomID = self.actualRoomID - 1
+        self.reloadRoomData()
+        
+    def reloadRoomData(self):
+        self.configuration = database_manager.get_configuration(self.db)
+        self.roomTemp = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
+        self.season = self.configuration["rooms_settings"][self.actualRoomID]["season"]
+        self.mode = self.configuration["rooms_settings"][self.actualRoomID]["mode"]
+
+        if (self.mode == "program"):
+            self.on_PB_program_pressed()
+            self.disableProgramAntiFreezeButtons()
+
+        elif (self.mode == "manual"):
+            self.on_PB_manual_pressed()
+            self.enableManualButtons()
+
+        else:
+            self.on_PB_antiFreeze_pressed()
+            self.disableProgramAntiFreezeButtons()
+            # TODO: La temperatura dell'Antifreeze è 15?
+            self.LCDTempSet.display(15.0)
+
+        if (self.season == "cold"):
+            self.on_PB_winter_pressed()
+        else:
+            self.on_PB_summer_pressed()
+
+        self.PB_roomList.setText(QtCore.QCoreApplication.translate("MainWindow", "Actual Room: " + str(self.configuration["rooms_settings"][self.actualRoomID]["room_name"])))
+    
     def on_PB_settings_clicked(self):
         self.close()
         self.mainWindow = QtWidgets.QMainWindow()
@@ -178,12 +240,26 @@ class Ui_MainWindow(object):
 
     def activeFunctionsConnection(self):
         # PB_roomList
-        # self.PB_roomList.clicked.connect(self.on_PB_roomList_clicked)
-        # self.PB_settings.clicked.connect(self.on_PB_settings_clicked)
+        self.PB_roomList.clicked.connect(self.on_PB_roomList_clicked)
+        self.PB_settings.clicked.connect(self.on_PB_settings_clicked)
 
         # PB_Increase and PB_Decrease
-        # self.PB_tempDecrease.pressed.connect(self.on_PB_tempDecrease_pressed)
-        # self.PB_tempIncrease.pressed.connect(self.on_PB_tempIncrease_pressed)
+        self.PB_tempDecrease.pressed.connect(self.on_PB_tempDecrease_pressed)
+        self.PB_tempIncrease.pressed.connect(self.on_PB_tempIncrease_pressed)
+
+        # PB_Season
+        self.PB_winter.pressed.connect(self.on_PB_winter_pressed)
+        self.PB_summer.pressed.connect(self.on_PB_summer_pressed)
+
+        # PB_Mode
+        self.PB_program.pressed.connect(self.on_PB_program_pressed)
+        self.PB_manual.pressed.connect(self.on_PB_manual_pressed)    
+        self.PB_antiFreeze.pressed.connect(self.on_PB_antiFreeze_pressed)
+
+        #PB_RoomList
+        self.PB_roomList.clicked.connect(self.on_PB_roomList_clicked)
+        self.PB_nextRoom.clicked.connect(self.on_PB_nextRoom_clicked)
+        self.PB_prevRoom.clicked.connect(self.on_PB_prevRoom_clicked)
 
         # Timer for date and time updating
         self.timer.timeout.connect(self.showTime)
@@ -199,7 +275,14 @@ class Ui_MainWindow(object):
         # Timer for set temperature confirmation
         self.timerSetTemp.timeout.connect(self.commitSetTempData)
 
+        # Init funcs
         self.updateTempData()
+
+        # La prima stanza è sempre quella principale dove è il raspone
+        # Sarà poi l'utente a selezionare le altre stanze
+        self.actualRoomID = 0
+        self.reloadRoomData()
+        
 
     def showTime(self):
         date = QDate.currentDate()
@@ -213,8 +296,10 @@ class Ui_MainWindow(object):
         # lastTemperatures = database_manager.get_last_temperatures(self.db)
 
         self.configuration = database_manager.get_configuration(self.db)
-        self.roomSetTemp = self.configuration["rooms_settings"][0]["info"]["temp"]
-        self.LCDTempSet.display(self.roomSetTemp)
+        self.roomSetTemp = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
+
+        if (self.mode != "antifreeze"):
+            self.LCDTempSet.display(self.roomSetTemp)
 
         lastTemperatures = []
         lastTemperatures.append(18.5)
@@ -464,7 +549,6 @@ class Ui_MainWindow(object):
         self.initLoadData()
 
         self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -476,13 +560,12 @@ class Ui_MainWindow(object):
         self.PB_settings.setText(_translate("MainWindow", "Settings"))
         self.PB_program.setText(_translate("MainWindow", "P"))
         self.PB_manual.setText(_translate("MainWindow", "M"))
-        self.PB_winter.setText(_translate("MainWindow", "Inverno"))
+        self.PB_winter.setText(_translate("MainWindow", "Winter"))
         self.PB_onOff.setText(_translate("MainWindow", "On/Off"))
-        self.PB_roomList.setText(_translate("MainWindow", "PushButton"))
         self.PB_prevRoom.setText(_translate("MainWindow", "<"))
         self.PB_nextRoom.setText(_translate("MainWindow", ">"))
-        self.labelTempAct.setText(_translate("MainWindow", "Temperatura attuale:"))
-        self.labelTempSet.setText(_translate("MainWindow", "Temperatura impostata:"))
-        self.PB_summer.setText(_translate("MainWindow", "Estate"))
+        self.labelTempAct.setText(_translate("MainWindow", "Actual temperature:"))
+        self.labelTempSet.setText(_translate("MainWindow", "Temperature set: "))
+        self.PB_summer.setText(_translate("MainWindow", "Summer"))
         self.PB_antiFreeze.setText(_translate("MainWindow", "AntiF"))
 
