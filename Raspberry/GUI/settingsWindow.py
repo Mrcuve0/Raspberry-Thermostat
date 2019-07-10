@@ -25,21 +25,21 @@ class Ui_SettingsWindow(object):
         self.close()
         self.settingsWindow = QtWidgets.QMainWindow()
         self.uiNetworkSettingsWindow = networkSettingsWindow.Ui_NetworkSettingsWindow()
-        self.uiNetworkSettingsWindow.setupUi(self.settingsWindow)
+        self.uiNetworkSettingsWindow.setupUi(self.settingsWindow, self.db)
         self.settingsWindow.showMaximized()
 
     def on_PB_AddRoom_clicked(self):
         self.close()
         self.settingsWindow = QtWidgets.QMainWindow()
         self.uiAddRoomWindow = addRoomWindow.Ui_addRoomWindow()
-        self.uiAddRoomWindow.setupUi(self.settingsWindow)
+        self.uiAddRoomWindow.setupUi(self.settingsWindow, self.db)
         self.settingsWindow.showMaximized()
 
     def on_PB_AddActuator_clicked(self):
         self.close()
         self.settingsWindow = QtWidgets.QMainWindow()
         self.uiAddActuatorWindow = addActuatorWindow.Ui_addActuatorWindow()
-        self.uiAddActuatorWindow.setupUi(self.settingsWindow)
+        self.uiAddActuatorWindow.setupUi(self.settingsWindow, self.db)
         self.settingsWindow.showMaximized()
 
 
@@ -65,8 +65,6 @@ class Ui_SettingsWindow(object):
 
         self.settingsWindow = SettingsWindow
         self.settingsWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-
-        self.initDB(db)
 
         SettingsWindow.setObjectName("SettingsWindow")
         SettingsWindow.resize(800, 480)
@@ -108,7 +106,7 @@ class Ui_SettingsWindow(object):
         self.timeEdit.setObjectName("timeEdit")
 
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_goBack.setGeometry(QtCore.QRect(0, 350, 111, 100))
+        self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -144,9 +142,8 @@ class Ui_SettingsWindow(object):
         self.PB_AddActuator.setFont(font)
         self.PB_AddActuator.setObjectName("PB_AddActuator")
         SettingsWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(SettingsWindow)
-        self.statusbar.setObjectName("statusbar")
-        SettingsWindow.setStatusBar(self.statusbar)
+
+        self.initDB(db)
 
         self.activeFunctionsConnection()
         self.retranslateUi(SettingsWindow)

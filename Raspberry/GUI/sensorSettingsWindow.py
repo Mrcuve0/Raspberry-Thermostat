@@ -276,7 +276,7 @@ class Ui_SensorSettingsWindow(object):
         self.timeEdit.setObjectName("timeEdit")
 
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_goBack.setGeometry(QtCore.QRect(0, 350, 111, 100))
+        self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -335,9 +335,6 @@ class Ui_SensorSettingsWindow(object):
         self.PB_deleteSensor.setFont(font)
         self.PB_deleteSensor.setObjectName("PB_deleteSensor")
         SensorSettingsWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(SensorSettingsWindow)
-        self.statusbar.setObjectName("statusbar")
-        SensorSettingsWindow.setStatusBar(self.statusbar)
 
         self.initDB(db)
         self.actualRoomID = actualRoomID

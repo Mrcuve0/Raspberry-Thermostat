@@ -80,7 +80,7 @@ class Ui_ProgramSettingsWindow(object):
         self.timeEdit.setObjectName("timeEdit")
 
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_goBack.setGeometry(QtCore.QRect(0, 350, 111, 100))
+        self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -143,9 +143,6 @@ class Ui_ProgramSettingsWindow(object):
         self.PB_deleteValve.setFont(font)
         self.PB_deleteValve.setObjectName("PB_deleteValve")
         ProgramSettingsWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(ProgramSettingsWindow)
-        self.statusbar.setObjectName("statusbar")
-        ProgramSettingsWindow.setStatusBar(self.statusbar)
 
         self.activeFunctionsConnection()
         self.retranslateUi(ProgramSettingsWindow)

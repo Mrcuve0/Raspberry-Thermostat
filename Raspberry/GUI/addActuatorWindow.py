@@ -30,16 +30,21 @@ class MyQLineEdit(QtWidgets.QLineEdit):
 
 class Ui_addActuatorWindow(object):
 
+    db = None
+
+    def initDB(self, db):
+        self.db = db
+
     def on_PB_goBack_clicked(self):
         self.close()
         self.addActuatorWindow = QtWidgets.QMainWindow()
         self.uiSettingsWindow = settingsWindow.Ui_SettingsWindow()
-        self.uiSettingsWindow.setupUi(self.addActuatorWindow)
+        self.uiSettingsWindow.setupUi(self.addActuatorWindow, self.db)
         self.addActuatorWindow.showMaximized()
 
     def on_PB_addActuator_pressed(self):
         self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
-            "AddActuatorWindow", "Sto connettendo..."))
+            "AddActuatorWindow", "Connecting, please wait..."))
 
     # TODO: Aggiungo l'attuatore alla lista di attuatori già inseriti nel sistema
     # Ritorna un errore se un attuatore è già presente con lo stesso nome nella lista
@@ -187,9 +192,7 @@ class Ui_addActuatorWindow(object):
                     self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
                             "AddActuatorWindow", "Non connesso, riprovare...!"))
                     self.PB_addActuator.setEnabled(True)
-
-        
-        
+   
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
         self.PB_addActuator.pressed.connect(self.on_PB_addActuator_pressed)
@@ -209,7 +212,7 @@ class Ui_addActuatorWindow(object):
     def close(self):
         self.actuatorWindow.close()
 
-    def setupUi(self, addActuatorWindow):
+    def setupUi(self, addActuatorWindow, db):
         self.actuatorWindow = addActuatorWindow
         self.actuatorWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
@@ -262,7 +265,7 @@ class Ui_addActuatorWindow(object):
         font.setWeight(75)
         
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_goBack.setGeometry(QtCore.QRect(0, 350, 111, 100))
+        self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -316,9 +319,8 @@ class Ui_addActuatorWindow(object):
         self.PB_addActuator.setFont(font)
         self.PB_addActuator.setObjectName("PB_addActuator")
         addActuatorWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(addActuatorWindow)
-        self.statusbar.setObjectName("statusbar")
-        addActuatorWindow.setStatusBar(self.statusbar)
+
+        self.initDB(db)
 
         self.activeFunctionsConnection()
         self.retranslateUi(addActuatorWindow)
@@ -334,7 +336,7 @@ class Ui_addActuatorWindow(object):
             "AddActuatorWindow", "dd - MM - yyyy"))
         self.PB_goBack.setText(_translate("AddActuatorWindow", "<"))
         self.LE_actuator.setPlaceholderText(_translate(
-            "AddActuatorWindow", "Inserire ID dell'attuatore"))
+            "AddActuatorWindow", "Insert actuator ID"))
 
         self.label_ActuatorSettings.setText(_translate("AddActuatorWindow", "Actuator\n"
                                                    "Settings"))
