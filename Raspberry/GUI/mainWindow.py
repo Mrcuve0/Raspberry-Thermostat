@@ -42,7 +42,7 @@ class Ui_MainWindow(object):
     def on_PB_tempIncrease_pressed(self):
         print("Incremento temperatura")
         self.timerUpdateTemp.stop()
-        self.timerSetTemp.start(5000)
+        self.timerSetTemp.start(3000)
 
         if (self.repetitions == 0):
             # Quale è stata l'ultima temperatura impostata per questa stanza?
@@ -62,7 +62,7 @@ class Ui_MainWindow(object):
 
         print("Decremento temperatura")
         self.timerUpdateTemp.stop()
-        self.timerSetTemp.start(5000)
+        self.timerSetTemp.start(3000)
 
         if (self.repetitions == 0):
             # Quale è stata l'ultima temperatura impostata per questa stanza?
@@ -213,7 +213,7 @@ class Ui_MainWindow(object):
         if (self.mode == "program"):
             self.on_PB_program_pressed()
             self.disableProgramAntiFreezeButtons()
-
+            
         elif (self.mode == "manual"):
             self.on_PB_manual_pressed()
             self.enableManualButtons()
@@ -318,11 +318,14 @@ class Ui_MainWindow(object):
         self.repetitions = 0
 
         self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][0]["info"]["temp"] = self.newRoomTemp
+        self.newConfiguration["rooms_settings"][self.actualRoomID]["info"]["temp"] = self.newRoomTemp
 
         database_manager.update_configuration(self.db, self.configuration)
 
     def close(self):
+        self.timer.stop()
+        self.timerSetTemp.stop()
+        self.timerUpdateTemp.stop()
         self.mainWindow.close()
 
     def initLoadData(self):
