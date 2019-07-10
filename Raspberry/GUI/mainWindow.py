@@ -191,7 +191,7 @@ class Ui_MainWindow(object):
         self.close()
         self.mainWindow = QtWidgets.QMainWindow()
         self.uiSensorValveProgramWindow = sensorValveProgramWindow.Ui_SensorValveProgramWindow()
-        self.uiSensorValveProgramWindow.setupUi(self.mainWindow)
+        self.uiSensorValveProgramWindow.setupUi(self.mainWindow, self.db, self.actualRoomID, self.configuration["rooms_settings"][self.actualRoomID]["room_name"])
         self.mainWindow.showMaximized()
 
     def on_PB_nextRoom_clicked(self):
@@ -283,7 +283,6 @@ class Ui_MainWindow(object):
         self.actualRoomID = 0
         self.reloadRoomData()
         
-
     def showTime(self):
         date = QDate.currentDate()
         time = QTime.currentTime()
