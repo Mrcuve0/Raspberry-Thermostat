@@ -257,10 +257,6 @@ class Ui_MainWindow(object):
         # Init funcs
         self.updateScreenData()
 
-        # La prima stanza è sempre quella principale dove è il raspone
-        # Sarà poi l'utente a selezionare le altre stanze
-        self.actualRoomID = 0
-
     # Timer handlers  
     def showTime(self):
         date = QDate.currentDate()
@@ -417,7 +413,7 @@ class Ui_MainWindow(object):
             # json.dump(my_details, json_file)
             data.networkData = json.load(json_file)
 
-    def setupUi(self, MainWindow, db):
+    def setupUi(self, MainWindow, db, actualRoomID):
 
         self.mainWindow = MainWindow
         self.mainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -618,6 +614,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.initDB(db)
+        self.actualRoomID = actualRoomID
 
         self.timer = QTimer()
         self.timerUpdateScreenData = QTimer()
