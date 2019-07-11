@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AddRoomSensorWindow</class>
- <widget class="QMainWindow" name="AddRoomSensorWindow">
+ <class>ProgramSettingsWindow</class>
+ <widget class="QMainWindow" name="ProgramSettingsWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -98,7 +98,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>350</y>
+      <y>380</y>
       <width>111</width>
       <height>100</height>
      </rect>
@@ -112,35 +112,6 @@
     </property>
     <property name="text">
      <string>&lt;</string>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="PT_sensor">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>200</y>
-      <width>581</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="sizeAdjustPolicy">
-     <enum>QAbstractScrollArea::AdjustIgnored</enum>
-    </property>
-    <property name="overwriteMode">
-     <bool>true</bool>
-    </property>
-    <property name="placeholderText">
-     <string>Inserire identificativo della valvola</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_ValveSettings">
@@ -167,34 +138,11 @@ Settings</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_ValveID">
+   <widget class="QPushButton" name="PB_apply">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>150</y>
-      <width>140</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Valve ID:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="PB_connectValve">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>310</y>
+      <x>520</x>
+      <y>380</y>
       <width>231</width>
       <height>81</height>
      </rect>
@@ -207,14 +155,14 @@ Settings</string>
      </font>
     </property>
     <property name="text">
-     <string>Aggiungi</string>
+     <string>Apply</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_ValveName">
     <property name="geometry">
      <rect>
       <x>210</x>
-      <y>90</y>
+      <y>50</y>
       <width>361</width>
       <height>61</height>
      </rect>
@@ -233,11 +181,11 @@ Settings</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="PB_deleteValve">
+   <widget class="QPushButton" name="PB_clearAll">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>310</y>
+      <x>180</x>
+      <y>380</y>
       <width>231</width>
       <height>81</height>
      </rect>
@@ -250,11 +198,88 @@ Settings</string>
      </font>
     </property>
     <property name="text">
-     <string>Elimina</string>
+     <string>Clear all</string>
     </property>
    </widget>
+   <widget class="QTableWidget" name="tableWidget">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>110</y>
+      <width>701</width>
+      <height>241</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
+    <property name="lineWidth">
+     <number>1</number>
+    </property>
+    <property name="gridStyle">
+     <enum>Qt::SolidLine</enum>
+    </property>
+    <property name="cornerButtonEnabled">
+     <bool>false</bool>
+    </property>
+    <property name="rowCount">
+     <number>3</number>
+    </property>
+    <property name="columnCount">
+     <number>2</number>
+    </property>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>300</number>
+    </attribute>
+    <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="horizontalHeaderStretchLastSection">
+     <bool>true</bool>
+    </attribute>
+    <attribute name="verticalHeaderDefaultSectionSize">
+     <number>70</number>
+    </attribute>
+    <attribute name="verticalHeaderStretchLastSection">
+     <bool>true</bool>
+    </attribute>
+    <row>
+     <property name="text">
+      <string>06:00 - 12:00</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>12:00 - 24:00</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>24:00 - 06:00</string>
+     </property>
+    </row>
+    <column>
+     <property name="text">
+      <string>Monday - Friday</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Weekend</string>
+     </property>
+    </column>
+   </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
