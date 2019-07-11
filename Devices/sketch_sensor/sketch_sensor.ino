@@ -5,6 +5,7 @@
 #include <WiFiClient.h>
 #include "Adafruit_Sensor.h"
 #include "DHT.h"
+#include "IRremote.h"
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
@@ -13,6 +14,14 @@
 #define interruptPin 25 //Digital pin connected to the push button
 #define DHTPIN 27       // Digital pin connected to the DHT sensor
 #define DHTTYPE DHT22
+
+//stuff for IR functionalities///////////
+int RECV_PIN = 15;
+unsigned long code = 50;  //default code
+IRrecv irrecv(RECV_PIN);
+IRsend irsend;
+decode_results results;
+/////////////////////////////////////////
 
 const char *DEVICE_ID = "DEV00";
 const int mqttPort = 1883;
@@ -61,24 +70,24 @@ const int time_interval = 5000;
 
 void callback(char *topic, byte *payload, unsigned int length)
 {
-  Serial.print("Message arrived in topic: ");
-  Serial.println(topic);
-
-  Serial.print("Message:");
+  Serial.print("Message arrived on topic: ");
+  Serial.print(topic);
+  Serial.print(". Message: ");
+  String messageTemp;
+  
   for (int i = 0; i < length; i++)
   {
     Serial.print((char)payload[i]);
+    messageTemp += (char)payload[i];
   }
-
   Serial.println();
-  Serial.println("-----------------------");
 
   if (String(topic) == "airconditioning/ESPname"){      //ESPname is the ID
     if (messageTemp == "ON"){
-      irsend.sendSony(0xa90, 12);
+      irsend.sendRC5(code, 12);
       Serial.println("command sent");
     }else if (messageTemp == "OFF"){
-      irsend.sendSony(0xa90, 12);
+      irsend.sendRC5(code, 12);
       Serial.println("command sent");
     }
   }
@@ -89,6 +98,10 @@ void setup()
   Serial.begin(115200);
   dht.begin();
   pinMode(interruptPin, INPUT_PULLUP);
+///////////////////////////////////////////////////////////////////////
+  Serial.println("IR enabled");
+  irrecv.enableIRIn(); // Start the receiver
+///////////////////////////////////////////////////////////////////////
   SerialBT.begin(ESPname); //Bluetooth device name
   Serial.println("The device started, now you can pair it with bluetooth!");
 
@@ -306,7 +319,19 @@ void setup()
 
   client.subscribe("airconditioning/ESPname");                    //ESPname has to be changed with a number (the ID)
   Serial.println("Subscribed to airconditioning topic");
-  
+
+///////////////new IR code//////////////////////////////////////////
+  Serial.println("looking for a new IR code");
+  while (digitalRead(interruptPin) == HIGH){
+    if (irrecv.decode(&results)){
+      code = results.value;
+      Serial.print("new code is ");
+      Serial.println(code);
+    }
+  }
+  Serial.println("IR setup done");
+////////////////////////////////////////////////////////////////////
+
   start_time = millis();
   Serial.println("initialized the start time");
 }
