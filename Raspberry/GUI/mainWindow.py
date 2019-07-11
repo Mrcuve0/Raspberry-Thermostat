@@ -12,15 +12,6 @@ import data
 
 from database_manager import database_manager
 
-# TODO: Gestionedelle stanze:
-# 1) TESTARE! --> Scorrere la stanza cliccando i pulsanti, mostrare la stanza giusta nel placeholder
-# 3) Quando si aggiunge una stanza si aggiunge un elemento all'interno di configuration
-# Questo va gestito correttamente in ogni tasto di questa finestra (increase, decrease ecc)
-# Magari passare come parametro l'ID della stanza (che sarà incrementale) che ovviamente 
-# si riferirà alla stanza attualmente visualizzata nel placeholder. (la temperatura se 
-# incrementata va associata alla stanza giusta)
-# 4) Passare alla roomSettings il DB
-
 
 class Ui_MainWindow(object):
 
@@ -28,152 +19,122 @@ class Ui_MainWindow(object):
     configuration = None
     newConfiguration = None
 
-    roomTemp = 0.0
-    newRoomTemp = 0.0
+    roomTempSet = 0.0
     repetitions = 0
     actualRoomID = 0
 
-    season = None # can be "hot" or "cold"
-    mode = None # can be "manual", "antifreeze" or "programmable"
+    season = "" # can be "hot" or "cold"
+    mode = "" # can be "manual", "antifreeze" or "programmable"
+    lastModifiedBy = "WEB"
 
     def initDB(self, db):
         self.db = db
 
-    def on_PB_tempIncrease_pressed(self):
-        print("Incremento temperatura")
-        self.timerUpdateTemp.stop()
-        self.timerSetTemp.start(3000)
-
-        if (self.repetitions == 0):
-            # Quale è stata l'ultima temperatura impostata per questa stanza?
-            # Uso questa temperature come base di partenza per poi decrementarla
-            self.configuration = database_manager.get_configuration(self.db)
-            self.roomTemp = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
-        
-        print("OLD temp value: " + str(self.roomTemp))
-        self.roomTemp = self.roomTemp + 0.5   
-        self.newRoomTemp = self.roomTemp
-        print("NEW temp: " + str(self.newRoomTemp))
-        self.LCDTempSet.display(self.newRoomTemp)
-
-        self.repetitions = self.repetitions + 1
-
-    def on_PB_tempDecrease_pressed(self):
-
-        print("Decremento temperatura")
-        self.timerUpdateTemp.stop()
-        self.timerSetTemp.start(3000)
-
-        if (self.repetitions == 0):
-            # Quale è stata l'ultima temperatura impostata per questa stanza?
-            # Uso questa temperature come base di partenza per poi decrementarla
-            self.configuration = database_manager.get_configuration(self.db)
-            self.roomTemp = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
-        
-        print("OLD temp value: " + str(self.roomTemp))
-        self.roomTemp = self.roomTemp - 0.5   
-        self.newRoomTemp = self.roomTemp
-        print("NEW temp: " + str(self.newRoomTemp))
-        self.LCDTempSet.display(self.newRoomTemp)
-
-        self.repetitions = self.repetitions + 1
-
     # Season
     def on_PB_winter_pressed(self):
         self.season = "cold"
-        self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][self.actualRoomID]["season"] = self.season
-        database_manager.update_configuration(self.db, self.newConfiguration)
+        self.lastModifiedBy = "GUI"
+        self.updateScreenData()
+        # self.newConfiguration = self.configuration
+        # self.newConfiguration["rooms_settings"][self.actualRoomID]["season"] = self.season
+        # database_manager.update_configuration(self.db, self.newConfiguration)
 
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        font.setBold(True)
-        font.setWeight(75)
-        font.setUnderline(True)
-        self.PB_winter.setFont(font)
-
-        font.setUnderline(False)
-        self.PB_summer.setFont(font)
+        # font = QtGui.QFont()
+        # font.setPointSize(16)
+        # font.setBold(True)
+        # font.setWeight(75)
+        # font.setUnderline(True)
+        # self.PB_winter.setFont(font)
+        # font.setUnderline(False)
+        # self.PB_summer.setFont(font)
         # self.PB_winter.setEnabled(False)
         # self.PB_summer.setEnabled(True)
 
     def on_PB_summer_pressed(self):
         self.season = "hot"
-        self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][self.actualRoomID]["season"] = self.season
-        database_manager.update_configuration(self.db, self.newConfiguration)
+        self.lastModifiedBy = "GUI"
+        self.updateScreenData()
+        # self.newConfiguration = self.configuration
+        # self.newConfiguration["rooms_settings"][self.actualRoomID]["season"] = self.season
+        # database_manager.update_configuration(self.db, self.newConfiguration)
 
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        font.setBold(True)
-        font.setWeight(75)
-        font.setUnderline(True)
-        self.PB_summer.setFont(font)
+        # font = QtGui.QFont()
+        # font.setPointSize(16)
+        # font.setBold(True)
+        # font.setWeight(75)
+        # font.setUnderline(True)
+        # self.PB_summer.setFont(font)
 
-        font.setUnderline(False)
-        self.PB_winter.setFont(font)
+        # font.setUnderline(False)
+        # self.PB_winter.setFont(font)
         # self.PB_summer.setEnabled(False)
         # self.PB_winter.setEnabled(True)
         
     # Mode
     def on_PB_program_pressed(self):
         self.mode = "program"
-        self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][self.actualRoomID]["mode"] = self.mode
-        database_manager.update_configuration(self.db, self.newConfiguration)
+        self.lastModifiedBy = "GUI"
+        self.updateScreenData()
+        # self.newConfiguration = self.configuration
+        # self.newConfiguration["rooms_settings"][self.actualRoomID]["mode"] = self.mode
+        # database_manager.update_configuration(self.db, self.newConfiguration)
 
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        font.setBold(True)
-        font.setWeight(75)
-        font.setUnderline(True)
-        self.PB_program.setFont(font)
+        # font = QtGui.QFont()
+        # font.setPointSize(16)
+        # font.setBold(True)
+        # font.setWeight(75)
+        # font.setUnderline(True)
+        # self.PB_program.setFont(font)
 
-        font.setUnderline(False)
-        self.PB_manual.setFont(font)
-        self.PB_antiFreeze.setFont(font)
+        # font.setUnderline(False)
+        # self.PB_manual.setFont(font)
+        # self.PB_antiFreeze.setFont(font)
 
-        self.disableProgramAntiFreezeButtons()
+        # self.disableProgramAntiFreezeButtons()
 
     def on_PB_manual_pressed(self):
         self.mode = "manual"
-        self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][self.actualRoomID]["mode"] = self.mode
-        database_manager.update_configuration(self.db, self.newConfiguration)
+        self.lastModifiedBy = "GUI"
+        self.updateScreenData()
+        # self.newConfiguration = self.configuration
+        # self.newConfiguration["rooms_settings"][self.actualRoomID]["mode"] = self.mode
+        # database_manager.update_configuration(self.db, self.newConfiguration)
 
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        font.setBold(True)
-        font.setWeight(75)
-        font.setUnderline(True)
-        self.PB_manual.setFont(font)
+        # font = QtGui.QFont()
+        # font.setPointSize(16)
+        # font.setBold(True)
+        # font.setWeight(75)
+        # font.setUnderline(True)
+        # self.PB_manual.setFont(font)
 
-        font.setUnderline(False)
-        self.PB_program.setFont(font)
-        self.PB_antiFreeze.setFont(font)
+        # font.setUnderline(False)
+        # self.PB_program.setFont(font)
+        # self.PB_antiFreeze.setFont(font)
 
-        self.enableManualButtons()
+        # self.enableManualButtons()
 
     def on_PB_antiFreeze_pressed(self):
         self.mode = "antifreeze"
-        self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][self.actualRoomID]["mode"] = self.mode
-        database_manager.update_configuration(self.db, self.newConfiguration)
+        self.lastModifiedBy = "GUI"
+        self.updateScreenData()
+        # self.newConfiguration = self.configuration
+        # self.newConfiguration["rooms_settings"][self.actualRoomID]["mode"] = self.mode
+        # database_manager.update_configuration(self.db, self.newConfiguration)
 
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        font.setBold(True)
-        font.setWeight(75)
-        font.setUnderline(True)
-        self.PB_antiFreeze.setFont(font)
+        # font = QtGui.QFont()
+        # font.setPointSize(16)
+        # font.setBold(True)
+        # font.setWeight(75)
+        # font.setUnderline(True)
+        # self.PB_antiFreeze.setFont(font)
 
-        font.setUnderline(False)
-        self.PB_program.setFont(font)
-        self.PB_manual.setFont(font)
+        # font.setUnderline(False)
+        # self.PB_program.setFont(font)
+        # self.PB_manual.setFont(font)
 
-        self.disableProgramAntiFreezeButtons()
+        # self.disableProgramAntiFreezeButtons()
         # TODO: La temperatura dell'Antifreeze è 15?
-        self.LCDTempSet.display(15.0)
+        # self.LCDTempSet.display(15.0)
 
     def disableProgramAntiFreezeButtons(self):
         # Se è in modalità programma/antifreeze alcuni tasti devono essere disabilitati
@@ -187,6 +148,7 @@ class Ui_MainWindow(object):
         self.PB_tempDecrease.setDisabled(False)
         self.LCDTempSet.setDisabled(False)
 
+    # Signals
     def on_PB_roomList_clicked(self):
         self.close()
         self.mainWindow = QtWidgets.QMainWindow()
@@ -197,40 +159,15 @@ class Ui_MainWindow(object):
     def on_PB_nextRoom_clicked(self):
         if (self.actualRoomID < len(self.configuration["rooms_settings"]) - 1):    # Posso scorrere ancora
             self.actualRoomID = self.actualRoomID + 1
-        self.reloadRoomData()
+        self.lastModifiedBy = "WEB"
+        self.updateScreenData()
 
     def on_PB_prevRoom_clicked(self):   
         if (self.actualRoomID > 0):    # Posso scorrere ancora
             self.actualRoomID = self.actualRoomID - 1
-        self.reloadRoomData()
+        self.lastModifiedBy = "WEB"
+        self.updateScreenData()
         
-    def reloadRoomData(self):
-        self.configuration = database_manager.get_configuration(self.db)
-        self.roomTemp = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
-        self.season = self.configuration["rooms_settings"][self.actualRoomID]["season"]
-        self.mode = self.configuration["rooms_settings"][self.actualRoomID]["mode"]
-
-        if (self.mode == "program"):
-            self.on_PB_program_pressed()
-            self.disableProgramAntiFreezeButtons()
-            
-        elif (self.mode == "manual"):
-            self.on_PB_manual_pressed()
-            self.enableManualButtons()
-
-        else:
-            self.on_PB_antiFreeze_pressed()
-            self.disableProgramAntiFreezeButtons()
-            # TODO: La temperatura dell'Antifreeze è 15?
-            self.LCDTempSet.display(15.0)
-
-        if (self.season == "cold"):
-            self.on_PB_winter_pressed()
-        else:
-            self.on_PB_summer_pressed()
-
-        self.PB_roomList.setText(QtCore.QCoreApplication.translate("MainWindow", "Actual Room: " + str(self.configuration["rooms_settings"][self.actualRoomID]["room_name"])))
-    
     def on_PB_settings_clicked(self):
         self.close()
         self.mainWindow = QtWidgets.QMainWindow()
@@ -238,6 +175,48 @@ class Ui_MainWindow(object):
         self.uiSettingsWindow.setupUi(self.mainWindow, self.db)
         self.mainWindow.showMaximized()
 
+    def on_PB_tempIncrease_pressed(self):
+        print("Incremento temperatura")
+        # self.timerUpdateScreenData.stop()
+        # self.timerSetTemp.start(3000)
+
+        self.lastModifiedBy = "GUI"
+
+        # if (self.repetitions == 0):
+        #     # Quale è stata l'ultima temperatura impostata per questa stanza?
+        #     # Uso questa temperature come base di partenza per poi decrementarla
+        #     self.configuration = database_manager.get_configuration(self.db)
+        #     self.roomTempSet = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
+        
+        print("OLD temp value: " + str(self.roomTempSet))
+        self.roomTempSet = self.roomTempSet + 0.5   
+        print("NEW temp: " + str(self.roomTempSet))
+        self.updateScreenData()
+
+        # self.repetitions = self.repetitions + 1
+
+    def on_PB_tempDecrease_pressed(self):
+
+        print("Decremento temperatura")
+        # self.timerUpdateScreenData.stop()
+        # self.timerSetTemp.start(3000)
+
+        self.lastModifiedBy = "GUI"
+
+        # if (self.repetitions == 0):
+        #     # Quale è stata l'ultima temperatura impostata per questa stanza?
+        #     # Uso questa temperature come base di partenza per poi decrementarla
+        #     self.configuration = database_manager.get_configuration(self.db)
+        #     self.roomTempSet = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
+        
+        print("OLD temp value: " + str(self.roomTempSet))
+        self.roomTempSet = self.roomTempSet - 0.5   
+        print("NEW temp: " + str(self.roomTempSet))
+        self.updateScreenData()
+
+        # self.repetitions = self.repetitions + 1
+
+    # Signals connection
     def activeFunctionsConnection(self):
         # PB_roomList
         self.PB_roomList.clicked.connect(self.on_PB_roomList_clicked)
@@ -267,38 +246,58 @@ class Ui_MainWindow(object):
         self.timer.start(1000)
 
         # Timer for actual temperature updating
-        self.timerUpdateTemp.timeout.connect(self.updateTempData)
+        self.timerUpdateScreenData.timeout.connect(self.updateScreenData)
         # TODO: Decidere
         # impostato a 1 sec, impostare a 1 minuto?
-        self.timerUpdateTemp.start(2000)
+        self.timerUpdateScreenData.start(1000)
 
         # Timer for set temperature confirmation
-        self.timerSetTemp.timeout.connect(self.commitSetTempData)
+        # self.timerSetTemp.timeout.connect(self.commitSetTempData)
 
         # Init funcs
-        self.updateTempData()
+        self.updateScreenData()
 
         # La prima stanza è sempre quella principale dove è il raspone
         # Sarà poi l'utente a selezionare le altre stanze
         self.actualRoomID = 0
-        self.reloadRoomData()
-        
+
+    # Timer handlers  
     def showTime(self):
         date = QDate.currentDate()
         time = QTime.currentTime()
         self.timeEdit.setTime(time)
         self.dateEdit.setDate(date)
 
-    def updateTempData(self):
+    def updateScreenData(self):
         # TODO: Uncomment
         # lastTemperatures is a list
         # lastTemperatures = database_manager.get_last_temperatures(self.db)
 
+        # Lettura delle impostazioni, se sono differenti con quelle precedenti 
+        # allora la configuration è stata cambiata dal sito e non dall'interfaccia
         self.configuration = database_manager.get_configuration(self.db)
-        self.roomSetTemp = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
 
-        if (self.mode != "antifreeze"):
-            self.LCDTempSet.display(self.roomSetTemp)
+        if (self.lastModifiedBy == "GUI"):
+            self.newConfiguration = self.configuration
+            self.newConfiguration["rooms_settings"][self.actualRoomID]["info"]["temp"] = self.roomTempSet
+            self.newConfiguration["rooms_settings"][self.actualRoomID]["season"] = self.season
+            self.newConfiguration["rooms_settings"][self.actualRoomID]["mode"] = self.mode
+
+            print("\t --> COMMIT: ")
+            print("\t\tID: " + str(self.actualRoomID))
+            print("\t\tTemp: " + str(self.roomTempSet))
+            print("\t\tSeason: " + str(self.season))
+            print("\t\tMode: " + str(self.mode))
+
+            database_manager.update_configuration(self.db, self.newConfiguration)     
+            self.lastModifiedBy = "WEB"
+
+        else:   # WEB
+            self.roomTempSet = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
+            self.season = self.configuration["rooms_settings"][self.actualRoomID]["season"]
+            self.mode = self.configuration["rooms_settings"][self.actualRoomID]["mode"]
+
+        self.reloadRoomData()
 
         lastTemperatures = []
         lastTemperatures.append(18.5)
@@ -312,20 +311,102 @@ class Ui_MainWindow(object):
 
     def commitSetTempData(self):
         print("\t --> COMMIT of new temperature")
-        self.timerUpdateTemp.start(1000)
-        self.timerSetTemp.stop()
+        self.timerUpdateScreenData.start(1000)
+        # self.timerSetTemp.stop()
 
         self.repetitions = 0
 
         self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][self.actualRoomID]["info"]["temp"] = self.newRoomTemp
+        self.newConfiguration["rooms_settings"][self.actualRoomID]["info"]["temp"] = self.newRoomTempSet
 
-        database_manager.update_configuration(self.db, self.configuration)
+        database_manager.update_configuration(self.db, self.newConfiguration)
 
+    def reloadRoomData(self):   
+        # self.configuration = database_manager.get_configuration(self.db)
+        # self.roomTempSet = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
+        # self.season = self.configuration["rooms_settings"][self.actualRoomID]["season"]
+        # self.mode = self.configuration["rooms_settings"][self.actualRoomID]["mode"]
+
+        self.LCDTempSet.display(self.roomTempSet)
+
+        if (self.mode == "program"):
+            # self.on_PB_program_pressed()
+            font = QtGui.QFont()
+            font.setPointSize(16)
+            font.setBold(True)
+            font.setWeight(75)
+            font.setUnderline(True)
+            self.PB_program.setFont(font)
+
+            font.setUnderline(False)
+            self.PB_manual.setFont(font)
+            self.PB_antiFreeze.setFont(font)
+
+            self.disableProgramAntiFreezeButtons()
+            
+        elif (self.mode == "manual"):
+            # self.on_PB_manual_pressed()
+            font = QtGui.QFont()
+            font.setPointSize(16)
+            font.setBold(True)
+            font.setWeight(75)
+            font.setUnderline(True)
+            self.PB_manual.setFont(font)
+
+            font.setUnderline(False)
+            self.PB_program.setFont(font)
+            self.PB_antiFreeze.setFont(font)
+
+            self.enableManualButtons()
+
+        else:
+            # self.on_PB_antiFreeze_pressed()
+            font = QtGui.QFont()
+            font.setPointSize(16)
+            font.setBold(True)
+            font.setWeight(75)
+            font.setUnderline(True)
+            self.PB_antiFreeze.setFont(font)
+
+            font.setUnderline(False)
+            self.PB_program.setFont(font)
+            self.PB_manual.setFont(font)
+
+            self.disableProgramAntiFreezeButtons()
+            # TODO: La temperatura dell'Antifreeze è 15?
+            self.LCDTempSet.display(15.0)
+
+        if (self.season == "cold"):
+            # self.on_PB_winter_pressed()
+            font = QtGui.QFont()
+            font.setPointSize(16)
+            font.setBold(True)
+            font.setWeight(75)
+            font.setUnderline(True)
+            self.PB_winter.setFont(font)
+
+            font.setUnderline(False)
+            self.PB_summer.setFont(font)
+
+        else:
+            # self.on_PB_summer_pressed()
+            font = QtGui.QFont()
+            font.setPointSize(16)
+            font.setBold(True)
+            font.setWeight(75)
+            font.setUnderline(True)
+            self.PB_summer.setFont(font)
+
+            font.setUnderline(False)
+            self.PB_winter.setFont(font)
+            
+        self.PB_roomList.setText(QtCore.QCoreApplication.translate("MainWindow", "Actual Room: " + str(self.configuration["rooms_settings"][self.actualRoomID]["room_name"])))
+    
+    # Window handling
     def close(self):
         self.timer.stop()
-        self.timerSetTemp.stop()
-        self.timerUpdateTemp.stop()
+        # self.timerSetTemp.stop()
+        self.timerUpdateScreenData.stop()
         self.mainWindow.close()
 
     def initLoadData(self):
@@ -539,8 +620,8 @@ class Ui_MainWindow(object):
         self.initDB(db)
 
         self.timer = QTimer()
-        self.timerUpdateTemp = QTimer()
-        self.timerSetTemp = QTimer()
+        self.timerUpdateScreenData = QTimer()
+        # self.timerSetTemp = QTimer()
 
         self.activeFunctionsConnection()
         self.initLoadData()
