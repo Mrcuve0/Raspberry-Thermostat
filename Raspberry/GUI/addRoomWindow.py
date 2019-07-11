@@ -56,9 +56,6 @@ class Ui_addRoomWindow(object):
             return
 
         # Aggiungi stanza alla configurazione
-        # FIXME: la chiave room che tipo di dato vuole? 
-        # Per ora gli passo il nome della stanza, ma è ridondante con la chiave 
-        # "room_name"
         self.configuration["rooms_settings"].append({"room" : self.actualNumRooms, "room_name" : roomName, "mode" : "manual", "info" : {"temp" : 25, "weekend" : 0}, "season" : "hot"})
 
         self.newConfiguration = self.configuration
