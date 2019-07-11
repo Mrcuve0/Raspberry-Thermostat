@@ -1,8 +1,23 @@
+import subprocess
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTime, QDate, QTimer
 
 import sensorValveProgramWindow
+from database_manager import database_manager
 
+
+class MyQLineEdit(QtWidgets.QLineEdit):
+    def focusInEvent(self, e):
+        try:
+            subprocess.Popen(["onboard"])
+        except FileNotFoundError:
+            pass
+        super(MyQLineEdit, self).focusInEvent(e)
+
+    def focusOutEvent(self, e):
+        subprocess.Popen(["killall", "onboard"])
+        super(MyQLineEdit, self).focusOutEvent(e)
 
 class Ui_ProgramSettingsWindow(object):
 
@@ -16,6 +31,16 @@ class Ui_ProgramSettingsWindow(object):
     def initDB(self, db):
         self.db = db
 
+    def loadScreenData(self):
+        self.configuration = database_manager.get_configuration(self.db)
+        if ("program" in self.configuration["rooms_settings"][self.actualRoomID]):
+            self.LE_MFM.setText(self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["MFM"])
+            self.LE_MFE.setText(self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["MFE"])
+            self.LE_MFN.setText(self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["MFN"])
+            self.LE_WEM.setText(self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["WEM"])
+            self.LE_WEE.setText(self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["WEE"])
+            self.LE_WEN.setText(self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["WEN"])
+
     def on_PB_goBack_clicked(self):
         self.close()
         self.programSettingsWindow = QtWidgets.QMainWindow()
@@ -23,16 +48,44 @@ class Ui_ProgramSettingsWindow(object):
         self.uiSensorValveProgramWindow.setupUi(self.programSettingsWindow, self.db, self.actualRoomID, self.actualRoomName)
         self.programSettingsWindow.showMaximized()
 
-    # TODO: Complete apply button action
     def on_PB_apply_clicked(self):
-        pass
+        # Check if chars different than numbers have been inserted
+        if (not(self.LE_MFE.text().isdecimal() and self.LE_MFM.text().isdecimal() and self.LE_MFN.text().isdecimal() and self.LE_WEE.text().isdecimal() and self.LE_WEM.text().isdecimal() and self.LE_WEN.text().isdecimal())):
+            # Errore, c'è almeno un campo o vuoto o contenente valor non numnerici
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setInformativeText(
+                "You cannot submit empty or non-numerical forms!")
+            msg.setWindowTitle("Error")
+            msg.exec_()
+        else:
+            self.configuration = database_manager.get_configuration(self.db)
+            self.newConfiguration = self.configuration
+            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"] = {"temp": {"MFM" : self.LE_MFM.text(), "MFE" : self.LE_MFE.text(), "MFN" : self.LE_MFN.text(), "WEM" : self.LE_WEM.text(), "WEE" : self.LE_WEE.text(), "WEN" : self.LE_WEN.text()}}
 
-    # TODO: Complete clearAll button action
+            database_manager.update_configuration(self.db, self.newConfiguration)
+
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setInformativeText(
+                "Program updated correctly!")
+            msg.setWindowTitle("Info")
+            msg.exec_()  
+
     def on_PB_clearAll_clicked(self):
-        pass
+        self.LE_MFE.setText("")
+        self.LE_MFM.setText("")
+        self.LE_MFN.setText("")
+        self.LE_WEE.setText("")
+        self.LE_WEM.setText("")
+        self.LE_WEN.setText("")
 
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
+        self.PB_clearAll.clicked.connect(self.on_PB_clearAll_clicked)
+        self.PB_apply.clicked.connect(self.on_PB_apply_clicked)
+
+        self.loadScreenData()
 
         self.timer.timeout.connect(self.showTime)
         self.showTime()
@@ -59,7 +112,7 @@ class Ui_ProgramSettingsWindow(object):
         self.centralwidget = QtWidgets.QWidget(ProgramSettingsWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.timeEdit = QtWidgets.QTimeEdit(self.centralwidget)
-        self.timeEdit.setGeometry(QtCore.QRect(677, 0, 121, 61))
+        self.timeEdit.setGeometry(QtCore.QRect(687, 0, 121, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -73,7 +126,7 @@ class Ui_ProgramSettingsWindow(object):
         self.timeEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.timeEdit.setObjectName("timeEdit")
         self.dateEdit = QtWidgets.QDateEdit(self.centralwidget)
-        self.dateEdit.setGeometry(QtCore.QRect(110, 0, 571, 61))
+        self.dateEdit.setGeometry(QtCore.QRect(120, 0, 571, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -113,7 +166,7 @@ class Ui_ProgramSettingsWindow(object):
         self.PB_apply.setFont(font)
         self.PB_apply.setObjectName("PB_apply")
         self.label_ValveName = QtWidgets.QLabel(self.centralwidget)
-        self.label_ValveName.setGeometry(QtCore.QRect(210, 50, 361, 61))
+        self.label_ValveName.setGeometry(QtCore.QRect(-60, 60, 361, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -129,36 +182,105 @@ class Ui_ProgramSettingsWindow(object):
         font.setWeight(75)
         self.PB_clearAll.setFont(font)
         self.PB_clearAll.setObjectName("PB_clearAll")
-        self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
-        self.tableWidget.setGeometry(QtCore.QRect(50, 110, 701, 241))
+        self.labelMorning = QtWidgets.QLabel(self.centralwidget)
+        self.labelMorning.setGeometry(QtCore.QRect(190, 140, 131, 41))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(12)
         font.setBold(True)
         font.setWeight(75)
-        self.tableWidget.setFont(font)
-        self.tableWidget.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.tableWidget.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.tableWidget.setLineWidth(1)
-        self.tableWidget.setGridStyle(QtCore.Qt.SolidLine)
-        self.tableWidget.setCornerButtonEnabled(False)
-        self.tableWidget.setRowCount(3)
-        self.tableWidget.setColumnCount(2)
-        self.tableWidget.setObjectName("tableWidget")
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(1, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(2, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(1, item)
-        self.tableWidget.horizontalHeader().setDefaultSectionSize(300)
-        self.tableWidget.horizontalHeader().setSortIndicatorShown(False)
-        self.tableWidget.horizontalHeader().setStretchLastSection(True)
-        self.tableWidget.verticalHeader().setDefaultSectionSize(70)
-        self.tableWidget.verticalHeader().setStretchLastSection(True)
+        self.labelMorning.setFont(font)
+        self.labelMorning.setAlignment(QtCore.Qt.AlignCenter)
+        self.labelMorning.setObjectName("labelMorning")
+        self.labelEvening = QtWidgets.QLabel(self.centralwidget)
+        self.labelEvening.setGeometry(QtCore.QRect(190, 190, 131, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.labelEvening.setFont(font)
+        self.labelEvening.setAlignment(QtCore.Qt.AlignCenter)
+        self.labelEvening.setObjectName("labelEvening")
+        self.labelNight = QtWidgets.QLabel(self.centralwidget)
+        self.labelNight.setGeometry(QtCore.QRect(190, 240, 131, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.labelNight.setFont(font)
+        self.labelNight.setAlignment(QtCore.Qt.AlignCenter)
+        self.labelNight.setObjectName("labelNight")
+        self.labelMonFri = QtWidgets.QLabel(self.centralwidget)
+        self.labelMonFri.setGeometry(QtCore.QRect(340, 100, 201, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.labelMonFri.setFont(font)
+        self.labelMonFri.setAlignment(QtCore.Qt.AlignCenter)
+        self.labelMonFri.setObjectName("labelMonFri")
+        self.labelWeekend = QtWidgets.QLabel(self.centralwidget)
+        self.labelWeekend.setGeometry(QtCore.QRect(570, 100, 201, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.labelWeekend.setFont(font)
+        self.labelWeekend.setAlignment(QtCore.Qt.AlignCenter)
+        self.labelWeekend.setObjectName("labelWeekend")
+        self.LE_MFM = MyQLineEdit(self.centralwidget)
+        self.LE_MFM.setGeometry(QtCore.QRect(360, 140, 161, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.LE_MFM.setFont(font)
+        self.LE_MFM.setAlignment(QtCore.Qt.AlignCenter)
+        self.LE_MFM.setObjectName("LE_MFM")
+        self.LE_MFE = MyQLineEdit(self.centralwidget)
+        self.LE_MFE.setGeometry(QtCore.QRect(360, 190, 161, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.LE_MFE.setFont(font)
+        self.LE_MFE.setAlignment(QtCore.Qt.AlignCenter)
+        self.LE_MFE.setObjectName("LE_MFE")
+        self.LE_MFN = MyQLineEdit(self.centralwidget)
+        self.LE_MFN.setGeometry(QtCore.QRect(360, 240, 161, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.LE_MFN.setFont(font)
+        self.LE_MFN.setAlignment(QtCore.Qt.AlignCenter)
+        self.LE_MFN.setObjectName("LE_MFN")
+        self.LE_WEE = MyQLineEdit(self.centralwidget)
+        self.LE_WEE.setGeometry(QtCore.QRect(600, 190, 161, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.LE_WEE.setFont(font)
+        self.LE_WEE.setAlignment(QtCore.Qt.AlignCenter)
+        self.LE_WEE.setObjectName("LE_WEE")
+        self.LE_WEN = MyQLineEdit(self.centralwidget)
+        self.LE_WEN.setGeometry(QtCore.QRect(600, 240, 161, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.LE_WEN.setFont(font)
+        self.LE_WEN.setAlignment(QtCore.Qt.AlignCenter)
+        self.LE_WEN.setObjectName("LE_WEN")
+        self.LE_WEM = MyQLineEdit(self.centralwidget)
+        self.LE_WEM.setGeometry(QtCore.QRect(600, 140, 161, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.LE_WEM.setFont(font)
+        self.LE_WEM.setAlignment(QtCore.Qt.AlignCenter)
+        self.LE_WEM.setObjectName("LE_WEM")
         ProgramSettingsWindow.setCentralWidget(self.centralwidget)
 
         self.initDB(db)
@@ -182,13 +304,14 @@ class Ui_ProgramSettingsWindow(object):
         self.PB_apply.setText(_translate("ProgramSettingsWindow", "Apply"))
         self.label_ValveName.setText(_translate("ProgramSettingsWindow", "Actual Room: " + str(self.actualRoomName)))
         self.PB_clearAll.setText(_translate("ProgramSettingsWindow", "Clear all"))
-        item = self.tableWidget.verticalHeaderItem(0)
-        item.setText(_translate("ProgramSettingsWindow", "06:00 - 12:00"))
-        item = self.tableWidget.verticalHeaderItem(1)
-        item.setText(_translate("ProgramSettingsWindow", "12:00 - 24:00"))
-        item = self.tableWidget.verticalHeaderItem(2)
-        item.setText(_translate("ProgramSettingsWindow", "24:00 - 06:00"))
-        item = self.tableWidget.horizontalHeaderItem(0)
-        item.setText(_translate("ProgramSettingsWindow", "Monday - Friday"))
-        item = self.tableWidget.horizontalHeaderItem(1)
-        item.setText(_translate("ProgramSettingsWindow", "Weekend"))
+        self.labelMorning.setText(_translate("ProgramSettingsWindow", "06:00 - 12:00"))
+        self.labelEvening.setText(_translate("ProgramSettingsWindow", "12:00 - 24:00"))
+        self.labelNight.setText(_translate("ProgramSettingsWindow", "24:00 - 06:00"))
+        self.labelMonFri.setText(_translate("ProgramSettingsWindow", "Monday - Friday"))
+        self.labelWeekend.setText(_translate("ProgramSettingsWindow", "Weekend"))
+        self.LE_MFM.setPlaceholderText(_translate("ProgramSettingsWindow", "°C"))
+        self.LE_MFE.setPlaceholderText(_translate("ProgramSettingsWindow", "°C"))
+        self.LE_MFN.setPlaceholderText(_translate("ProgramSettingsWindow", "°C"))
+        self.LE_WEE.setPlaceholderText(_translate("ProgramSettingsWindow", "°C"))
+        self.LE_WEN.setPlaceholderText(_translate("ProgramSettingsWindow", "°C"))
+        self.LE_WEM.setPlaceholderText(_translate("ProgramSettingsWindow", "°C"))
