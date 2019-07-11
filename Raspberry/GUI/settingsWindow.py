@@ -20,7 +20,7 @@ class Ui_SettingsWindow(object):
         self.close()
         self.settingsWindow = QtWidgets.QMainWindow()
         self.uiMainWindow = mainWindow.Ui_MainWindow()
-        self.uiMainWindow.setupUi(self.settingsWindow, self.db)
+        self.uiMainWindow.setupUi(self.settingsWindow, self.db, 0)
         self.settingsWindow.showMaximized()
 
     def on_PB_network_clicked(self):

@@ -25,9 +25,9 @@ os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
 class MainWindow(QMainWindow, mainWindow.Ui_MainWindow):
 
-    def __init__(self, db):
+    def __init__(self, db, actualRoomID):
         super(self.__class__, self).__init__()
-        self.setupUi(self, db)
+        self.setupUi(self, db, actualRoomID)
         # self.initDB(db)
 
 
@@ -43,7 +43,7 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     blank = BlankWindow()
     blank.showMaximized()
-    raspyGUI = MainWindow(db)
+    raspyGUI = MainWindow(db, 0)
     raspyGUI.showMaximized()
     sys.exit(app.exec_())
 

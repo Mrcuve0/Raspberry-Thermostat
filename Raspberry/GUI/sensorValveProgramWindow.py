@@ -44,7 +44,7 @@ class Ui_SensorValveProgramWindow(object):
         self.close()
         self.sensorValveProgramWindow = QtWidgets.QMainWindow()
         self.uiMainWindow = mainWindow.Ui_MainWindow()
-        self.uiMainWindow.setupUi(self.sensorValveProgramWindow, self.db)
+        self.uiMainWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomID)
         self.sensorValveProgramWindow.showMaximized()
 
     def activeFunctionsConnection(self):
