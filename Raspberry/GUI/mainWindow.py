@@ -20,6 +20,7 @@ class Ui_MainWindow(object):
     newConfiguration = None
 
     roomTempSet = 0.0
+    roomTempProgram = 0.0
     repetitions = 0
     actualRoomID = 0
 
@@ -273,6 +274,29 @@ class Ui_MainWindow(object):
         # allora la configuration è stata cambiata dal sito e non dall'interfaccia
         self.configuration = database_manager.get_configuration(self.db)
 
+        if ("program" in self.configuration["rooms_settings"][self.actualRoomID]):
+            # MONDAY - FRIDAY
+            date = QDate.currentDate()
+            time = QTime.currentTime()
+            if (date.dayOfWeek() >= 1 and date.dayOfWeek() <= 5):
+                if (time.hour() >= 6 and time.hour() < 12):
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["MFM"]
+                if (time.hour() >= 12 and time.hour() <= 23):
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["MFE"]
+                if (time.hour() >= 0  and time.hour() < 6):
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["MFN"]
+
+            # WEEKEND
+            elif (date.dayOfWeek() >= 6 and date.dayOfWeek() <= 7):
+                if (time.hour() >= 6 and time.hour() < 12):
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["WEM"]
+                if (time.hour() >= 12 and time.hour() <= 23):
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["WEE"]
+                if (time.hour() >= 0 and time.hour() < 6):
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["WEN"]
+        else:
+            self.roomTempProgram = "00"
+
         if (self.lastModifiedBy == "GUI"):
             self.newConfiguration = self.configuration
             self.newConfiguration["rooms_settings"][self.actualRoomID]["info"]["temp"] = self.roomTempSet
@@ -313,7 +337,7 @@ class Ui_MainWindow(object):
         self.repetitions = 0
 
         self.newConfiguration = self.configuration
-        self.newConfiguration["rooms_settings"][self.actualRoomID]["info"]["temp"] = self.newRoomTempSet
+        self.newConfiguration["rooms_settings"][self.actualRoomID]["info"]["temp"] = self.roomTempSet
 
         database_manager.update_configuration(self.db, self.newConfiguration)
 
@@ -322,8 +346,6 @@ class Ui_MainWindow(object):
         # self.roomTempSet = self.configuration["rooms_settings"][self.actualRoomID]["info"]["temp"]
         # self.season = self.configuration["rooms_settings"][self.actualRoomID]["season"]
         # self.mode = self.configuration["rooms_settings"][self.actualRoomID]["mode"]
-
-        self.LCDTempSet.display(self.roomTempSet)
 
         if (self.mode == "program"):
             # self.on_PB_program_pressed()
@@ -339,6 +361,9 @@ class Ui_MainWindow(object):
             self.PB_antiFreeze.setFont(font)
 
             self.disableProgramAntiFreezeButtons()
+
+            # Show temperature according to program
+            self.LCDTempSet.display(str(self.roomTempProgram))
             
         elif (self.mode == "manual"):
             # self.on_PB_manual_pressed()
@@ -355,6 +380,8 @@ class Ui_MainWindow(object):
 
             self.enableManualButtons()
 
+            self.LCDTempSet.display(str(self.roomTempSet))
+
         else:
             # self.on_PB_antiFreeze_pressed()
             font = QtGui.QFont()
@@ -370,7 +397,7 @@ class Ui_MainWindow(object):
 
             self.disableProgramAntiFreezeButtons()
             # TODO: La temperatura dell'Antifreeze è 15?
-            self.LCDTempSet.display(15.0)
+            self.LCDTempSet.display(str(15.0))
 
         if (self.season == "cold"):
             # self.on_PB_winter_pressed()
