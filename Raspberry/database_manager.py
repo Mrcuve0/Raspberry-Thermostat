@@ -4,6 +4,7 @@ class database_manager:
 	DB_ADDRESS = 'localhost'
 	logs_collection = None
 	config_collection = None
+	roomData_collection = None
 	temperatures_collection = None
 	test_collection = None
 	client = None
@@ -14,6 +15,7 @@ class database_manager:
 		self.db = self.client['thermodb']
 		self.logs_collection = self.db['logs_coll']
 		self.config_collection = self.db['config_coll']
+		self.roomData_collection = self.db["roomData_coll"]
 		self.temperatures_collection = self.db['temp_coll']
 		self.test_collection = self.db['test']
 
@@ -38,6 +40,15 @@ class database_manager:
 		if config is not None:
 			new_config['_id'] = config['_id']
 		self.config_collection.save(new_config)
+
+	def get_roomData_configuration(self):
+		return self.roomData_collection.find_one()
+
+	def update_roomData_configuration(self, new_roomData_config):
+		roomData_config = self.get_roomData_configuration()
+		if roomData_config is not None:
+			new_roomData_config["_id"] = roomData_config["_id"]
+		self.roomData_collection.save(new_roomData_config)
 
 	def get_last_temperatures(self):
 		result = self.temperatures_collection.find_one()
