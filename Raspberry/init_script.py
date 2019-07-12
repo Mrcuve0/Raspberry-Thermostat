@@ -7,14 +7,31 @@ db = database_manager.database_manager()
 
 # Check and init configuration
 config = db.get_configuration()
+
+# TODO: Ucomment below line to reset DB
+# config = None
 if config == None:
-	config = {'rooms_settings': [{'room': 'default', 'room_name': 'default', 'mode': 'manual', 'info': {'temp': 25, 'weekend': 0}, 'season': 'hot'}], 'backup_config': 'none'}
+	config = {'rooms_settings': [{'room': 0, 'room_name': 'default', 'mode': 'manual', 'info': {'temp': 25, 'weekend': 0}, 'season': 'hot'}]}
 	db.update_configuration(config)
+
 # Check and init last_temperatures
 last_t = db.get_last_temperatures()
+
+# TODO: uncomment below line to reset DB
+last_t = None
 if last_t == None:
 	last_t = []
 	db.update_last_temperatures(last_t)
+
+# Check and init roomData
+roomData_config = db.get_roomData_configuration()
+
+# TODO: Uncomment below line to reset DB
+# roomData_config = None
+if roomData_config == None:
+	roomData_config = {"conf" : [{"roomID" : 0, "roomName" : "default",  "sensors" : {"sensorID" : ""}, "actuators" : {"actuatorID" : "", "valves" : {"valveID": ""}}}]}
+	db.update_roomData_configuration(roomData_config)
+
 
 # Raspberry config
 # subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/logic.py'])
