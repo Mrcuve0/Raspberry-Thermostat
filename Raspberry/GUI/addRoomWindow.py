@@ -25,6 +25,8 @@ class Ui_addRoomWindow(object):
     db = None
     configuration = None
     newConfiguration = None
+    roomDataConfiguration = None
+    newRoomDataConfiguration = None
 
     actualNumRooms = 0
 
@@ -33,6 +35,7 @@ class Ui_addRoomWindow(object):
 
     def reloadRoomData(self):
         self.configuration = database_manager.get_configuration(self.db)
+        self.roomDataConfiguration = database_manager.get_roomData_configuration(self.db)
 
     def on_PB_goBack_clicked(self):
         self.close()
@@ -44,7 +47,9 @@ class Ui_addRoomWindow(object):
     # TODO: Aggiungo la stanza alla lista di stanze già disponibili nel sistema
     # Ritorna un errore se una stanza è già presente con lo stesso nome nella lista
     def on_PB_addRoom_clicked(self):
+
         self.actualNumRooms = len(self.configuration["rooms_settings"])
+
         roomName = self.LE_room.text()
         if (roomName == ""):
             msg = QtWidgets.QMessageBox()
@@ -57,9 +62,12 @@ class Ui_addRoomWindow(object):
 
         # Aggiungi stanza alla configurazione
         self.configuration["rooms_settings"].append({"room" : self.actualNumRooms, "room_name" : roomName, "mode" : "manual", "info" : {"temp" : 25, "weekend" : 0}, "season" : "hot"})
+        # self.roomDataConfiguration = {"conf" : [{"roomID" : 0, "roomName" : "default",  "sensors" : {"sensorID" : ""}, "actuators" : {"actuatorID" : "", "valves" : {"valveID": ""}}}]}
+        self.roomDataConfiguration["conf"].append({"roomID" : self.actualNumRooms, "roomName" : roomName,  "sensors" : {"sensorID" : ""}, "actuators" : {"actuatorID" : "", "valves" : {"valveID": ""}}})
 
         self.newConfiguration = self.configuration
         database_manager.update_configuration(self.db, self.newConfiguration)
+        database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
 
         print("\t --> COMMIT: Stanza aggiunta")
         msg = QtWidgets.QMessageBox()

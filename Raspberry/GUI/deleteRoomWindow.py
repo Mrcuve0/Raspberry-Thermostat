@@ -25,6 +25,7 @@ class Ui_deleteRoomWindow(object):
     db = None
     configuration = None
     newConfiguration = None
+    roomDataConfiguration = None
 
     actualNumRooms = 0
 
@@ -33,6 +34,7 @@ class Ui_deleteRoomWindow(object):
 
     def reloadRoomData(self):
         self.configuration = database_manager.get_configuration(self.db)
+        self.roomDataConfiguration = database_manager.get_roomData_configuration(self.db)
 
     def on_PB_goBack_clicked(self):
         self.close()
@@ -64,14 +66,17 @@ class Ui_deleteRoomWindow(object):
 
         flag = 0
         for i in range(0, self.actualNumRooms): 
-            if str(roomName).lower() == str(self.configuration["rooms_settings"][i]["room_name"]).lower():
-                del self.configuration["rooms_settings"][i]
-                flag = 1
-                break
+            if (str(roomName).lower() == str(self.configuration["rooms_settings"][i]["room_name"]).lower()):
+                if (str(roomName).lower() == str(self.roomDataConfiguration["conf"][i]["roomName"]).lower()):
+                    del self.configuration["rooms_settings"][i]
+                    del self.roomDataConfiguration["conf"][i]
+                    flag = 1
+                    break
 
         if (flag == 1):
             self.newConfiguration = self.configuration
             database_manager.update_configuration(self.db, self.newConfiguration)
+            database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
 
             # TODO: Inviare al sensore collegato un messaggio per dirgli di spegnersi
             print("\t --> COMMIT: Stanza rimossa")
