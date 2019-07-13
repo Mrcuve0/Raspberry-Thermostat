@@ -2,7 +2,7 @@ tools
 
 sudo apt install apache2
 sudo apt-get install php7.0 php7.0-json libapache2-mod-php7.0
-
+sudo apt-get install php-mongodb
 
 --non necessario -> bower_components già importata -> basta copiare tutto il contenuto della cartella Web-Interface in /var/www/html
 sudo apt-get install nodejs npm
