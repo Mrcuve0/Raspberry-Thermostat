@@ -9,7 +9,7 @@ sensor = 22
 pin = 4
 mqtt_manager = connection_manager()
 mqtt_manager.mqtt_connect()
-raspberry_room = 'default' 
+raspberry_room = "0" 
 
 while(True):
 	humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)

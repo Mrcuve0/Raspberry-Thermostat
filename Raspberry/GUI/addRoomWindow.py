@@ -60,7 +60,7 @@ class Ui_addRoomWindow(object):
             return
 
         # Aggiungi stanza alla configurazione
-        self.configuration["rooms_settings"].append({"room" : self.actualNumRooms, "room_name" : roomName, "mode" : "manual", "info" : {"temp" : 25, "weekend" : 0}, "season" : "hot"})
+        self.configuration["rooms_settings"].append({"room" : self.actualNumRooms, "room_name" : roomName, "mode" : "manual", "info" : {"temp" : 25, "weekend" : 0}, "season" : "hot", "program" : {"MFM" : "", "MFE" : "", "MFN" : "", "WEM" : "", "WEE" : "", "WEN" : ""}})
         # self.roomDataConfiguration = {"conf" : [{"roomID" : 0, "roomName" : "default",  "sensors" : {"sensorID" : ""}, "actuators" : {"actuatorID" : "", "valves" : {"valveID": ""}}}]}
         self.roomDataConfiguration["conf"].append({"roomID" : self.actualNumRooms, "roomName" : roomName,  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "valves" : [{"valveID": ""}]}]})
 
