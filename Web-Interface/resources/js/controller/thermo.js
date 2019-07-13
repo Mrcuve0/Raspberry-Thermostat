@@ -168,7 +168,7 @@ angular.module('thermostat')
             		result = config_room.info.temp;
             	} else if (config_room.mode == 'programmable') {
             		var entry = 'MF';
-            		if ($scope.date.getDay() >= 6)
+            		if ($scope.date.getDay() == 6 || $scope.date.getDay() == 0)
             			entry = 'WE';
             		var hour = $scope.date.getHours();
             		if (hour >= 0 && hour <= 5)
