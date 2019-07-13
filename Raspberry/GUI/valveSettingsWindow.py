@@ -59,8 +59,8 @@ class Ui_ValveSettingsWindow(object):
             msg.exec_()
             return
 
-        numActuators
-        self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][]
+        # numActuators
+        # self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][]
         pass
 
     # TODO: Aggiungere metodo per l'eliminazione della valvola
