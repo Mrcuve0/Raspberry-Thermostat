@@ -275,26 +275,31 @@ class Ui_MainWindow(object):
         # allora la configuration è stata cambiata dal sito e non dall'interfaccia
         self.configuration = database_manager.get_configuration(self.db)
 
-        if ("programmable" in self.configuration["rooms_settings"][self.actualRoomID]):
+        if (self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFM"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFE"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFN"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEM"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEE"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEN"] != ""):
             # MONDAY - FRIDAY
             date = QDate.currentDate()
             time = QTime.currentTime()
             if (date.dayOfWeek() >= 1 and date.dayOfWeek() <= 5):
                 if (time.hour() >= 6 and time.hour() < 12):
-                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["temp"]["MFM"]
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFM"]
                 if (time.hour() >= 12 and time.hour() <= 23):
-                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["temp"]["MFE"]
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFE"]
                 if (time.hour() >= 0  and time.hour() < 6):
-                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["temp"]["MFN"]
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFN"]
 
             # WEEKEND
             elif (date.dayOfWeek() >= 6 and date.dayOfWeek() <= 7):
                 if (time.hour() >= 6 and time.hour() < 12):
-                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["temp"]["WEM"]
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEM"]
                 if (time.hour() >= 12 and time.hour() <= 23):
-                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["temp"]["WEE"]
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEE"]
                 if (time.hour() >= 0 and time.hour() < 6):
-                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["temp"]["WEN"]
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEN"]
         else:
             self.roomTempProgram = "00"
 
