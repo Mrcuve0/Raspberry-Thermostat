@@ -30,7 +30,7 @@ if roomData_config == None:
 	db.update_roomData_configuration(roomData_config)
 
 # Check and init roomData
-actuators_config = db.get_actuators_configuration()
+# actuators_config = db.get_actuators_configuration()
 # TODO: Uncomment below line to reset DB
 actuators_config = None
 if actuators_config == None:
@@ -40,8 +40,8 @@ if actuators_config == None:
 
 
 # Raspberry config
-# subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/logic.py'])
-# subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/sensor.py'])
+subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/logic.py'])
+subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/sensor.py'])
 
 # TODO: Comment/Uncomment device dependent paths
 # Sem PC config

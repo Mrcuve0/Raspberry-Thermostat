@@ -96,8 +96,8 @@ class Ui_SensorSettingsWindow(object):
 
             else: 
                 # TODO: Uncomment
-                # returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, self.actualRoomName)    
-                returnID = 0
+                returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, self.actualRoomName)    
+                # returnID = 0
                 if (returnID == 0):
                     print("OK! Sensor is being connected!")
 
