@@ -26,7 +26,6 @@ class Ui_addRoomWindow(object):
     configuration = None
     newConfiguration = None
     roomDataConfiguration = None
-    newRoomDataConfiguration = None
 
     actualNumRooms = 0
 
@@ -63,7 +62,7 @@ class Ui_addRoomWindow(object):
         # Aggiungi stanza alla configurazione
         self.configuration["rooms_settings"].append({"room" : self.actualNumRooms, "room_name" : roomName, "mode" : "manual", "info" : {"temp" : 25, "weekend" : 0}, "season" : "hot"})
         # self.roomDataConfiguration = {"conf" : [{"roomID" : 0, "roomName" : "default",  "sensors" : {"sensorID" : ""}, "actuators" : {"actuatorID" : "", "valves" : {"valveID": ""}}}]}
-        self.roomDataConfiguration["conf"].append({"roomID" : self.actualNumRooms, "roomName" : roomName,  "sensors" : {"sensorID" : ""}, "actuators" : {"actuatorID" : "", "valves" : {"valveID": ""}}})
+        self.roomDataConfiguration["conf"].append({"roomID" : self.actualNumRooms, "roomName" : roomName,  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "valves" : [{"valveID": ""}]}]})
 
         self.newConfiguration = self.configuration
         database_manager.update_configuration(self.db, self.newConfiguration)
@@ -108,6 +107,7 @@ class Ui_addRoomWindow(object):
         self.dateEdit.setDate(date)
 
     def close(self):
+        self.timer.stop()
         self.roomWindow.close()
 
     def setupUi(self, addRoomWindow, db):

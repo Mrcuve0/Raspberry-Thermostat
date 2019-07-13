@@ -76,6 +76,7 @@ class Ui_SettingsWindow(object):
         self.dateEdit.setDate(date)
 
     def close(self):
+        self.timer.stop()
         self.settingsWindow.close()
 
     def setupUi(self, SettingsWindow, db):

@@ -59,6 +59,7 @@ class Ui_ValveSettingsWindow(object):
         self.dateEdit.setDate(date)
 
     def close(self):
+        self.timer.stop()
         self.valveSettingsWindow.close()
 
     def setupUi(self, ValveSettingsWindow, db, actualRoomID, actualRoomName):

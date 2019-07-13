@@ -5,6 +5,7 @@ class database_manager:
 	logs_collection = None
 	config_collection = None
 	roomData_collection = None
+	actuators_collection = None
 	temperatures_collection = None
 	test_collection = None
 	client = None
@@ -16,6 +17,7 @@ class database_manager:
 		self.logs_collection = self.db['logs_coll']
 		self.config_collection = self.db['config_coll']
 		self.roomData_collection = self.db["roomData_coll"]
+		self.actuators_collection = self.db["actuators_coll"]
 		self.temperatures_collection = self.db['temp_coll']
 		self.test_collection = self.db['test']
 
@@ -49,6 +51,15 @@ class database_manager:
 		if roomData_config is not None:
 			new_roomData_config["_id"] = roomData_config["_id"]
 		self.roomData_collection.save(new_roomData_config)
+
+	def get_actuators_configuration(self):
+		return self.actuators_collection.find_one()
+
+	def update_actuators_configuration(self, new_actuators_config):
+		actuators_config = self.get_actuators_configuration()
+		if actuators_config is not None:
+			new_actuators_config["_id"] = actuators_config["_id"]
+		self.actuators_collection.save(new_actuators_config)
 
 	def get_last_temperatures(self):
 		result = self.temperatures_collection.find_one()
