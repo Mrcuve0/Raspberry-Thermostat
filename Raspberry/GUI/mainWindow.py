@@ -440,9 +440,12 @@ class Ui_MainWindow(object):
         scriptpath = os.path.dirname(__file__)
         filename = os.path.join(scriptpath, './../netCredentials.json')
 
-        with open(filename, 'r') as json_file:  
-            # json.dump(my_details, json_file)
-            data.networkData = json.load(json_file)
+        try:
+            with open(filename, 'r') as json_file:  
+                # json.dump(my_details, json_file)
+                data.networkData = json.load(json_file)
+        except:
+            pass
 
     def setupUi(self, MainWindow, db, actualRoomID):
 
