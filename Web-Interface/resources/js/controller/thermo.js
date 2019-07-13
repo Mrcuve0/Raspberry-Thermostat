@@ -58,6 +58,10 @@ angular.module('thermostat')
 		        clearInterval(reload_timer);
 			});
 
+            $scope.scroll_top = function() {
+                $("html, body").animate({ scrollTop: 0 }, 1000);
+            }
+
 			$scope.loadProgrammableTable = function() {
 				var program = configuration.rooms_settings[room_selected].program;
 				if (program == undefined) {
