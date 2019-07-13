@@ -1,0 +1,169 @@
+<div class="row">
+<div class ="col-sm-2"> </div>
+
+<div class ="col-sm-8"> 
+
+<div class="jumbotron">
+
+<!-- DEBUG   -->
+  <!-- label>room sel: {{room_selected}}</label-->
+<!--         -->
+
+  <div class="row">
+    <h3 class="col-sm-4">{{date | date:'dd-MM-yyyy'}}</h3>
+    <div class="col-sm-4"> </div>
+    <h3 class="col-sm-4">{{date | date:'HH:mm'}}</h3>
+  </div>
+  <label for="temp">Current temperature</label>
+  <h1 class="display-3" id="temp">{{temperature.toFixed(1)}}°</h1>
+  
+  <form>
+    <div class="row">
+      <div class="col-sm-4">
+        <!-- <input type="text" class="form-control" placeholder="First name"> -->
+        <button class="btn btn-primary btn-default" ng-click="changeSelectedRoom(0)" ng-disabled="lclick_temp"><span class="glyphicon glyphicon-fast-backward"></span> </button>
+      </div>
+      <div class="col-sm-4">
+        <h1> Room: {{room_name}}</h1>
+      </div>
+      <div class="col-sm-4">
+        <button class="btn btn-primary btn-default" ng-click="changeSelectedRoom(1)" ng-disabled="rclick_temp"><span class="glyphicon glyphicon-fast-forward"></span> </button>
+      </div>
+    </div>
+  </form>
+
+</div>
+
+<hr>
+
+<div class="temp_cont row">
+  <div class="col-sm-4">
+    <h3>Current Mode: 
+      <span class="label label-primary glyphicon glyphicon-wrench" ng-show="room_mode=='manual'"> Manual</span>
+      <span class="label label-primary glyphicon glyphicon-tasks" ng-show="room_mode=='programmable'"> Programmable</span>
+      <span class="label label-primary glyphicon glyphicon-ban-circle" ng-show="room_mode=='antifreeze'"> Antifreeze</span>
+    </h3>
+  </div>
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4">
+    <h3>Current Season: 
+      <span class="label label-primary glyphicon glyphicon-fire" ng-show="room_season=='hot'"> Hot</span>
+      <span class="label label-primary glyphicon glyphicon-asterisk" ng-show="room_season=='cold'"> Cold</span>
+    </h3>
+  </div>
+</div>
+
+<div class="temp_cont row">
+<!--  
+  <div class="col-sm-2"></div>
+  <div class="col-sm-2"> -->
+  <div class="col-sm-4">
+    <button ng-click="decreaseRequiredTemperature()" class="btn btn-primary btn-default" ng-disabled="room_mode!='manual'"><span class="glyphicon glyphicon-minus"></span> </button>
+  </div>
+  <div class="col-sm-4">
+    <label for="req_temp">Required temperature</label>
+    <h1 class="display-3" id="req_temp">{{required_temperature.toFixed(1)}}°</h1>
+  </div>
+  <div class="col-sm-4">
+    <button class="btn btn-primary btn-default" ng-click="increaseRequiredTemperature()" ng-disabled="room_mode!='manual'"><span class="glyphicon glyphicon-plus"></span> </button>
+  </div>  
+<!--
+  <div class="col-sm-2">
+    <button class="btn btn-primary btn-default" ng-click="increaseRequiredTemperature()"><span class="glyphicon glyphicon-plus"></span> </button>
+  </div>
+  <div class="col-sm-2"></div> -->
+</div>
+
+<hr>
+
+<h3>Select Season: </h3>
+<div class="row marketing temp_cont">
+  <div class="col-lg-6">
+    <!-- <h4>Subheading</h4> -->
+    <button ng-click="changeSeason('hot')" class="btn btn-primary btn-danger" ng-disabled="room_season == 'hot'"><span class="glyphicon glyphicon-fire"></span> Hot</button>
+    <p>During hot season, only cold actuators will be active.</p>
+  </div>
+  <div class="col-lg-6">
+    <button ng-click="changeSeason('cold')" class="btn btn-primary btn-info" ng-disabled="room_season == 'cold'"><span class="glyphicon glyphicon-asterisk"></span> Cold</button>
+    <p>During cold season, only hot actuators will be active.</p>
+  </div>
+</div>
+
+<hr>
+
+<div class="container-fluid bg-grey">
+  <h3>Select Mode: </h3>
+
+  <button class="btn btn-primary btn-danger" ng-click="selected_mode='manual'"><span class="glyphicon glyphicon-wrench"></span> Manual</button>
+  <p>Using manual settings the required temperature will be fixed.</p>
+  <div class="marketing" ng-show="selected_mode=='manual'">
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text">Temperature</div>
+      </div>
+      <input type="number" class="form-control" id="inlineFormInputGroup" placeholder="Es: {{required_temperature}}" ng-model="new_manual_temp">
+    </div>
+    <!--p>Weekend option: if this option is enabled then during the weekends the required temperature is 2 degree less.</p-->
+      <div class="row marketing">
+        <label class="col-sm-4" for="option_group_1"> Weekend option: <br> if this option is enabled then during the weekends the required temperature is 2 degree less.</label>
+        <form class="col-sm-8" name="manualForm">
+          <label class="btn btn_primary btn-success active">
+            <input type="radio" ng-model="manual_weekend" value="1" /> On
+          </label><br/>
+          <label class="btn btn_primary btn-danger">
+            <input type="radio" ng-model="manual_weekend" value="0" /> Off
+          </label><br/>
+         </form>
+      </div>
+      <button class="btn btn-primary btn-success" ng-click="changeMode('manual'); selected_mode=undefined" ng-disabled="new_manual_temp==undefined"><span class="glyphicon glyphicon-ok"></span> Save</button>
+      <button class="btn btn-primary btn-danger" ng-click="selected_mode=undefined"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+  </div>
+
+  <button class="btn btn-primary btn-success" ng-click="loadProgrammableTable(); selected_mode='programmable'"><span class="glyphicon glyphicon-tasks"></span> Programmable</button>
+    <p>In programmable mode the week is split in working days (Monday-Friday) and week end (Saturday-Sunday). For these two categories, a temperature must be associated to the instant of time (Morning - Afternoon - Night).</p>
+    <div class="marketing" ng-show="selected_mode=='programmable'">
+      <div class="table">
+        <table class="table table-bordered table-condensed">
+                <tr>
+                  <th>#</th>
+                  <th>Monday - Friday</th>
+                  <th>Saturday - Sunday</th>
+                </tr>
+                <tr>
+                  <th>Night 00-05</th>
+                   <td><input type="number" class="form-control" ng-model="prog_MFN" /></td>
+                   <td><input type="number" class="form-control" ng-model="prog_WEN" /></td>
+                </tr>
+                <tr>
+                  <th>Morning 06-12</th>
+                   <td><input type="number" class="form-control" ng-model="prog_MFM" /></td>
+                   <td><input type="number" class="form-control" ng-model="prog_WEM" /></td>
+                </tr>
+                <tr>
+                  <th>Afternoon 13-23</th>
+                   <td><input type="number" class="form-control" ng-model="prog_MFE" /></td>
+                   <td><input type="number" class="form-control" ng-model="prog_WEE" /></td>
+                </tr>
+        </table>
+        <div class="row marketing">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-4">
+            <button class="btn btn-primary btn-success" ng-click="changeMode('programmable'); selected_mode=undefined" ng-disabled="prog_WEE==undefined || prog_WEN==undefined || prog_WEM==undefined || prog_MFE==undefined || prog_MFM==undefined || prog_MFN==undefined"><span class="glyphicon glyphicon-ok"></span> Save</button>
+            <button class="btn btn-primary btn-danger" ng-click="selected_mode=undefined"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+          </div>
+          <div class="col-sm-6"></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-info" ng-click="changeMode('antifreeze'); selected_mode='antifreeze'"><span class="glyphicon glyphicon-ban-circle"></span> Antifreeze</button>
+    <p>Using antifreeze mode, the temperature of the room will not go below 15°</p>
+
+</div>
+  </div>
+
+
+</div>
+
+<div class ="col-sm-2"> </div>
+</div>
