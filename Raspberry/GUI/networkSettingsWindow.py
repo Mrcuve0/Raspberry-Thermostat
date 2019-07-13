@@ -175,6 +175,7 @@ class Ui_NetworkSettingsWindow(object):
         self.dateEdit.setDate(date)
 
     def close(self):
+        self.timer.stop()
         self.networkSettingsWindow.close()
 
     def setupUi(self, NetworkSettingsWindow, db):

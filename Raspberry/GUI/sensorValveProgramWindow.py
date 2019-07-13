@@ -66,6 +66,7 @@ class Ui_SensorValveProgramWindow(object):
         self.dateEdit.setDate(date)
 
     def close(self):
+        self.timer.stop()
         self.sensorValveProgramWindow.close()
 
     def setupUi(self, SensorValveProgramWindow, db, actualRoomID, actualRoomName):

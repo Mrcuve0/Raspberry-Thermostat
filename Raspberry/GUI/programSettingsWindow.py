@@ -98,6 +98,7 @@ class Ui_ProgramSettingsWindow(object):
         self.dateEdit.setDate(date)
 
     def close(self):
+        self.timer.stop()
         self.programSettingsWindow.close()
 
     def setupUi(self, ProgramSettingsWindow, db, actualRoomID, actualRoomName):

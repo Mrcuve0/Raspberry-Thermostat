@@ -13,6 +13,7 @@ import settingsWindow
 from Devices.connectionpy import connection_actuator
 import networkConnection
 import data
+from database_manager import database_manager
 
 
 class MyQLineEdit(QtWidgets.QLineEdit):
@@ -31,6 +32,7 @@ class MyQLineEdit(QtWidgets.QLineEdit):
 class Ui_deleteActuatorWindow(object):
 
     db = None
+    actuatorsConfiguration = None
 
     def initDB(self, db):
         self.db = db
@@ -53,22 +55,33 @@ class Ui_deleteActuatorWindow(object):
         self.PB_deleteActuator.setEnabled(False)
         actuatorID = self.LE_actuator.text()
 
-        if (actuatorID == ""):
-            print("Actuator ID cannot be empty!")
+        if (actuatorID == "" or not(str(actuatorID).isdecimal())):
+            print("Actuator ID empty or non numerical!")
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Critical)
             msg.setInformativeText(
-                "Insert an actuator ID")
+                "Insert a valid numerical-only ID")
             msg.setWindowTitle("Error")
             msg.exec_()
             self.PB_deleteActuator.setEnabled(True)
             self.PB_deleteActuator.setText(QtCore.QCoreApplication.translate(
                             "DeleteActuatorWindow", "Delete Actuator..."))
-            return
-
-        else: # ID attuatore inserito
-            pass
+        else: # ID attuatore inserito correttamente
+            # Cerca l'attuatore, se esiste eliminalo
+            flag = 0
+            actualNumActuators = len(self.actuatorsConfiguration["conf"])
+            for i in range(0, actualNumActuators):
+                if (str(actuatorID).lower() == str(self.actuatorsConfiguration["conf"][i]["actuatorID"]).lower()):
+                    del self.actuatorsConfiguration["conf"][i]
+                    flag = 1
+                    break
+                    
+            if (flag == 1):
+                database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
    
+    def reloadRoomData(self):
+        self.actuatorsConfiguration = database_manager.get_actuators_configuration(self.db)
+
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
         self.PB_deleteActuator.pressed.connect(self.on_PB_deleteActuator_pressed)
@@ -79,6 +92,8 @@ class Ui_deleteActuatorWindow(object):
         self.showTime()
         self.timer.start(1000)
 
+        self.reloadRoomData()
+
     def showTime(self):
         date = QDate.currentDate()
         time = QTime.currentTime()
@@ -86,6 +101,7 @@ class Ui_deleteActuatorWindow(object):
         self.dateEdit.setDate(date)
 
     def close(self):
+        self.timer.stop()
         self.actuatorWindow.close()
 
     def setupUi(self, deleteActuatorWindow, db):

@@ -329,9 +329,9 @@ class Ui_MainWindow(object):
         else:
             self.LCDTempAct.display(0.0)
 
-        print(self.configuration)
-        roomData = database_manager.get_roomData_configuration(self.db)
-        print(roomData)
+        # print(self.configuration)
+        # roomData = database_manager.get_roomData_configuration(self.db)
+        # print(roomData)
 
     def commitSetTempData(self):
         print("\t --> COMMIT of new temperature")

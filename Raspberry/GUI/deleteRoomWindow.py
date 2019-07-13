@@ -126,6 +126,7 @@ class Ui_deleteRoomWindow(object):
         self.dateEdit.setDate(date)
 
     def close(self):
+        self.timer.stop()
         self.roomWindow.close()
 
     def setupUi(self, deleteRoomWindow, db):

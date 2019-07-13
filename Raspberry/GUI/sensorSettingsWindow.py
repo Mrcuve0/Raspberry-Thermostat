@@ -6,6 +6,7 @@ from PyQt5.QtCore import QTime, QDate, QTimer
 import sensorValveProgramWindow
 from Devices.connectionpy import connection_sensor
 import data
+from database_manager import database_manager
 
 
 class MyQLineEdit(QtWidgets.QLineEdit):
@@ -26,6 +27,8 @@ class Ui_SensorSettingsWindow(object):
     db = None
     actualRoomID = 0
     actualRoomName = ""
+    configuration = None
+    roomDataConfiguration = None
     
     def initDB(self, db):
         self.db = db
@@ -39,25 +42,44 @@ class Ui_SensorSettingsWindow(object):
 
     def on_PB_connectSensor_pressed(self):
         self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-            "SensorSettingsWindow", "Sto connettendo..."))
+            "SensorSettingsWindow", "Connecting..."))
     
     def on_PB_connectSensor_released(self):
-        self.PB_connectSensor.setEnabled(False)
         sensorID = self.LE_sensor.text()
 
-        if (sensorID == ""):
-            print("Sensor ID cannot be empty!")
+        if (sensorID == "" or not(str(sensorID).isdecimal())):
+            print("Sensor ID empty or non numerical!")
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Critical)
             msg.setInformativeText(
-                "Inserire un ID sensore, ID obbligatorio")
-            msg.setWindowTitle("Errore")
+                "Insert a valid numerical-only ID")
+            msg.setWindowTitle("Error")
             msg.exec_()
             self.PB_connectSensor.setEnabled(True)
             self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
                             "SensorSettingsWindow", "Add Sensor..."))
 
         else: # ID sensore inserito
+
+                        # Check se ID attuatore già presente
+            flag = 0
+            actualNumSensors = len(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"])
+            for i in range(0, actualNumSensors):
+                if (str(sensorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][i]["sensorID"]).lower()):
+                    flag = 1
+                    break
+            if (flag == 1): # L'ID Attuatore esiste già, ritorna errore
+                print("ID Sensors already IN!")
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setInformativeText(
+                    "This sensor has been already connected!")
+                msg.setWindowTitle("Error")
+                msg.exec_()
+                self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
+            "SensorSettingsWindow", "Add"))
+                return
+
             net_SSID = data.networkData["net_SSID"]
             net_PWD = data.networkData["net_PWD"]
 
@@ -68,39 +90,45 @@ class Ui_SensorSettingsWindow(object):
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Critical)
                 msg.setInformativeText(
-                    "Connettere il termostato al WiFi di casa prima di aggiungere un Sensore!")
-                msg.setWindowTitle("Errore")
+                    "Please connect the thermostat to WiFi before adding an actuator!")
+                msg.setWindowTitle("Error")
                 msg.exec_()
 
             else: 
-                
-                returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, self.actualRoomName)    
+                # TODO: Uncomment
+                # returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, self.actualRoomName)    
+                returnID = 0
                 if (returnID == 0):
-                    print("OK! Actuator is being connected!")
+                    print("OK! Sensor is being connected!")
+
+                    if (len(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"]) == 1 and str(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][0]["sensorID"]) == ""):
+                        self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][0]["sensorID"] = sensorID
+                    else:
+                        self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"].append({"sensorID" : sensorID})
 
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Information)
                     msg.setInformativeText(
-                        "Sensore collegato!")
-                    msg.setWindowTitle("Connesso!")
+                        "Sensor connected!")
+                    msg.setWindowTitle("Connected!")
                     msg.exec_()
 
+                    database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Connesso!"))
-                    self.PB_connectSensor.setEnabled(False)
+                            "SensorSettingsWindow", "Connected!"))
 
                 elif (returnID == -1):
-                    print("Actuator not found in BT proximity, check actuator ID pliz")
+                    print("Sensor not found in BT proximity, check actuator ID pliz")
 
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "ID Sensore non trovato, riprovare")
+                        "Sensor ID not found, please retry")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
                     
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Non connesso, riprovare...!"))
+                            "SensorSettingsWindow", "Not connected, please retry..."))
                     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -2):
@@ -109,12 +137,12 @@ class Ui_SensorSettingsWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "Sensore non connesso, errore nel socket BT")
+                        "Actuator not connected, error in BT socket")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Non connesso, riprovare...!"))
+                            "SensorSettingsWindow", "Not connected, please retry..."))
                     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -3):
@@ -123,12 +151,12 @@ class Ui_SensorSettingsWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "Premere il tasto sul sensore PRIMA del tentativo di connessione")
+                        "Push the sensor button BEFORE the connection attempt!")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Non connesso, riprovare...!"))
+                            "SensorSettingsWindow", "Not connected, please retry..."))
                     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -4):
@@ -137,12 +165,12 @@ class Ui_SensorSettingsWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "Nessuna trasmissione dal sensore")
+                        "No transmission from the sensor")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Non connesso, riprovare...!"))
+                            "SensorSettingsWindow", "Not connected, please retry..."))
                     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -5):
@@ -151,12 +179,12 @@ class Ui_SensorSettingsWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "Errore nella trasmissione del SSID di rete al sensore")
+                        "Error while transferring the SSID to the sensor")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Non connesso, riprovare...!"))
+                            "SensorSettingsWindow", "Not connected, please retry..."))
                     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -6):
@@ -165,12 +193,12 @@ class Ui_SensorSettingsWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "Errore nella trasmissione della password di rete al sensore")
+                        "Error while tansferring the network password to the senosr")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Non connesso, riprovare...!"))
+                            "SensorSettingsWindow", "Not connected, please retry..."))
                     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -7):
@@ -184,7 +212,7 @@ class Ui_SensorSettingsWindow(object):
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Non connesso, riprovare...!"))
+                            "SensorSettingsWindow", "Not connected, please retry..."))
                     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -8):
@@ -193,12 +221,12 @@ class Ui_SensorSettingsWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "Errore nella trasmissione del nome della stanza al sensore")
+                        "Error while transferring MQTT info to the sensor")
                     msg.setWindowTitle("Error")
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Non connesso, riprovare...!"))
+                            "SensorSettingsWindow", "Not connected, please retry..."))
                     self.PB_connectSensor.setEnabled(True)
 
     # TODO: Aggiungere metodo per l'eliminazione del sensore
@@ -225,7 +253,12 @@ class Ui_SensorSettingsWindow(object):
         self.dateEdit.setDate(date)
 
     def close(self):
+        self.timer.stop()
         self.sensorSettingsWindow.close()
+
+    def reloadRoomData(self):
+        self.configuration = database_manager.get_configuration(self.db)
+        self.roomDataConfiguration = database_manager.get_roomData_configuration(self.db)
 
     def setupUi(self, SensorSettingsWindow, db, actualRoomID, actualRoomName):
 
@@ -337,6 +370,7 @@ class Ui_SensorSettingsWindow(object):
         SensorSettingsWindow.setCentralWidget(self.centralwidget)
 
         self.initDB(db)
+        self.reloadRoomData()
         self.actualRoomID = actualRoomID
         self.actualRoomName = actualRoomName
 
@@ -355,14 +389,14 @@ class Ui_SensorSettingsWindow(object):
         self.dateEdit.setDisplayFormat(_translate(
             "SensorSettingsWindow", "dd - MM - yyyy"))
         self.PB_goBack.setText(_translate("SensorSettingsWindow", "<"))
-        self.LE_sensor.setPlaceholderText(_translate("SensorSettingsWindow", "Inserire identificativo del sensore"))
+        self.LE_sensor.setPlaceholderText(_translate("SensorSettingsWindow", "Insert sensor ID"))
         self.label_SensorSettings.setText(_translate("SensorSettingsWindow", "Sensor\n"
                                                      "Settings"))
         self.label_SensorID.setText(_translate(
             "SensorSettingsWindow", "Sensor ID:"))
         self.PB_connectSensor.setText(
-            _translate("SensorSettingsWindow", "Aggiungi"))
+            _translate("SensorSettingsWindow", "Add"))
         self.label_RoomName.setText(_translate(
             "SensorSettingsWindow", "Actual Room: " + str(self.actualRoomName)))
         self.PB_deleteSensor.setText(
-            _translate("SensorSettingsWindow", "Elimina"))
+            _translate("SensorSettingsWindow", "Delete"))

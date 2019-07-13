@@ -13,6 +13,7 @@ import settingsWindow
 from Devices.connectionpy import connection_actuator
 import networkConnection
 import data
+from database_manager import database_manager
 
 
 class MyQLineEdit(QtWidgets.QLineEdit):
@@ -31,6 +32,7 @@ class MyQLineEdit(QtWidgets.QLineEdit):
 class Ui_addActuatorWindow(object):
 
     db = None
+    actuatorsConfiguration = None
 
     def initDB(self, db):
         self.db = db
@@ -46,25 +48,41 @@ class Ui_addActuatorWindow(object):
         self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
             "AddActuatorWindow", "Connecting, please wait..."))
 
-    # TODO: Aggiungo l'attuatore alla lista di attuatori già inseriti nel sistema
-    # Ritorna un errore se un attuatore è già presente con lo stesso nome nella lista
     def on_PB_addActuator_released(self):
         self.PB_addActuator.setEnabled(False)
         actuatorID = self.LE_actuator.text()
 
-        if (actuatorID == ""):
-            print("Actuator ID cannot be empty!")
+        if (actuatorID == "" or not(str(actuatorID).isdecimal())):
+            print("Actuator ID empty or non numerical!")
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Critical)
             msg.setInformativeText(
-                "Inserire un ID attuatore, ID obbligatorio")
-            msg.setWindowTitle("Errore")
+                "Insert a valid numerical-only ID")
+            msg.setWindowTitle("Error")
             msg.exec_()
             self.PB_addActuator.setEnabled(True)
             self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
                             "AddActuatorWindow", "Add Actuator..."))
 
         else: # ID attuatore inserito
+
+            # Check se ID attuatore già presente
+            flag = 0
+            actualNumActuators = len(self.actuatorsConfiguration["conf"])
+            for i in range(0, actualNumActuators):
+                if (str(actuatorID).lower() == str(self.actuatorsConfiguration["conf"][i]["actuatorID"]).lower()):
+                    flag = 1
+                    break
+            if (flag == 1): # L'ID Attuatore esiste già, ritorna errore
+                print("ID Actuator already IN!")
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setInformativeText(
+                    "This actuator has been already connected!")
+                msg.setWindowTitle("Error")
+                msg.exec_()
+                return
+
             net_SSID = data.networkData["net_SSID"]
             net_PWD = data.networkData["net_PWD"]
 
@@ -75,24 +93,32 @@ class Ui_addActuatorWindow(object):
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Critical)
                 msg.setInformativeText(
-                    "Connettere il termostato al WiFi di casa prima di aggiungere un attuatore!")
-                msg.setWindowTitle("Errore")
+                    "Please connect the thermostat to WiFi before adding an actuator!")
+                msg.setWindowTitle("Error")
                 msg.exec_()
 
             else: 
-                returnID = connection_actuator.connection(actuatorID, net_SSID, net_PWD)    
+                # TODO: Uncomment
+                # returnID = connection_actuator.connection(actuatorID, net_SSID, net_PWD)    
+                returnID = 0
                 if (returnID == 0):
                     print("OK! Actuator is being connected!")
+
+                    if (len(self.actuatorsConfiguration["conf"]) == 1):
+                        self.actuatorsConfiguration["conf"][0]["actuatorID"] = actuatorID
+                    else:
+                        self.actuatorsConfiguration["conf"].append({"actuatorID" : actuatorID, "valves" : [{"valveID": ""}]})
+                    database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
 
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Information)
                     msg.setInformativeText(
-                        "Attuatore collegato!")
-                    msg.setWindowTitle("Connesso!")
+                        "Actuator connected!")
+                    msg.setWindowTitle("Connected!")
                     msg.exec_()
 
                     self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
-                            "AddActuatorWindow", "Connesso!"))
+                            "AddActuatorWindow", "Connected!"))
                     self.PB_addActuator.setEnabled(False)
 
                 elif (returnID == -1):
@@ -101,12 +127,12 @@ class Ui_addActuatorWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "ID Attuatore non trovato, riprovare")
+                        "Actuator ID not found, please retry")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
                     
                     self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
-                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                            "AddActuatorWindow", "Not connected, please retry..."))
                     self.PB_addActuator.setEnabled(True)
 
                 elif (returnID == -2):
@@ -115,12 +141,12 @@ class Ui_addActuatorWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "Attuatore non connesso, errore nel socket BT")
+                        "Actuator not connected, error in BT socket")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
 
                     self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
-                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                            "AddActuatorWindow", "Not connected, please retry..."))
                     self.PB_addActuator.setEnabled(True)
 
                 elif (returnID == -3):
@@ -129,12 +155,12 @@ class Ui_addActuatorWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "Premere il tasto sull'attuatore PRIMA del tentativo di connessione")
+                        "Push the actuator button BEFORE the connection attempt!")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
 
                     self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
-                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                            "AddActuatorWindow", "Not connected, please retry..."))
                     self.PB_addActuator.setEnabled(True)
 
                 elif (returnID == -4):
@@ -143,12 +169,12 @@ class Ui_addActuatorWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "Nessuna trasmissione dall'attuatore")
+                        "No transmission from the actuator")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
 
                     self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
-                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                            "AddActuatorWindow", "Not connected, please retry..."))
                     self.PB_addActuator.setEnabled(True)
 
                 elif (returnID == -5):
@@ -157,12 +183,12 @@ class Ui_addActuatorWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "Errore nella trasmissione del SSID di rete all'attuatore")
-                    msg.setWindowTitle("Errore")
+                        "Error while transferring the SSID to the actuator")
+                    msg.setWindowTitle("Error")
                     msg.exec_()
 
                     self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
-                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                            "AddActuatorWindow", "Not connected, please retry..."))
                     self.PB_addActuator.setEnabled(True)
 
                 elif (returnID == -6):
@@ -171,12 +197,12 @@ class Ui_addActuatorWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "Errore nella trasmissione della password di rete all'attuatore")
-                    msg.setWindowTitle("Errore")
+                        "Error while tansferring the network password to the actuator")
+                    msg.setWindowTitle("Error")
                     msg.exec_()
 
                     self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
-                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                            "AddActuatorWindow", "Not connected, please retry..."))
                     self.PB_addActuator.setEnabled(True)
 
                 elif (returnID == -7):
@@ -185,13 +211,16 @@ class Ui_addActuatorWindow(object):
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setInformativeText(
-                        "Errore nella trasmissione delle info MQTT all'attuatore")
+                        "Error while transferring MQTT info to the actuator")
                     msg.setWindowTitle("Error")
                     msg.exec_()
 
                     self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
-                            "AddActuatorWindow", "Non connesso, riprovare...!"))
+                            "AddActuatorWindow", "Not connected, please retry..."))
                     self.PB_addActuator.setEnabled(True)
+
+    def reloadRoomData(self):
+        self.actuatorsConfiguration = database_manager.get_actuators_configuration(self.db)
    
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
@@ -203,6 +232,8 @@ class Ui_addActuatorWindow(object):
         self.showTime()
         self.timer.start(1000)
 
+        self.reloadRoomData()
+
     def showTime(self):
         date = QDate.currentDate()
         time = QTime.currentTime()
@@ -210,6 +241,7 @@ class Ui_addActuatorWindow(object):
         self.dateEdit.setDate(date)
 
     def close(self):
+        self.timer.stop()
         self.actuatorWindow.close()
 
     def setupUi(self, addActuatorWindow, db):
