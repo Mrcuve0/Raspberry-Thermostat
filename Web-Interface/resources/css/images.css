@@ -1,0 +1,54 @@
+.modal {
+	text-align: center;
+}
+
+.modal-custom {
+	width: auto;
+	overflow: auto;
+	max-width: 80%;
+	max-height: 80%;
+	display: inline-block;
+}
+
+.image-wrapper {
+	display: inline-block;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.image-wrapper img {
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+#portrait-wrapper {
+	width: 150px;
+	height: 150px;
+}
+
+#portrait-wrapper img {
+	width: 150px;
+	height: 150px;
+}
+
+#pmedium-portrait-wrapper {
+	width: 200px;
+	height: 200px;
+}
+
+#medium-portrait-wrapper img {
+	width: 200px;
+	height: 200px;
+}
+
+#big-portrait-wrapper {
+	width: 250px;
+	height: 250px;
+}
+
+#big-portrait-wrapper img {
+	width: 250px;
+	height: 250px;
+}
