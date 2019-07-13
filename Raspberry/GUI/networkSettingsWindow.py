@@ -139,8 +139,11 @@ class Ui_NetworkSettingsWindow(object):
         filename = os.path.join(scriptpath, './../netCredentials.json')
 
         print("Salvo i dati nel file JSON")
-        with open(filename, 'w') as json_file:  
-            json.dump(data.networkData, json_file)
+        try:
+            with open(filename, 'w') as json_file:  
+                json.dump(data.networkData, json_file)
+        except:
+            pass
 
     def activeFunctionsConnection(self):
         networkConnection.isConnected = False

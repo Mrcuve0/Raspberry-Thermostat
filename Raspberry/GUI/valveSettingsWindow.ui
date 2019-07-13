@@ -98,7 +98,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>350</y>
+      <y>380</y>
       <width>111</width>
       <height>100</height>
      </rect>
@@ -112,35 +112,6 @@
     </property>
     <property name="text">
      <string>&lt;</string>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="PT_sensor">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>200</y>
-      <width>581</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="sizeAdjustPolicy">
-     <enum>QAbstractScrollArea::AdjustIgnored</enum>
-    </property>
-    <property name="overwriteMode">
-     <bool>true</bool>
-    </property>
-    <property name="placeholderText">
-     <string>Inserire identificativo della valvola</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_ValveSettings">
@@ -170,8 +141,8 @@ Settings</string>
    <widget class="QLabel" name="label_ValveID">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>150</y>
+      <x>120</x>
+      <y>190</y>
       <width>140</width>
       <height>61</height>
      </rect>
@@ -194,7 +165,7 @@ Settings</string>
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>310</y>
+      <y>330</y>
       <width>231</width>
       <height>81</height>
      </rect>
@@ -207,16 +178,16 @@ Settings</string>
      </font>
     </property>
     <property name="text">
-     <string>Aggiungi</string>
+     <string>Add</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_ValveName">
+   <widget class="QLabel" name="label_RoomName">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>90</y>
+      <x>230</x>
+      <y>60</y>
       <width>361</width>
-      <height>61</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -237,7 +208,7 @@ Settings</string>
     <property name="geometry">
      <rect>
       <x>470</x>
-      <y>310</y>
+      <y>330</y>
       <width>231</width>
       <height>81</height>
      </rect>
@@ -250,11 +221,73 @@ Settings</string>
      </font>
     </property>
     <property name="text">
-     <string>Elimina</string>
+     <string>Delete</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_ActuatorID">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>90</y>
+      <width>140</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Actuator ID:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="LE_actuator">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>140</y>
+      <width>581</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="placeholderText">
+     <string>Insert Actuator ID</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="LE_valve">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>240</y>
+      <width>581</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="placeholderText">
+     <string>Insert Valve ID</string>
     </property>
    </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

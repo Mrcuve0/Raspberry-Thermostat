@@ -18,6 +18,7 @@ class Ui_MainWindow(object):
     db = None
     configuration = None
     newConfiguration = None
+    lastTemperatures = None
 
     roomTempSet = 0.0
     roomTempProgram = 0.0
@@ -25,7 +26,7 @@ class Ui_MainWindow(object):
     actualRoomID = 0
 
     season = "" # can be "hot" or "cold"
-    mode = "" # can be "manual", "antifreeze" or "programmable"
+    mode = "" # can be "manual", "antifreeze" or "programmable""
     lastModifiedBy = "WEB"
 
     def initDB(self, db):
@@ -73,7 +74,7 @@ class Ui_MainWindow(object):
         
     # Mode
     def on_PB_program_pressed(self):
-        self.mode = "program"
+        self.mode = "programmable"
         self.lastModifiedBy = "GUI"
         self.updateScreenData()
         # self.newConfiguration = self.configuration
@@ -268,32 +269,32 @@ class Ui_MainWindow(object):
     def updateScreenData(self):
         # TODO: Uncomment
         # lastTemperatures is a list
-        # lastTemperatures = database_manager.get_last_temperatures(self.db)
+        self.lastTemperatures = database_manager.get_last_temperatures(self.db)
 
         # Lettura delle impostazioni, se sono differenti con quelle precedenti 
         # allora la configuration è stata cambiata dal sito e non dall'interfaccia
         self.configuration = database_manager.get_configuration(self.db)
 
-        if ("program" in self.configuration["rooms_settings"][self.actualRoomID]):
+        if ("programmable" in self.configuration["rooms_settings"][self.actualRoomID]):
             # MONDAY - FRIDAY
             date = QDate.currentDate()
             time = QTime.currentTime()
             if (date.dayOfWeek() >= 1 and date.dayOfWeek() <= 5):
                 if (time.hour() >= 6 and time.hour() < 12):
-                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["MFM"]
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["temp"]["MFM"]
                 if (time.hour() >= 12 and time.hour() <= 23):
-                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["MFE"]
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["temp"]["MFE"]
                 if (time.hour() >= 0  and time.hour() < 6):
-                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["MFN"]
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["temp"]["MFN"]
 
             # WEEKEND
             elif (date.dayOfWeek() >= 6 and date.dayOfWeek() <= 7):
                 if (time.hour() >= 6 and time.hour() < 12):
-                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["WEM"]
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["temp"]["WEM"]
                 if (time.hour() >= 12 and time.hour() <= 23):
-                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["WEE"]
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["temp"]["WEE"]
                 if (time.hour() >= 0 and time.hour() < 6):
-                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["WEN"]
+                    self.roomTempProgram = self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["temp"]["WEN"]
         else:
             self.roomTempProgram = "00"
 
@@ -319,15 +320,16 @@ class Ui_MainWindow(object):
 
         self.reloadRoomData()
 
-        lastTemperatures = []
-        lastTemperatures.append(18.5)
-        lastTemperatures.append(20.2)
-        # print(str(lastTemperatures))
+        # lastTemperatures = []
+        # lastTemperatures.append(18.5)
+        # lastTemperatures.append(20.2)
+        # print(str(self.lastTemperatures[self.actualRoomID]["room"]))
+        # print(str(self.lastTemperatures[self.actualRoomID]["temperature"]))
         
-        if (len(lastTemperatures) > 0):
-            self.LCDTempAct.display(lastTemperatures.pop())
-        else:
-            self.LCDTempAct.display(0.0)
+        for el in self.lastTemperatures:
+            if (el["room"] == self.actualRoomID):
+                self.LCDTempAct.display(self.lastTemperatures[self.actualRoomID]["temperature"])
+            
 
         # print(self.configuration)
         # roomData = database_manager.get_roomData_configuration(self.db)
@@ -351,7 +353,7 @@ class Ui_MainWindow(object):
         # self.season = self.configuration["rooms_settings"][self.actualRoomID]["season"]
         # self.mode = self.configuration["rooms_settings"][self.actualRoomID]["mode"]
 
-        if (self.mode == "program"):
+        if (self.mode == "programmable"):
             # self.on_PB_program_pressed()
             font = QtGui.QFont()
             font.setPointSize(16)
