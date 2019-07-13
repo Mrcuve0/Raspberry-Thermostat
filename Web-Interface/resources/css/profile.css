@@ -1,0 +1,48 @@
+body{padding-top:10px;}
+
+.profilefield {  margin-bottom: 10px;margin-right: 10px;margin-left: 20%}
+
+small {
+    display: block;
+    line-height: 1.428571429;
+    color: #999;
+}
+
+blockquote{
+    border-left:none
+}
+
+.quote-badge{
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.quote-box{
+
+    overflow: hidden;
+    margin-top: -50px;
+    padding-top: -100px;
+    border-radius: 17px;
+    background-color: #9ac4e0;
+    margin-top: 25px;
+    color:white;
+    width: 325px;
+    box-shadow: 2px 2px 2px 2px #E0E0E0;
+
+}
+
+.quotation-mark{
+
+    margin-top: -10px;
+    font-weight: bold;
+    font-size:30px;
+    color:white;
+    font-family: "Times New Roman", Georgia, Serif;
+
+}
+
+.quote-text{
+
+    font-size: 15px;
+    margin-top: -15px;
+}
+ 
