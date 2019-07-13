@@ -10,7 +10,9 @@ config = db.get_configuration()
 # TODO: Ucomment below line to reset DB
 # config = None
 if config == None:
-	config = {'rooms_settings': [{'room': 0, 'room_name': 'default', 'mode': 'manual', 'info': {'temp': 25, 'weekend': 0}, 'season': 'hot'}]}
+	config = {'rooms_settings': [{	'room': "0", 'room_name': 'default', 'mode': 'manual', 'info': {'temp': 25, 'weekend': 0}, 'season': 'hot', 
+									'program': {'MFM': '1', 'MFE': '2', 'MFN': '3', 'WEM': '4', 'WEE': '5', 'WEN': '6'}
+								}]}
 	db.update_configuration(config)
 
 # Check and init last_temperatures
@@ -26,11 +28,11 @@ roomData_config = db.get_roomData_configuration()
 # TODO: Uncomment below line to reset DB
 # roomData_config = None
 if roomData_config == None:
-	roomData_config = {"conf" : [{"roomID" : 0, "roomName" : "default",  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "valves" : [{"valveID": ""}]}]}]}
+	roomData_config = {"conf" : [{"roomID" : "0", "roomName" : "default",  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "valves" : [{"valveID": ""}]}]}]}
 	db.update_roomData_configuration(roomData_config)
 
 # Check and init roomData
-# actuators_config = db.get_actuators_configuration()
+actuators_config = db.get_actuators_configuration()
 # TODO: Uncomment below line to reset DB
 actuators_config = None
 if actuators_config == None:
@@ -40,8 +42,8 @@ if actuators_config == None:
 
 
 # Raspberry config
-subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/logic.py'])
-subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/sensor.py'])
+# subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/logic.py'])
+# subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/sensor.py'])
 
 # TODO: Comment/Uncomment device dependent paths
 # Sem PC config
