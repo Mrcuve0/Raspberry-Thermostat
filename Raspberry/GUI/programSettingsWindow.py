@@ -33,13 +33,18 @@ class Ui_ProgramSettingsWindow(object):
 
     def loadScreenData(self):
         self.configuration = database_manager.get_configuration(self.db)
-        if ("program" in self.configuration["rooms_settings"][self.actualRoomID]):
-            self.LE_MFM.setText(self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["MFM"])
-            self.LE_MFE.setText(self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["MFE"])
-            self.LE_MFN.setText(self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["MFN"])
-            self.LE_WEM.setText(self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["WEM"])
-            self.LE_WEE.setText(self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["WEE"])
-            self.LE_WEN.setText(self.configuration["rooms_settings"][self.actualRoomID]["program"]["temp"]["WEN"])
+        if (self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["MFM"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["MFE"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["MFN"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["WEM"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["WEE"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["WEN"] != ""):
+                self.LE_MFM.setText(self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["MFM"])
+                self.LE_MFE.setText(self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["MFE"])
+                self.LE_MFN.setText(self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["MFN"])
+                self.LE_WEM.setText(self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["WEM"])
+                self.LE_WEE.setText(self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["WEE"])
+                self.LE_WEN.setText(self.configuration["rooms_settings"][self.actualRoomID]["programmable"]["WEN"])
 
     def on_PB_goBack_clicked(self):
         self.close()
@@ -61,7 +66,13 @@ class Ui_ProgramSettingsWindow(object):
         else:
             self.configuration = database_manager.get_configuration(self.db)
             self.newConfiguration = self.configuration
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"] = {"temp": {"MFM" : self.LE_MFM.text(), "MFE" : self.LE_MFE.text(), "MFN" : self.LE_MFN.text(), "WEM" : self.LE_WEM.text(), "WEE" : self.LE_WEE.text(), "WEN" : self.LE_WEN.text()}}
+            # self.newConfiguration["rooms_settings"][self.actualRoomID]["programmable"] = {"temp": {"MFM" : self.LE_MFM.text(), "MFE" : self.LE_MFE.text(), "MFN" : self.LE_MFN.text(), "WEM" : self.LE_WEM.text(), "WEE" : self.LE_WEE.text(), "WEN" : self.LE_WEN.text()}}
+            self.newConfiguration["rooms_settings"][self.actualRoomID]["programmable"]["MFM"] = self.LE_MFM.text()
+            self.newConfiguration["rooms_settings"][self.actualRoomID]["programmable"]["MFE"] = self.LE_MFE.text()
+            self.newConfiguration["rooms_settings"][self.actualRoomID]["programmable"]["MFN"] = self.LE_MFN.text()
+            self.newConfiguration["rooms_settings"][self.actualRoomID]["programmable"]["WEM"] = self.LE_WEM.text()
+            self.newConfiguration["rooms_settings"][self.actualRoomID]["programmable"]["WEE"] = self.LE_WEE.text()
+            self.newConfiguration["rooms_settings"][self.actualRoomID]["programmable"]["WEN"] = self.LE_WEN.text()
 
             database_manager.update_configuration(self.db, self.newConfiguration)
 
