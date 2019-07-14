@@ -58,6 +58,10 @@ angular.module('thermostat')
 		        clearInterval(reload_timer);
 			});
 
+            $scope.scroll_top = function() {
+                $("html, body").animate({ scrollTop: 0 }, 1000);
+            }
+
 			$scope.loadProgrammableTable = function() {
 				var program = configuration.rooms_settings[room_selected].program;
 				if (program == undefined) {
@@ -164,7 +168,7 @@ angular.module('thermostat')
             		result = config_room.info.temp;
             	} else if (config_room.mode == 'programmable') {
             		var entry = 'MF';
-            		if ($scope.date.getDay() >= 6)
+            		if ($scope.date.getDay() == 6 || $scope.date.getDay() == 0)
             			entry = 'WE';
             		var hour = $scope.date.getHours();
             		if (hour >= 0 && hour <= 5)

@@ -115,7 +115,7 @@
           </label><br/>
          </form>
       </div>
-      <button class="btn btn-primary btn-success" ng-click="changeMode('manual'); selected_mode=undefined" ng-disabled="new_manual_temp==undefined"><span class="glyphicon glyphicon-ok"></span> Save</button>
+      <button class="btn btn-primary btn-success" ng-click="changeMode('manual'); selected_mode=undefined; scroll_top();" ng-disabled="new_manual_temp==undefined"><span class="glyphicon glyphicon-ok"></span> Save</button>
       <button class="btn btn-primary btn-danger" ng-click="selected_mode=undefined"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
   </div>
 
@@ -148,7 +148,7 @@
         <div class="row marketing">
           <div class="col-sm-2"></div>
           <div class="col-sm-4">
-            <button class="btn btn-primary btn-success" ng-click="changeMode('programmable'); selected_mode=undefined" ng-disabled="prog_WEE==undefined || prog_WEN==undefined || prog_WEM==undefined || prog_MFE==undefined || prog_MFM==undefined || prog_MFN==undefined"><span class="glyphicon glyphicon-ok"></span> Save</button>
+            <button class="btn btn-primary btn-success" ng-click="changeMode('programmable'); selected_mode=undefined; scroll_top();" ng-disabled="prog_WEE==undefined || prog_WEN==undefined || prog_WEM==undefined || prog_MFE==undefined || prog_MFM==undefined || prog_MFN==undefined"><span class="glyphicon glyphicon-ok"></span> Save</button>
             <button class="btn btn-primary btn-danger" ng-click="selected_mode=undefined"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
           </div>
           <div class="col-sm-6"></div>
@@ -156,7 +156,7 @@
       </div>
     </div>
 
-    <button class="btn btn-primary btn-info" ng-click="changeMode('antifreeze'); selected_mode='antifreeze'"><span class="glyphicon glyphicon-ban-circle"></span> Antifreeze</button>
+    <button class="btn btn-primary btn-info" ng-click="changeMode('antifreeze'); selected_mode='antifreeze'; scroll_top();"><span class="glyphicon glyphicon-ban-circle"></span> Antifreeze</button>
     <p>Using antifreeze mode, the temperature of the room will not go below 15°</p>
 
 </div>
