@@ -51,7 +51,6 @@ class Ui_ValveSettingsWindow(object):
         self.uiSensorValveProgramWindow.setupUi(self.valveSettingsWindow, self.db, self.actualRoomID, self.actualRoomName)
         self.valveSettingsWindow.showMaximized()
 
-    # TODO: Aggiungere metodo per la connessione della valvola
     def on_PB_connectValve_clicked(self):
 
         self.roomDataConfiguration = database_manager.get_roomData_configuration(self.db)
@@ -69,11 +68,12 @@ class Ui_ValveSettingsWindow(object):
             # Actuator and Valve ID corretti
 
             # Cerca se l'attuatore esiste in actuatorsConfig
+            # L'attuatore deve essere di tipo caldo
             flag = 0
             indexInActuatorList = 0
             actualNumActuators = len(self.actuatorsConfiguration["conf"])
             for i in range(0, actualNumActuators):
-                if (str(actuatorID).lower() == str(self.actuatorsConfiguration["conf"][i]["actuatorID"]).lower()):
+                if (str(actuatorID).lower() == str(self.actuatorsConfiguration["conf"][i]["actuatorID"]).lower() and self.actuatorsConfiguration["conf"][i]["type"] == "hot"):
                     indexInActuatorList = i
                     flag = 1
                     break
@@ -106,7 +106,7 @@ class Ui_ValveSettingsWindow(object):
                         for i in range(0, actualNumActuators):
                             associatedFlag = 0
 
-                            if (str(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["actuatorID"]).lower() == str(actuatorID).lower()):
+                            if (str(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["actuatorID"]).lower() == str(actuatorID).lower() and str(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["type"]) == "hot"):
                                 # L'Actuator è già associato alla stanza corrente, è solo necessario linkare la valvola
                 
                                 associatedFlag = 1
@@ -142,6 +142,7 @@ class Ui_ValveSettingsWindow(object):
                                     
                         if (associatedFlag == 0):
                             # L'actuator non è stato ancora associato alla stanza corrente
+                        
                             if (actualNumActuators == 1 and self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][0]["actuatorID"] == ""):
                                 # Se è anche il primo actuator ad essere associato alla stanza corrente...
                                 self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][0]["actuatorID"] = actuatorID
@@ -155,7 +156,7 @@ class Ui_ValveSettingsWindow(object):
 
                             else:
                                 # Questo non è il primo actuator che è stato associato alla stanza corrente
-                                self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"].append({"actuatorID" : actuatorID, "valves" : [{"valveID": ""}]})
+                                self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"].append({"actuatorID" : actuatorID, "type": "hot", "valves" : [{"valveID": ""}]})
 
                                 # Linkiamo ora la valvola al suo attuatore e alla stanza attuale
                                 actualNumValves = len(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][actualNumActuators]["valves"])
@@ -209,8 +210,6 @@ class Ui_ValveSettingsWindow(object):
                 msg.exec_()
                 return
                 
-
-    # TODO: Aggiungere metodo per l'eliminazione della valvola
     def on_PB_deleteValve_clicked(self):
         self.roomDataConfiguration = database_manager.get_roomData_configuration(self.db)
         actuatorID = self.LE_actuator.text()
@@ -232,7 +231,7 @@ class Ui_ValveSettingsWindow(object):
             actualNumActuators = len(self.actuatorsConfiguration["conf"])
 
             for i in range(0, actualNumActuators):
-                if (str(actuatorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["actuatorID"]).lower()):
+                if (str(actuatorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["actuatorID"]).lower() and str(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["type"]) == "hot"):
                     indexInActuatorList = i
                     actuatorFlag = 1
                     break
@@ -255,7 +254,17 @@ class Ui_ValveSettingsWindow(object):
                     if (valveFlag == 1): # La valvola è stata trovata
                         # Cancelliamo la valvola, ora non sarà più usata dalla stanza attuale
                         del self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"][indexInValveList]
-                        del self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"][indexInValveList]
+
+                        actuatorFlag = 0
+                        indexInActuatorList = 0
+                        actualNumActuators = len(self.actuatorsConfiguration["conf"])
+                        for i in range(0, actualNumActuators):
+                            if (str(actuatorID).lower() == str(self.actuatorsConfiguration["conf"][i]["actuatorID"]).lower() and str(self.actuatorsConfiguration["conf"][i]["type"]) == "hot"):
+                                indexInActuatorList = i
+                                actuatorFlag = 1
+                                break
+                        if (actuatorFlag == 1):
+                            del self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"][indexInValveList]
 
                         print("\t --> COMMIT actuatorsConfiguration")
                         print("\t --> COMMIT roomDataConfiguration")
