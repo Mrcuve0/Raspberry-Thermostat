@@ -264,8 +264,6 @@ class Ui_MainWindow(object):
         self.dateEdit.setDate(date)
 
     def updateScreenData(self):
-        # TODO: Uncomment
-        # lastTemperatures is a list
         self.lastTemperatures = database_manager.get_last_temperatures(self.db)
 
         # Lettura delle impostazioni, se sono differenti con quelle precedenti 

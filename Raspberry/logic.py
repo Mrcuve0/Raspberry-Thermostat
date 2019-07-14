@@ -137,6 +137,7 @@ while True:
 	#	room_settings = find_room_in_list(temp_room, configuration['rooms_settings'])
 	#
 	# Manage every room of the configuration
+
 	for room_settings in configuration['rooms_settings']:
 		temp_room = room_settings['room']
 		temp_elem = find_room_in_list(temp_room, last_temperatures)

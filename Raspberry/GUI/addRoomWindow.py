@@ -43,8 +43,6 @@ class Ui_addRoomWindow(object):
         self.uiSettingsWindow.setupUi(self.roomWindow, self.db)
         self.roomWindow.showMaximized()
 
-    # TODO: Aggiungo la stanza alla lista di stanze già disponibili nel sistema
-    # Ritorna un errore se una stanza è già presente con lo stesso nome nella lista
     def on_PB_addRoom_clicked(self):
 
         self.actualNumRooms = len(self.configuration["rooms_settings"])

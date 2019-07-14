@@ -48,9 +48,6 @@ class Ui_deleteActuatorWindow(object):
         self.PB_deleteActuator.setText(QtCore.QCoreApplication.translate(
             "DeleteActuatorWindow", "Deleting, please wait..."))
 
-    # TODO: Delete Actuator function
-    # Delete the actuator from the system (disconnects MQTT etc boh)
-    # "You can now turn off your actuator --> OK"
     def on_PB_deleteActuator_released(self):
         actuatorID = self.LE_actuator.text()
 

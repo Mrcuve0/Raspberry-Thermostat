@@ -98,7 +98,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>350</y>
+      <y>380</y>
       <width>111</width>
       <height>100</height>
      </rect>
@@ -166,7 +166,7 @@ Settings</string>
      <rect>
       <x>20</x>
       <y>160</y>
-      <width>221</width>
+      <width>181</width>
       <height>151</height>
      </rect>
     </property>
@@ -178,16 +178,16 @@ Settings</string>
      </font>
     </property>
     <property name="text">
-     <string>Imposta / Vedi
-Sensore</string>
+     <string>Set
+Sensor</string>
     </property>
    </widget>
    <widget class="QPushButton" name="PB_valve">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>210</x>
       <y>160</y>
-      <width>221</width>
+      <width>181</width>
       <height>151</height>
      </rect>
     </property>
@@ -199,16 +199,16 @@ Sensore</string>
      </font>
     </property>
     <property name="text">
-     <string>Imposta / Vedi
-Valvole</string>
+     <string>Set
+Valves</string>
     </property>
    </widget>
    <widget class="QPushButton" name="PB_timeProgram">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>590</x>
       <y>160</y>
-      <width>221</width>
+      <width>181</width>
       <height>151</height>
      </rect>
     </property>
@@ -220,12 +220,32 @@ Valvole</string>
      </font>
     </property>
     <property name="text">
-     <string>Imposta / Vedi
-CronoProgramma</string>
+     <string>Set
+Program</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PB_airConditioner">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>160</y>
+      <width>181</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Set
+AirConditioner</string>
     </property>
    </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
