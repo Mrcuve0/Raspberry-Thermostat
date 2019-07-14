@@ -62,16 +62,16 @@ def drive_actuator(room, actuator_type, power):
 	mqtt_manager.mqtt_publish(topic, msg)
 
 def programmable_time_classification(day, hour):
-	day_str = 'lv'
+	day_str = 'MF'
 	if day >= 6:
-		day_str = 'sd'
+		day_str = 'WE'
 	if hour >= 6 and hour <= 12:
-		hour_str = 'm' 
+		hour_str = 'M' 
 	elif hour >= 13 and hour <= 23:
-		hour_str = 'a' 
+		hour_str = 'E' 
 	elif hour >= 0 and hour <= 5:
-		hour_str = 'n'
-	return day_str + '_' + hour_str
+		hour_str = 'N'
+	return day_str + hour_str
 
 def manual_mode(room, temperature, season, info):
 	requested_temperature = info['temp']
@@ -99,11 +99,11 @@ def antifreeze_mode(room, temperature):
 	else:
 		drive_actuator(room, constants.actuator_hot, constants.power_off)
 
-def programmable_mode(room, temperature, season, info):
+def programmable_mode(room, temperature, season, program):
 	day = datetime.datetime.now().isoweekday()
-	hour = datetime.datetime.now().day
+	hour = datetime.datetime.now().hour
 	prog_time = programmable_time_classification(day, hour)
-	requested_temperature = info['temp'][prog_time]
+	requested_temperature = program[prog_time]
 	# If it is a cold season, hot actuators must be used 
 	if season == 'cold':
 		# Enable the hot-actuator
@@ -159,5 +159,6 @@ while True:
 					antifreeze_mode(temp_room, temp_temperature)
 				# Programmable mode
 				elif (room_settings['mode'] == constants.programmable_settings):
-					programmable_mode(temp_room, temp_temperature, temp_season, temp_info)
+					temp_program = room_settings['program']
+					programmable_mode(temp_room, temp_temperature, temp_season, temp_program)
 	time.sleep(30)
