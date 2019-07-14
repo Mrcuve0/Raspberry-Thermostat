@@ -135,7 +135,6 @@ class Ui_MainWindow(object):
         # self.PB_manual.setFont(font)
 
         # self.disableProgramAntiFreezeButtons()
-        # TODO: La temperatura dell'Antifreeze è 15?
         # self.LCDTempSet.display(15.0)
 
     def disableProgramAntiFreezeButtons(self):
@@ -249,8 +248,6 @@ class Ui_MainWindow(object):
 
         # Timer for actual temperature updating
         self.timerUpdateScreenData.timeout.connect(self.updateScreenData)
-        # TODO: Decidere
-        # impostato a 1 sec, impostare a 1 minuto?
         self.timerUpdateScreenData.start(1000)
 
         # Timer for set temperature confirmation
@@ -332,8 +329,9 @@ class Ui_MainWindow(object):
         # print(str(self.lastTemperatures[self.actualRoomID]["temperature"]))
         
         for el in self.lastTemperatures:
-            if (el["room"] == self.actualRoomID):
-                self.LCDTempAct.display(self.lastTemperatures[self.actualRoomID]["temperature"])
+            if (str(el["room"]) == str(self.actualRoomID)):
+                self.LCDTempAct.display(str(el["temperature"]))
+                break
             
 
         # print(self.configuration)
@@ -407,7 +405,6 @@ class Ui_MainWindow(object):
             self.PB_manual.setFont(font)
 
             self.disableProgramAntiFreezeButtons()
-            # TODO: La temperatura dell'Antifreeze è 15?
             self.LCDTempSet.display(str(15.0))
 
         if (self.season == "cold"):
@@ -558,14 +555,10 @@ class Ui_MainWindow(object):
         self.PB_winter.setFont(font)
         self.PB_winter.setFlat(False)
         self.PB_winter.setObjectName("PB_winter")
-        self.PB_onOff = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_onOff.setGeometry(QtCore.QRect(0, 320, 111, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        self.PB_onOff.setFont(font)
-        self.PB_onOff.setObjectName("PB_onOff")
         self.PB_roomList = QtWidgets.QPushButton(self.centralwidget)
         self.PB_roomList.setGeometry(QtCore.QRect(80, 420, 641, 61))
         font = QtGui.QFont()
@@ -644,7 +637,6 @@ class Ui_MainWindow(object):
         self.PB_program.raise_()
         self.PB_manual.raise_()
         self.PB_winter.raise_()
-        self.PB_onOff.raise_()
         self.PB_roomList.raise_()
         self.PB_prevRoom.raise_()
         self.PB_nextRoom.raise_()
@@ -677,7 +669,6 @@ class Ui_MainWindow(object):
         self.PB_program.setText(_translate("MainWindow", "P"))
         self.PB_manual.setText(_translate("MainWindow", "M"))
         self.PB_winter.setText(_translate("MainWindow", "Winter"))
-        self.PB_onOff.setText(_translate("MainWindow", "On/Off"))
         self.PB_prevRoom.setText(_translate("MainWindow", "<"))
         self.PB_nextRoom.setText(_translate("MainWindow", ">"))
         self.labelTempAct.setText(_translate("MainWindow", "Actual temperature:"))
