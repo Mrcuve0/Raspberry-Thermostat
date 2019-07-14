@@ -60,10 +60,6 @@ def sendpsw(BTsocket, net_PWD):
   BTsocket.send(str(net_PWD))
   time.sleep(1)
 
-def sendMQTT(BTsocket):
-  BTsocket.send("thermostat")
-  time.sleep(1)
-
 def sendname(BTsocket, roomName):
   BTsocket.send(str(roomName))
   time.sleep(1)
@@ -99,29 +95,21 @@ def connection(sensorID, net_SSID, net_PWD, roomName):
       receiveMessages(BTsocket)
       print(data)
       if (data == b'@'):
-        sendMQTT(BTsocket)
+        sendname(BTsocket, roomName)
         receiveMessages(BTsocket)
         print(data)
         if (data == b'@'):
-          sendname(BTsocket, roomName)
-          receiveMessages(BTsocket)
-          print(data)
-          if (data == b'@'):
-            print ("connection successful")
-            disconnect(BTsocket)
-            return 0
-          else:
-            print ("connection unsuccessful")
-            disconnect(BTsocket)
-            return -8
+          print ("connection successful")
+          disconnect(BTsocket)
+          return 0
         else:
           print ("connection unsuccessful")
           disconnect(BTsocket)
-          return -7
+          return -8
       else:
         print ("connection unsuccessful")
         disconnect(BTsocket)
-        return -6
+        return -7
     else:
       print ("connection unsuccessful")
       disconnect(BTsocket)
