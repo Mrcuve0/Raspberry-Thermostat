@@ -1,0 +1,73 @@
+<div class="jumbotron temp_cont">
+	<h3>Temperature graph </h3> <br>
+	<nvd3 options='temp_options' data='temp_data'></nvd3>
+</div>
+
+<div class="container-fluid bg-grey temp_cont">
+	<h3>Room configuration scheme</h3> <br>
+	<hr>
+	<div class="animate-repeat" ng-repeat="var in repeat_var">
+		<div class="row">
+			<div class="col-sm-6">
+				<nvd3 options='options' data='var.data'></nvd3>
+			</div>
+			<div class="col-sm-6">
+				<br>
+				<h4>Room id: {{var.roomdata.roomID}}</h4>
+				<h4>Room name: {{var.roomdata.roomName}}</h4>
+				<h4>Number actuators: {{var.roomdata.actuators.length}}</h4>
+				<h4>Number sensors: {{var.roomdata.sensors.length}}</h4>
+			</div>
+		</div>
+		<hr>
+	</div>
+</div>
+<br>
+
+<!--
+	<div class="jumbotron temp_cont">
+		<h3>Temperature graph </h3> <br>
+		<nvd3 options='temp_options' data='temp_data'></nvd3>
+	</div>
+
+	<div class="container-fluid bg-grey temp_cont">
+		<h3>Room configuration scheme</h3> <br>
+		<div class="row">
+			<div class="col-sm-6">
+				<hr>
+				<div class="animate-repeat" ng-repeat="dat in data">
+				  <nvd3 options='options' data='dat'></nvd3>
+				  <hr>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<hr>
+				<div class="animate-repeat" ng-repeat="room in roomdata.conf">
+		    		<h4>Room id: {{room.roomID}}</h4>
+		    		<h4>Room name: {{room.roomName}}</h4>
+		    		<h4>Number actuators:{{room.actuators.length}}</h4>
+		    		<h4>Number sensors:{{room.sensors.length}}</h4>
+		    	</div>
+			</div>
+		</div>
+	</div>
+	<br>
+-->
+
+	<!-- incolonnati
+<div class="row">
+	<div class="col-sm-6 container-fluid bg-grey temp_cont">
+		<h3>Temperature graph </h3> <br>
+		<nvd3 options='temp_options' data='temp_data'></nvd3>
+	</div>
+
+	<div class="col-sm-6 container-fluid bg-grey temp_cont">
+		<h3>Room configuration scheme</h3> <br>
+		<hr>
+		<div class="animate-repeat" ng-repeat="dat in data">
+		  <nvd3 options='options' data='dat'></nvd3>
+		  <hr>
+		</div>
+	</div>
+</div>
+	-->
