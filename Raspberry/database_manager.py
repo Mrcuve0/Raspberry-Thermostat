@@ -22,6 +22,7 @@ class database_manager:
 		self.test_collection = self.db['test']
 
 	def insert_log(self, log):
+		log['flag'] = 0
 		result = self.logs_collection.insert(log)
 		return result
 
@@ -30,8 +31,9 @@ class database_manager:
 		result = self.logs_collection.save(log)
 		return result
 
-	def find_logs(self, criteria):
-		result = self.logs_collection.find(criteria)
+	def find_logs(self, limit):
+		criteria = {'flag': 0}
+		result = self.logs_collection.find(criteria, None, 0, limit)
 		return result
 
 	def get_configuration(self):

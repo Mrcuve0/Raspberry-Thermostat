@@ -40,7 +40,7 @@ def on_message(client, userdata, msg):
 			new_entry = {'room': room_name, 'temperature': new_temp, 'timestamp': new_timestamp}
 			last_temperatures.append(new_entry)
 		db_manager.update_last_temperatures(last_temperatures)
-		log = {'type': 'temperature', 'room': room_name, 'val': new_temp, 'timestamp': new_timestamp}
+		log = {'event_id': 2, 'event': {'room': room_name, 'val': new_temp}, 'timestamp': new_timestamp}
 		log_db_entry = {'log' : log, 'flag': 0}
 		db_manager.insert_log(log)
 
