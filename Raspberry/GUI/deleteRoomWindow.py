@@ -78,7 +78,6 @@ class Ui_deleteRoomWindow(object):
             database_manager.update_configuration(self.db, self.newConfiguration)
             database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
 
-            # TODO: Inviare al sensore collegato un messaggio per dirgli di spegnersi
             print("\t --> COMMIT: Stanza rimossa")
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)

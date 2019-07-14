@@ -8,6 +8,7 @@ import mainWindow
 import sensorSettingsWindow
 import valveSettingsWindow
 import programSettingsWindow
+import acSettingsWindow
 
 
 class Ui_SensorValveProgramWindow(object):
@@ -33,6 +34,13 @@ class Ui_SensorValveProgramWindow(object):
         self.uiValveSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomID, self.actualRoomName)
         self.sensorValveProgramWindow.showMaximized()
 
+    def on_PB_airConditioner_clicked(self):
+        self.close()
+        self.sensorValveProgramWindow = QtWidgets.QMainWindow()
+        self.uiACSettingsWindow = acSettingsWindow.Ui_ACSettingsWindow()
+        self.uiACSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomID, self.actualRoomName)
+        self.sensorValveProgramWindow.showMaximized()
+
     def on_PB_program_clicked(self):
         self.close()
         self.sensorValveProgramWindow = QtWidgets.QMainWindow()
@@ -52,6 +60,7 @@ class Ui_SensorValveProgramWindow(object):
         self.PB_valve.clicked.connect(self.on_PB_valve_clicked)
         self.PB_timeProgram.clicked.connect(self.on_PB_program_clicked)
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
+        self.PB_airConditioner.clicked.connect(self.on_PB_airConditioner_clicked)
 
         # Timer for data and time
         self.timer.timeout.connect(self.showTime)
@@ -77,36 +86,12 @@ class Ui_SensorValveProgramWindow(object):
         SensorValveProgramWindow.setObjectName("SensorValveProgramWindow")
         SensorValveProgramWindow.resize(800, 480)
         font = QtGui.QFont()
-        font.setPointSize(16)
-        font.setBold(True)
+        font.setPointSize(10)
         SensorValveProgramWindow.setFont(font)
         self.centralwidget = QtWidgets.QWidget(SensorValveProgramWindow)
         self.centralwidget.setObjectName("centralwidget")
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        font.setBold(True)
-        font.setWeight(75)
-        font.setKerning(True)
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        font.setBold(True)
-        font.setWeight(75)
-        font.setKerning(True)
-
-        # Date and Time widgets
-        self.dateEdit = QtWidgets.QDateEdit(self.centralwidget)
-        self.dateEdit.setGeometry(QtCore.QRect(120, 0, 571, 61))
-        self.dateEdit.setFont(font)
-        self.dateEdit.setInputMethodHints(QtCore.Qt.ImhDate)
-        self.dateEdit.setWrapping(False)
-        self.dateEdit.setFrame(False)
-        self.dateEdit.setAlignment(QtCore.Qt.AlignCenter)
-        self.dateEdit.setReadOnly(True)
-        self.dateEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
-        self.dateEdit.setObjectName("dateEdit")
         self.timeEdit = QtWidgets.QTimeEdit(self.centralwidget)
         self.timeEdit.setGeometry(QtCore.QRect(687, 0, 121, 61))
-
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -119,7 +104,21 @@ class Ui_SensorValveProgramWindow(object):
         self.timeEdit.setReadOnly(True)
         self.timeEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.timeEdit.setObjectName("timeEdit")
-
+        self.dateEdit = QtWidgets.QDateEdit(self.centralwidget)
+        self.dateEdit.setGeometry(QtCore.QRect(120, 0, 571, 61))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        font.setKerning(True)
+        self.dateEdit.setFont(font)
+        self.dateEdit.setInputMethodHints(QtCore.Qt.ImhDate)
+        self.dateEdit.setWrapping(False)
+        self.dateEdit.setFrame(False)
+        self.dateEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.dateEdit.setReadOnly(True)
+        self.dateEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+        self.dateEdit.setObjectName("dateEdit")
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
         self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         font = QtGui.QFont()
@@ -147,14 +146,37 @@ class Ui_SensorValveProgramWindow(object):
         self.label_RoomName.setAlignment(QtCore.Qt.AlignCenter)
         self.label_RoomName.setObjectName("label_RoomName")
         self.PB_sensor = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_sensor.setGeometry(QtCore.QRect(20, 160, 221, 151))
+        self.PB_sensor.setGeometry(QtCore.QRect(20, 160, 181, 151))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.PB_sensor.setFont(font)
         self.PB_sensor.setObjectName("PB_sensor")
         self.PB_valve = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_valve.setGeometry(QtCore.QRect(290, 160, 221, 151))
+        self.PB_valve.setGeometry(QtCore.QRect(210, 160, 181, 151))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.PB_valve.setFont(font)
         self.PB_valve.setObjectName("PB_valve")
         self.PB_timeProgram = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_timeProgram.setGeometry(QtCore.QRect(560, 160, 221, 151))
+        self.PB_timeProgram.setGeometry(QtCore.QRect(590, 160, 181, 151))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.PB_timeProgram.setFont(font)
         self.PB_timeProgram.setObjectName("PB_timeProgram")
+        self.PB_airConditioner = QtWidgets.QPushButton(self.centralwidget)
+        self.PB_airConditioner.setGeometry(QtCore.QRect(400, 160, 181, 151))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.PB_airConditioner.setFont(font)
+        self.PB_airConditioner.setObjectName("PB_airConditioner")
         SensorValveProgramWindow.setCentralWidget(self.centralwidget)
 
         self.initDB(db)
@@ -183,3 +205,5 @@ class Ui_SensorValveProgramWindow(object):
 "Valves"))
         self.PB_timeProgram.setText(_translate("SensorValveProgramWindow", "Set\n"
 "Program"))
+        self.PB_airConditioner.setText(_translate("SensorValveProgramWindow", "Set\n"
+"AirConditioner"))

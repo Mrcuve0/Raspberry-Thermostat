@@ -95,7 +95,6 @@ class Ui_SensorSettingsWindow(object):
                 msg.exec_()
 
             else: 
-                # TODO: Uncomment
                 returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, str(self.actualRoomName) + str(self.actualRoomID))    
                 # returnID = 0
                 if (returnID == 0):
@@ -229,7 +228,6 @@ class Ui_SensorSettingsWindow(object):
                             "SensorSettingsWindow", "Not connected!"))
                     self.PB_connectSensor.setEnabled(True)
 
-    # TODO: Una volta eliminato il sensore, dobbiamo disconnetterlo lato ESP?
     def on_PB_deleteSensor_clicked(self):
         sensorID = self.LE_sensor.text()
 
@@ -350,7 +348,7 @@ class Ui_SensorSettingsWindow(object):
         font.setWeight(75)
         self.PB_goBack.setFont(font)
         self.PB_goBack.setObjectName("PB_goBack")
-        self.LE_sensor = QtWidgets.QLineEdit(self.centralwidget)
+        self.LE_sensor = MyQLineEdit(self.centralwidget)
         self.LE_sensor.setGeometry(QtCore.QRect(170, 200, 531, 61))
         font = QtGui.QFont()
         font.setPointSize(16)

@@ -46,7 +46,7 @@ class Ui_addActuatorWindow(object):
 
     def on_PB_addActuator_pressed(self):
         self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
-            "AddActuatorWindow", "Connecting, please wait..."))
+            "AddActuatorWindow", "Connecting..."))
 
     def on_PB_addActuator_released(self):
         actuatorID = self.LE_actuator.text()
@@ -69,7 +69,7 @@ class Ui_addActuatorWindow(object):
             flag = 0
             actualNumActuators = len(self.actuatorsConfiguration["conf"])
             for i in range(0, actualNumActuators):
-                if (str(actuatorID).lower() == str(self.actuatorsConfiguration["conf"][i]["actuatorID"]).lower()):
+                if (str(actuatorID).lower() == str(self.actuatorsConfiguration["conf"][i]["actuatorID"]).lower() and self.actuatorsConfiguration["conf"][i]["type"] == "hot"):
                     flag = 1
                     break
             if (flag == 1): # L'ID Attuatore esiste già, ritorna errore
@@ -84,8 +84,11 @@ class Ui_addActuatorWindow(object):
                             "AddActuatorWindow", "Connect"))
                 return
 
+            # TODO: Remove STUB
             net_SSID = data.networkData["net_SSID"]
             net_PWD = data.networkData["net_PWD"]
+            # net_SSID = "ciao"
+            # net_PWD = "bela"
 
             if (net_SSID == "" or net_PWD == ""):
                 print("Net SSID and NET PWD cannot be empty! Maybe Raspone is not connected to network...")
@@ -98,8 +101,8 @@ class Ui_addActuatorWindow(object):
                 msg.setWindowTitle("Error")
                 msg.exec_()
 
-            else: 
-                # TODO: Uncomment
+            else:
+                # TODO: Remove STUB 
                 returnID = connection_actuator.connection(actuatorID, net_SSID, net_PWD)    
                 # returnID = 0
                 if (returnID == 0):
@@ -107,8 +110,9 @@ class Ui_addActuatorWindow(object):
 
                     if (len(self.actuatorsConfiguration["conf"]) == 1 and str(self.actuatorsConfiguration["conf"][0]["actuatorID"]) == ""):
                         self.actuatorsConfiguration["conf"][0]["actuatorID"] = actuatorID
+                        self.actuatorsConfiguration["conf"][0]["type"] = "hot"
                     else:
-                        self.actuatorsConfiguration["conf"].append({"actuatorID" : actuatorID, "valves" : [{"valveID": ""}]})
+                        self.actuatorsConfiguration["conf"].append({"actuatorID" : actuatorID, "type": "hot", "valves" : [{"valveID": ""}]})
                     database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
 
                     msg = QtWidgets.QMessageBox()
