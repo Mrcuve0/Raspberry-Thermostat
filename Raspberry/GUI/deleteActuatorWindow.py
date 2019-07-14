@@ -46,13 +46,12 @@ class Ui_deleteActuatorWindow(object):
 
     def on_PB_deleteActuator_pressed(self):
         self.PB_deleteActuator.setText(QtCore.QCoreApplication.translate(
-            "DeleteActuatorWindow", "Connecting, please wait..."))
+            "DeleteActuatorWindow", "Deleting, please wait..."))
 
     # TODO: Delete Actuator function
     # Delete the actuator from the system (disconnects MQTT etc boh)
     # "You can now turn off your actuator --> OK"
     def on_PB_deleteActuator_released(self):
-        self.PB_deleteActuator.setEnabled(False)
         actuatorID = self.LE_actuator.text()
 
         if (actuatorID == "" or not(str(actuatorID).isdecimal())):
@@ -63,9 +62,7 @@ class Ui_deleteActuatorWindow(object):
                 "Insert a valid numerical-only ID")
             msg.setWindowTitle("Error")
             msg.exec_()
-            self.PB_deleteActuator.setEnabled(True)
-            self.PB_deleteActuator.setText(QtCore.QCoreApplication.translate(
-                            "DeleteActuatorWindow", "Delete Actuator..."))
+
         else: # ID attuatore inserito correttamente
             # Cerca l'attuatore, se esiste eliminalo
             flag = 0
@@ -76,8 +73,25 @@ class Ui_deleteActuatorWindow(object):
                     flag = 1
                     break
                     
-            if (flag == 1):
+            if (flag == 1): 
                 database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setInformativeText(
+                    "Actuator Deleted!")
+                msg.setWindowTitle("Deleted!")
+                msg.exec_()
+
+            else: # ID Attuatore non trovato, messaggio di errore
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setInformativeText(
+                    "ID Actuator not found!")
+                msg.setWindowTitle("Error")
+                msg.exec_()
+                
+        self.PB_deleteActuator.setText(QtCore.QCoreApplication.translate(
+            "DeleteActuatorWindow", "Delete"))
    
     def reloadRoomData(self):
         self.actuatorsConfiguration = database_manager.get_actuators_configuration(self.db)
@@ -236,4 +250,4 @@ class Ui_deleteActuatorWindow(object):
             "DeleteActuatorWindow", "Actuator Name:"))
 
         self.PB_deleteActuator.setText(_translate(
-            "DeleteActuatorWindow", "Delete Actuator..."))
+            "DeleteActuatorWindow", "Delete"))
