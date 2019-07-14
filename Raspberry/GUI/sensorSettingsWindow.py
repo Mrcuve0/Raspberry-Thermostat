@@ -96,8 +96,8 @@ class Ui_SensorSettingsWindow(object):
 
             else: 
                 # TODO: Uncomment
-                returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, str(self.actualRoomName) + str(self.actualRoomID))    
-                # returnID = 0
+                # returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, str(self.actualRoomName) + str(self.actualRoomID))    
+                returnID = 0
                 if (returnID == 0):
                     print("OK! Sensor is being connected!")
 
@@ -115,7 +115,7 @@ class Ui_SensorSettingsWindow(object):
 
                     database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Connected!"))
+                            "SensorSettingsWindow", "Connect"))
 
                 elif (returnID == -1):
                     print("Sensor not found in BT proximity, check actuator ID pliz")
@@ -229,12 +229,31 @@ class Ui_SensorSettingsWindow(object):
                             "SensorSettingsWindow", "Not connected, please retry..."))
                     self.PB_connectSensor.setEnabled(True)
 
-    # TODO: Aggiungere metodo per l'eliminazione del sensore
-    # Decidere se mostrare una lista all'utente che dovrà poi selezionare il nome del sensore da 
-    # eliminare. Oppure chiedere all'utente di specificare il nome del sensore e fare il check 
-    # che tale sensore esista veramente --> strada più easy
+    # TODO: Una volta eliminato il sensore, dobbiamo disconnetterlo lato ESP?
     def on_PB_deleteSensor_clicked(self):
-        pass
+        sensorID = self.LE_sensor.text()
+
+        if (sensorID == "" or not(str(sensorID).isdecimal())):
+            print("Sensor ID empty or non numerical!")
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setInformativeText(
+                "Insert a valid numerical-only ID")
+            msg.setWindowTitle("Error")
+            msg.exec_()
+
+        else: # ID sensore inserito correttamente
+            # Cerca il sensore, se esiste eliminalo
+            flag = 0
+            actualNumSensors = len(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"])
+            for i in range(0, actualNumSensors):
+                if (str(sensorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][i]["sensorID"]).lower()):
+                    del self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][i]
+                    flag = 1
+                    break
+                    
+            if (flag == 1):
+                database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
 
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
