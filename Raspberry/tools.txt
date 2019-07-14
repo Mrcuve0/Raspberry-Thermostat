@@ -24,3 +24,5 @@ commands:
 	sudo apt-get update
 	sudo apt-get install build-essential python-dev python-openssl git
 	sudo pip install Adafruit_DHT
+
+	//psw web service: schiccherotto	 username: PL19-01
