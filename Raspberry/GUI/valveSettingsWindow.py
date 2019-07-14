@@ -6,6 +6,7 @@ from PyQt5.QtCore import QTime, QDate, QTimer
 import sensorValveProgramWindow
 from Devices.connectionpy import connection_sensor
 from database_manager import database_manager
+from connection_manager import connection_manager
 
 
 class MyQLineEdit(QtWidgets.QLineEdit):
@@ -30,9 +31,13 @@ class Ui_ValveSettingsWindow(object):
     actualRoomID = 0
     actualRoomName = ""
 
+    mqttClient = None
+
     def initDB(self, db):
         self.db = db
 
+    def initMqttClinet(self):
+        self.mqttClient = connection_manager()
     
     def reloadRoomData(self):
         self.configuration = database_manager.get_configuration(self.db)
@@ -124,11 +129,15 @@ class Ui_ValveSettingsWindow(object):
                                 database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
                                 database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
 
+                                msg = {"room" : str(self.actualRoomID), "actuator" : str(actuatorID), "valve" : str(valveID)}
+                                connection_manager.mqtt_publish(self.mqttClient, "actuator/configuration", str(msg))
+
                                 msg = QtWidgets.QMessageBox()
                                 msg.setIcon(QtWidgets.QMessageBox.Information)
                                 msg.setInformativeText("Valve connected to actuator!")
                                 msg.setWindowTitle("Info")
                                 msg.exec_()
+
                                 return
                                     
                         if (associatedFlag == 0):
@@ -168,6 +177,9 @@ class Ui_ValveSettingsWindow(object):
                             print("\t --> COMMIT roomDataConfiguration")
                             database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
                             database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
+
+                            msg = {"room" : str(self.actualRoomID), "actuator" : str(actuatorID), "valve" : str(valveID)}
+                            connection_manager.mqtt_publish(self.mqttClient, "actuator/configuration", str(msg))
 
                             msg = QtWidgets.QMessageBox()
                             msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -249,6 +261,8 @@ class Ui_ValveSettingsWindow(object):
                         print("\t --> COMMIT roomDataConfiguration")
                         database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
                         database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
+
+
 
                     else:
                         # La valvola NON è stata trovata
@@ -420,6 +434,7 @@ class Ui_ValveSettingsWindow(object):
         ValveSettingsWindow.setCentralWidget(self.centralwidget)
 
         self.initDB(db)
+        self.initMqttClinet()
         self.actualRoomID = actualRoomID
         self.actualRoomName = actualRoomName
 

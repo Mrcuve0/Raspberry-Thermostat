@@ -100,8 +100,8 @@ class Ui_addActuatorWindow(object):
 
             else: 
                 # TODO: Uncomment
-                # returnID = connection_actuator.connection(actuatorID, net_SSID, net_PWD)    
-                returnID = 0
+                returnID = connection_actuator.connection(actuatorID, net_SSID, net_PWD)    
+                # returnID = 0
                 if (returnID == 0):
                     print("OK! Actuator is being connected!")
 
@@ -205,19 +205,19 @@ class Ui_addActuatorWindow(object):
                             "AddActuatorWindow", "Not connected, please retry..."))
                     self.PB_addActuator.setEnabled(True)
 
-                elif (returnID == -7):
-                    print("Cannot connect, error transmitting MQTT Info")
+                # elif (returnID == -7):
+                #     print("Cannot connect, error transmitting MQTT Info")
 
-                    msg = QtWidgets.QMessageBox()
-                    msg.setIcon(QtWidgets.QMessageBox.Critical)
-                    msg.setInformativeText(
-                        "Error while transferring MQTT info to the actuator")
-                    msg.setWindowTitle("Error")
-                    msg.exec_()
+                #     msg = QtWidgets.QMessageBox()
+                #     msg.setIcon(QtWidgets.QMessageBox.Critical)
+                #     msg.setInformativeText(
+                #         "Error while transferring MQTT info to the actuator")
+                #     msg.setWindowTitle("Error")
+                #     msg.exec_()
 
-                    self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
-                            "AddActuatorWindow", "Not connected, please retry..."))
-                    self.PB_addActuator.setEnabled(True)
+                #     self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
+                #             "AddActuatorWindow", "Not connected, please retry..."))
+                #     self.PB_addActuator.setEnabled(True)
 
     def reloadRoomData(self):
         self.actuatorsConfiguration = database_manager.get_actuators_configuration(self.db)

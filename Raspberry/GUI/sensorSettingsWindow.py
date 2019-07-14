@@ -96,8 +96,8 @@ class Ui_SensorSettingsWindow(object):
 
             else: 
                 # TODO: Uncomment
-                # returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, str(self.actualRoomName) + str(self.actualRoomID))    
-                returnID = 0
+                returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, str(self.actualRoomName) + str(self.actualRoomID))    
+                # returnID = 0
                 if (returnID == 0):
                     print("OK! Sensor is being connected!")
 
@@ -128,7 +128,7 @@ class Ui_SensorSettingsWindow(object):
                     msg.exec_()
                     
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Not connected, please retry..."))
+                            "SensorSettingsWindow", "Not connected!"))
                     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -2):
@@ -142,7 +142,7 @@ class Ui_SensorSettingsWindow(object):
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Not connected, please retry..."))
+                            "SensorSettingsWindow", "Not connected!"))
                     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -3):
@@ -156,7 +156,7 @@ class Ui_SensorSettingsWindow(object):
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Not connected, please retry..."))
+                            "SensorSettingsWindow", "Not connected!"))
                     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -4):
@@ -170,7 +170,7 @@ class Ui_SensorSettingsWindow(object):
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Not connected, please retry..."))
+                            "SensorSettingsWindow", "Not connected!"))
                     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -5):
@@ -184,7 +184,7 @@ class Ui_SensorSettingsWindow(object):
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Not connected, please retry..."))
+                            "SensorSettingsWindow", "Not connected!"))
                     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -6):
@@ -198,22 +198,22 @@ class Ui_SensorSettingsWindow(object):
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Not connected, please retry..."))
+                            "SensorSettingsWindow", "Not connected!"))
                     self.PB_connectSensor.setEnabled(True)
 
-                elif (returnID == -7):
-                    print("Cannot connect, error transmitting MQTT Info")
+                # elif (returnID == -7):
+                #     print("Cannot connect, error transmitting MQTT Info")
 
-                    msg = QtWidgets.QMessageBox()
-                    msg.setIcon(QtWidgets.QMessageBox.Critical)
-                    msg.setInformativeText(
-                        "Errore nella trasmissione delle info MQTT al sensore")
-                    msg.setWindowTitle("Error")
-                    msg.exec_()
+                #     msg = QtWidgets.QMessageBox()
+                #     msg.setIcon(QtWidgets.QMessageBox.Critical)
+                #     msg.setInformativeText(
+                #         "Errore nella trasmissione delle info MQTT al sensore")
+                #     msg.setWindowTitle("Error")
+                #     msg.exec_()
 
-                    self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Not connected, please retry..."))
-                    self.PB_connectSensor.setEnabled(True)
+                #     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
+                #             "SensorSettingsWindow", "Not connected!"))
+                #     self.PB_connectSensor.setEnabled(True)
 
                 elif (returnID == -8):
                     print("Cannot connect, error transmitting room name Info")
@@ -226,7 +226,7 @@ class Ui_SensorSettingsWindow(object):
                     msg.exec_()
 
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
-                            "SensorSettingsWindow", "Not connected, please retry..."))
+                            "SensorSettingsWindow", "Not connected!"))
                     self.PB_connectSensor.setEnabled(True)
 
     # TODO: Una volta eliminato il sensore, dobbiamo disconnetterlo lato ESP?
