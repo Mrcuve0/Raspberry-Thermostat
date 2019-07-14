@@ -26,6 +26,7 @@ class Ui_ValveSettingsWindow(object):
     db = None
     configuration = None
     roomDataConfiguration = None
+    actuatorsConfiguration = None
     actualRoomID = 0
     actualRoomName = ""
 
@@ -36,6 +37,7 @@ class Ui_ValveSettingsWindow(object):
     def reloadRoomData(self):
         self.configuration = database_manager.get_configuration(self.db)
         self.roomDataConfiguration = database_manager.get_roomData_configuration(self.db)
+        self.actuatorsConfiguration = database_manager.get_actuators_configuration(self.db)
 
     def on_PB_goBack_clicked(self):
         self.close()
@@ -58,6 +60,158 @@ class Ui_ValveSettingsWindow(object):
             msg.setWindowTitle("Error")
             msg.exec_()
             return
+        else:
+            # Actuator and Valve ID corretti
+            # Cerca se l'attuatore esiste in actuatorsConfig
+            flag = 0
+            indexInActuatorList = 0
+            actualNumActuators = len(self.actuatorsConfiguration["conf"])
+            for i in range(0, actualNumActuators):
+                if (str(actuatorID).lower() == str(self.actuatorsConfiguration["conf"][i]["actuatorID"]).lower()):
+                    indexInActuatorList = i
+                    flag = 1
+                    break
+            if (flag == 1): # L'ID Attuatore esiste già, ottimo
+                print("ID Actuator found!")
+
+                if (int(valveID) >= 0 and int(valveID) <= 7):
+                    # Cerca se la valvola relativa a questo attuatore non è già stata impegnata
+                    actualNumValves = len(self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"])
+                    for i in range(0, actualNumValves):
+                        if (str(valveID).lower() == str(self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"][i]["valveID"].lower())):
+                            # questa valvola di questo attuatore è già usata, non posso considerarla
+                            msg = QtWidgets.QMessageBox()
+                            msg.setIcon(QtWidgets.QMessageBox.Critical)
+                            msg.setInformativeText(
+                                "This Valve on this actuator is already used!")
+                            msg.setWindowTitle("Error")
+                            msg.exec_()
+                            return
+                        else:
+                            # La valvola per questo attuatore è libera, impegnamola
+
+                            # Prima devo linkare l'attuatore alla stanza
+                            # Vediamo prima se non è già stato linkato
+                            actualNumActuators = len(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"])
+
+                            # Faccio un loop su tutti gli attuatori della stanza, se non trovo il mio attuatore vuol dire che non è stato ancora associato alla stanza
+                            for i in range(0, actualNumActuators):
+                                associatedFlag = 0
+
+                                if (str(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["actuatorID"]).lower() == str(actuatorID).lower()):
+                                    # L'Actuator è già associato alla stanza corrente, è solo necessario linkare la valvola
+                    
+                                    associatedFlag = 1
+                                    indexInActuatorList = i
+                                    
+                                    # Poiché l'Actuator è già stato linkato, sappiamo per certo che è stata linkata anche una valvola a suo tempo, 
+                                    # so già per certo che devo fare la append sulla lista delle valvole.
+
+                                    # Linkiamo ora la valvola al suo attuatore e alla stanza attuale
+                                    self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"].append({"valveID": valveID})
+
+                                    # Aggiungiamo la valvola anche nella lista delle valvole del singolo attuatore
+                                    # Stessa cosa di prima, basta una append sulla lista delle valvole
+                                    actualNumValves = len(self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"])
+                                    self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"].append({"valveID" : str(valveID)})
+
+                                    # Finito, commit
+                                    print("\t --> COMMIT actuatorsConfiguration")
+                                    print("\t --> COMMIT roomDataConfiguration")
+                                    database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
+                                    database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
+
+                                    msg = QtWidgets.QMessageBox()
+                                    msg.setIcon(QtWidgets.QMessageBox.Information)
+                                    msg.setInformativeText("Valve connected to actuator!")
+                                    msg.setWindowTitle("Info")
+                                    msg.exec_()
+                                    return
+                                     
+                            if (associatedFlag == 0):
+                                # L'actuator non è stato ancora associato alla stanza corrente
+                                if (actualNumActuators == 1 and self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][0]["actuatorID"] == ""):
+                                    # Se è anche il primo actuator ad essere associato alla stanza corrente...
+                                    self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][0]["actuatorID"] = actuatorID
+
+                                    # Linkiamo ora la valvola al suo attuatore e alla stanza attuale
+                                    actualNumValves = len(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][0]["valves"])
+                                    if (actualNumValves == 1 and self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][0]["valves"][0]["valveID"] == ""):
+                                        self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][0]["valves"][0]["valveID"] = valveID
+                                    else:
+                                        self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][actualNumActuators]["valves"].append({"valveID": valveID})                                        
+
+                                else:
+                                    # Questo non è il primo actuator che è stato associato alla stanza corrente
+                                    self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"].append({"actuatorID" : actuatorID, "valves" : [{"valveID": ""}]})
+
+                                    # Linkiamo ora la valvola al suo attuatore e alla stanza attuale
+                                    actualNumValves = len(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][actualNumActuators]["valves"])
+
+                                    if (actualNumValves == 1 and self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][actualNumActuators]["valves"][0]["valveID"] == ""):
+                                        # Se questa è la prima valvola ad essere associata all'actuator corrente
+                                        self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][actualNumActuators]["valves"][0]["valveID"] = valveID
+                                    else:
+                                        # Questa non è la prima valvola associata all'actuator corrente
+                                        self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][actualNumActuators]["valves"].append({"valveID": valveID})
+
+                                        # print("\t --> COMMIT actuatorsConfiguration")
+                                        # print("\t --> COMMIT roomDataConfiguration")
+                                        # database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
+                                        # database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
+
+                                        # msg = QtWidgets.QMessageBox()
+                                        # msg.setIcon(QtWidgets.QMessageBox.Information)
+                                        # msg.setInformativeText("Valve connected to actuator!")
+                                        # msg.setWindowTitle("Info")
+                                        # msg.exec_()
+
+                                actualNumValves = len(self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"])
+                                if (actualNumValves == 1 and self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"][0]["valveID"] == ""):
+                                    self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"][0]["valveID"] = str(valveID)
+                                else:
+                                    self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"].append({"valveID" : str(valveID)})
+    
+                                print("\t --> COMMIT actuatorsConfiguration")
+                                print("\t --> COMMIT roomDataConfiguration")
+                                database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
+                                database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
+
+                                msg = QtWidgets.QMessageBox()
+                                msg.setIcon(QtWidgets.QMessageBox.Information)
+                                msg.setInformativeText(
+                                    "Valve connected to actuator!")
+                                msg.setWindowTitle("Info")
+                                msg.exec_()
+
+                                # # Ora devo associare valvola all'attuatore e alla stanza attuale
+                                # actualNumValves = len(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"])
+                                # if (actualNumValves == 0 and self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"][0]["valveID"] == ""):
+                                #     self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"][0]["valveID"] = valveID
+                                # else:
+                                #     self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"].append({"valveID" : valveID})
+                                #   
+
+                else:
+                    # L'ID della valvola non esiste
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setInformativeText(
+                        "Please insert a valid Valve ID, valid IDs from 0 to 7")
+                    msg.setWindowTitle("Error")
+                    msg.exec_()
+                    return
+            else:
+                # ID dell'attuatore non trovato
+                print("ID actuator not found!")
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setInformativeText(
+                    "ID Actuator not found!")
+                msg.setWindowTitle("Error")
+                msg.exec_()
+                return
+                
 
         # numActuators
         # self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][]
