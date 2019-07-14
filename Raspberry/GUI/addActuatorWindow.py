@@ -49,7 +49,6 @@ class Ui_addActuatorWindow(object):
             "AddActuatorWindow", "Connecting, please wait..."))
 
     def on_PB_addActuator_released(self):
-        self.PB_addActuator.setEnabled(False)
         actuatorID = self.LE_actuator.text()
 
         if (actuatorID == "" or not(str(actuatorID).isdecimal())):
@@ -81,6 +80,8 @@ class Ui_addActuatorWindow(object):
                     "This actuator has been already connected!")
                 msg.setWindowTitle("Error")
                 msg.exec_()
+                self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
+                            "AddActuatorWindow", "Connect"))
                 return
 
             net_SSID = data.networkData["net_SSID"]
@@ -104,7 +105,7 @@ class Ui_addActuatorWindow(object):
                 if (returnID == 0):
                     print("OK! Actuator is being connected!")
 
-                    if (len(self.actuatorsConfiguration["conf"]) == 1):
+                    if (len(self.actuatorsConfiguration["conf"]) == 1 and str(self.actuatorsConfiguration["conf"][0]["actuatorID"]) == ""):
                         self.actuatorsConfiguration["conf"][0]["actuatorID"] = actuatorID
                     else:
                         self.actuatorsConfiguration["conf"].append({"actuatorID" : actuatorID, "valves" : [{"valveID": ""}]})
@@ -118,8 +119,7 @@ class Ui_addActuatorWindow(object):
                     msg.exec_()
 
                     self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
-                            "AddActuatorWindow", "Connected!"))
-                    self.PB_addActuator.setEnabled(False)
+                            "AddActuatorWindow", "Connect"))
 
                 elif (returnID == -1):
                     print("Actuator not found in BT proximity, check actuator ID pliz")

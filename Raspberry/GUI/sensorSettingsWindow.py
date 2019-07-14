@@ -241,6 +241,7 @@ class Ui_SensorSettingsWindow(object):
                 "Insert a valid numerical-only ID")
             msg.setWindowTitle("Error")
             msg.exec_()
+            return
 
         else: # ID sensore inserito correttamente
             # Cerca il sensore, se esiste eliminalo
@@ -254,6 +255,20 @@ class Ui_SensorSettingsWindow(object):
                     
             if (flag == 1):
                 database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setInformativeText(
+                    "Sensor deleted!\nYou will no more receive data from it.")
+                msg.setWindowTitle("Info")
+                msg.exec_()
+            else:
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setInformativeText(
+                    "Error! Sensor not found!")
+                msg.setWindowTitle("Error")
+                msg.exec_()
+
 
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
