@@ -325,13 +325,16 @@ class Ui_MainWindow(object):
         # lastTemperatures = []
         # lastTemperatures.append(18.5)
         # lastTemperatures.append(20.2)
-        # print(str(self.lastTemperatures[self.actualRoomID]["room"]))
-        # print(str(self.lastTemperatures[self.actualRoomID]["temperature"]))
+        print(self.lastTemperatures)
+        # print(str(self.lastTemperatures["room"]))
+        # print(str(self.lastTemperatures["temperature"]))
         
+        self.LCDTempAct.display(str("o"))
         for el in self.lastTemperatures:
             if (str(el["room"]) == str(self.actualRoomID)):
-                self.LCDTempAct.display(str(el["temperature"]))
+                self.LCDTempAct.display("%.1f" % round(el["temperature"], 1))
                 break
+                
             
 
         # print(self.configuration)
@@ -372,7 +375,7 @@ class Ui_MainWindow(object):
             self.disableProgramAntiFreezeButtons()
 
             # Show temperature according to program
-            self.LCDTempSet.display(str(self.roomTempProgram))
+            self.LCDTempSet.display("%.1f" % round(float(self.roomTempProgram), 1))
             
         elif (self.mode == "manual"):
             # self.on_PB_manual_pressed()
@@ -389,7 +392,7 @@ class Ui_MainWindow(object):
 
             self.enableManualButtons()
 
-            self.LCDTempSet.display(str(self.roomTempSet))
+            self.LCDTempSet.display("%.1f" % round(float(self.roomTempSet), 1))
 
         else:
             # self.on_PB_antiFreeze_pressed()
@@ -405,7 +408,7 @@ class Ui_MainWindow(object):
             self.PB_manual.setFont(font)
 
             self.disableProgramAntiFreezeButtons()
-            self.LCDTempSet.display(str(15.0))
+            self.LCDTempSet.display("%.1f" % round(15.00, 1))
 
         if (self.season == "cold"):
             # self.on_PB_winter_pressed()
