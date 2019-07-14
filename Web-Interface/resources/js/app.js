@@ -7,7 +7,8 @@ angular
         'ngAria',
         'ngRoute',
         'ngTouch',
-        'ui.bootstrap'
+        'ui.bootstrap',
+        'nvd3'
     ])
     .config(function ($routeProvider) {
         $routeProvider
@@ -15,8 +16,12 @@ angular
                 templateUrl: 'resources/views/thermo.html',
                 controller: 'ThermoCtrl'
             })
-             .when('/info/', {
-                templateUrl: 'resources/views/info.html'
+            .when('/stats/', {
+                templateUrl: 'resources/views/stats.html',
+                controller: 'StatsCtrl'
+            })
+            .when('/info/', {
+                templateUrl: 'resources/views/info.html',
             })
             .otherwise({
                 redirectTo: '/'
