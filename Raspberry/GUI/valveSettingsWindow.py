@@ -37,7 +37,9 @@ class Ui_ValveSettingsWindow(object):
         self.db = db
 
     def initMqttClinet(self):
+        print("Sono nel clinet")
         self.mqttClient = connection_manager()
+        self.mqttClient.mqtt_connect()
     
     def reloadRoomData(self):
         self.configuration = database_manager.get_configuration(self.db)

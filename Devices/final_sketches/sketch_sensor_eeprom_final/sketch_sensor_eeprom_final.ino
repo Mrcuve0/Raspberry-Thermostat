@@ -78,7 +78,7 @@ int wifi_timeout = 0;
 int roomNamec_index = 0;
 
 // Device ID, change this for each ESP you are going to flash
-char ESPname[] = "5";
+char ESPname[] = "1";
 char ack_char = '@';
 char no_ack_char = '#';
 
@@ -108,7 +108,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   std::string messageTemp;
   Serial.println();
   Serial.println("------------------------------------");
-  
+
   for (int i = 0; i < length; i++)
   {
     Serial.print((char)payload[i]);
@@ -118,15 +118,17 @@ void callback(char *topic, byte *payload, unsigned int length)
   Serial.println("------------------------------------");
 }
 
-void setup() {
+void setup()
+{
   // put your setup code here, to run once:
   Serial.begin(115200);
   dht.begin();
   pinMode(interruptPin, INPUT_PULLUP);
 
   Serial.println("before initializing EEPROM");
-  
-  if (!EEPROM.begin(EEPROM_SIZE)){
+
+  if (!EEPROM.begin(EEPROM_SIZE))
+  {
     Serial.println("Failed to initialise EEPROM");
     Serial.println("Restarting...");
     delay(1000);
@@ -135,40 +137,46 @@ void setup() {
 
   Serial.println("after initializing EEPROM");
 
-  if(EEPROM.readChar(address) == 'F'){        //ack char for credentials
-    //credentials already stored in eeprom 
+  // clearEEPROM();
+
+  if (EEPROM.readChar(address) == 'F')
+  { //ack char for credentials
+    //credentials already stored in eeprom
     Serial.println("eeprom connection in if {}");
     showCredentials();
-    eepromConnection(); 
-  }else{
-    //credentials not yet stored in eeprom  
+    eepromConnection();
+  }
+  else
+  {
+    //credentials not yet stored in eeprom
     Serial.println("normal connection in else {}");
     normalConnection();
   }
 
-
-  if(client.subscribe("temperatures") == false){
-    Serial.println("not subscribed to temperatures topic");  
+  if (client.subscribe("temperatures") == false)
+  {
+    Serial.println("not subscribed to temperatures topic");
   }
   Serial.println("subscribed to temperatures topic");
 
   start_time = millis();
   Serial.println("initialized the start time");
-  
 }
 
 void loop()
-{ 
-  if(!client.connected()){
-      Serial.println("client not connected");
-      //ESP.restart();
-      reconnect();
-      if(client.subscribe("temperatures") == false){
-        Serial.println("not subscribed to temperatures topic");  
-      }
-      Serial.println("subscribed to temperatures topic");
+{
+  if (!client.connected())
+  {
+    Serial.println("client not connected");
+    //ESP.restart();
+    reconnect();
+    if (client.subscribe("temperatures") == false)
+    {
+      Serial.println("not subscribed to temperatures topic");
+    }
+    Serial.println("subscribed to temperatures topic");
   }
-  
+
   if (millis() - start_time > time_interval)
   {
     temperature = dht.readTemperature();
@@ -186,7 +194,7 @@ void loop()
     temperature_string += temp_str;
     temperature_string += closing_string;
     Serial.println(temperature_string);
-    
+
     client.publish("temperatures", temperature_string.c_str());
     temperature_string = "";
     start_time = millis();
@@ -195,7 +203,8 @@ void loop()
 }
 
 ///////////////////////////////////////////////////////////////////
-void waitingLowPin(){
+void waitingLowPin()
+{
   ////////////////////////////WAITING FOR LOW PIN//////////////////////
   SerialBT.begin(ESPname); //Bluetooth device name
   Serial.println("The device started, now you can pair it with bluetooth!");
@@ -209,10 +218,11 @@ void waitingLowPin(){
       ESP.restart();
     }
   }
-  Serial.println("pin low, waiting for a transmission");  
+  Serial.println("pin low, waiting for a transmission");
 }
 
-void testTransmission(){
+void testTransmission()
+{
   ////////////////////////////TEST TRANSMISSION////////////////////////
   while (!SerialBT.available())
   {
@@ -242,11 +252,11 @@ void testTransmission(){
     delay(1000);
     SerialBT.end();
     ESP.restart();
-  }  
+  }
 }
 
-
-void ssidpsw(){
+void ssidpsw()
+{
   //////////////////////////////WIFI///////////////////////////////////
   while (!SerialBT.available())
   {
@@ -275,10 +285,11 @@ void ssidpsw(){
   }
   Serial.println(pswc_index);
   pswc[strlen(pswc)] = '\0';
-  Serial.println(pswc);  
+  Serial.println(pswc);
 }
 
-void wifiConnection(){
+void wifiConnection()
+{
 
   WiFi.begin(ssid, psw);
   delay(500);
@@ -290,61 +301,66 @@ void wifiConnection(){
     wifi_timeout++;
     if (wifi_timeout % 5 == 0)
     {
-     Serial.println("\t--> Retry...");
+      Serial.println("\t--> Retry...");
       WiFi.begin(ssid, psw);
     }
   }
-    
-  Serial.println("Connected to the WiFi network"); 
+
+  Serial.println("Connected to the WiFi network");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
   SerialBT.write(ack_char);
   Serial.println("sent the ack char");
 }
 
-void mqttConnection(){
- if (!MDNS.begin(DEVICE_ID))
-    {
-      Serial.println("Error setting up MDNS responder!");
-      delay(1000);
-      ESP.restart();
-      return;
-    }
+void mqttConnection()
+{
+  if (!MDNS.begin(DEVICE_ID))
+  {
+    Serial.println("Error setting up MDNS responder!");
+    delay(1000);
+    ESP.restart();
+    return;
+  }
 
+  Serial.println("mDNS responder started");
+  // Look for the local IP of the rasbperry pi
+  mqttServer = MDNS.queryHost(mqttHostname);
 
-    Serial.println("mDNS responder started");
-    // Look for the local IP of the rasbperry pi 
+  while (mqttServer.toString() == "0.0.0.0")
+  {
+    Serial.println("Trying again to resolve mDNS");
+    delay(250);
     mqttServer = MDNS.queryHost(mqttHostname);
+  }
 
-    while (mqttServer.toString() == "0.0.0.0")
+  Serial.print("IP address of server: ");
+  Serial.println(mqttServer.toString());
+  // Connect to the MQTT broker
+  client.setServer(mqttServer, mqttPort);
+  client.setCallback(callback);
+  while (!client.connected())
+  {
+    Serial.println("Connecting to MQTT...");
+    if (client.connect(DEVICE_ID, mqttUser, mqttPassword))
     {
-      Serial.println("Trying again to resolve mDNS");
-      delay(250);
-      mqttServer = MDNS.queryHost(mqttHostname);     
+      Serial.println("connected to the broker");
     }
-    
-    Serial.print("IP address of server: ");
-    Serial.println(mqttServer.toString());
-    // Connect to the MQTT broker 
-    client.setServer(mqttServer, mqttPort);
-    client.setCallback(callback);
-    while (!client.connected()) {
-      Serial.println("Connecting to MQTT...");
-      if (client.connect(DEVICE_ID, mqttUser, mqttPassword )) {
-        Serial.println("connected to the broker");
-      } else {
-        /*Serial.print("failed with state ");
+    else
+    {
+      /*Serial.print("failed with state ");
         Serial.print(client.state());
         delay(1000);
         Serial.println("wrong credentials, have to restart the esp32");
         clearEEPROM();
         delay(1000);
         ESP.restart();*/
-      }
     }
+  }
 }
 
-void room(){
+void room()
+{
   //////////////////////////////ROOM///////////////////////////////////
   while (!SerialBT.available())
   {
@@ -360,21 +376,21 @@ void room(){
   roomNamec[strlen(roomNamec)] = '\0';
   Serial.println(roomNamec);
   Serial.print("roomIDc is ");
-  roomIDc = roomNamec[roomNamec_index-1];
+  roomIDc = roomNamec[roomNamec_index - 1];
   Serial.println(roomIDc);
   SerialBT.write(ack_char);
-  Serial.println("sent the ack char for roomName");  
+  Serial.println("sent the ack char for roomName");
 }
 ////////////////////////////////////////////////////////////////////////
 
-
-void showCredentials(){
-  //taking the credentials from EEPROM 
+void showCredentials()
+{
+  //taking the credentials from EEPROM
   testc = EEPROM.readChar(address);
-  EEPROM.readString(addressone).toCharArray(ssidc,64);
-  EEPROM.readString(addresstwo).toCharArray(pswc,64);
+  EEPROM.readString(addressone).toCharArray(ssidc, 64);
+  EEPROM.readString(addresstwo).toCharArray(pswc, 64);
   //EEPROM.readString(addressthree).toCharArray(mqttHostnamec,20);
-  EEPROM.readString(addressfour).toCharArray(roomNamec,20);
+  EEPROM.readString(addressfour).toCharArray(roomNamec, 20);
   roomIDc = EEPROM.readChar(addressfive);
   //printing the credentials from EEPROM
   Serial.print("test is ");
@@ -391,185 +407,195 @@ void showCredentials(){
   Serial.println(roomIDc);
 }
 
-void clearEEPROM(){
-  for (int i = 0 ; i < EEPROM_SIZE ; ++i) {
-      EEPROM.writeChar(i, '\0');
+void clearEEPROM()
+{
+  for (int i = 0; i < EEPROM_SIZE; ++i)
+  {
+    EEPROM.writeChar(i, '\0');
   }
   EEPROM.commit();
   Serial.println("EEPROM cleared");
 }
 
-void reconnect(){
+void reconnect()
+{
 
-//////////WIFI CONNECTION/////////////////////////////////////////
-    WiFi.begin(ssid, psw);
+  //////////WIFI CONNECTION/////////////////////////////////////////
+  WiFi.begin(ssid, psw);
+  delay(500);
+  wifi_timeout = 0;
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
-    wifi_timeout = 0;
-    while (WiFi.status() != WL_CONNECTED)
+    Serial.println("Connecting to WiFi..");
+    wifi_timeout++;
+    if (wifi_timeout % 5 == 0)
     {
-      delay(500);
-      Serial.println("Connecting to WiFi..");
-      wifi_timeout++;
-      if (wifi_timeout % 5 == 0)
-      {
-        Serial.println("\t--> Retry...");
-        WiFi.begin(ssid, psw);
-      }
+      Serial.println("\t--> Retry...");
+      WiFi.begin(ssid, psw);
     }
-    
-    Serial.println("Connected to the WiFi network");
+  }
 
-//////////MQTT CONNECTION/////////////////////////////////////////
-    
-    if (!MDNS.begin(DEVICE_ID))
-    {
-      Serial.println("Error setting up MDNS responder!");
-      delay(1000);
-      Serial.println("wrong credentials, have to restart the esp32");
-      clearEEPROM();
-      delay(1000);
-      ESP.restart();
-      return;
-    }
+  Serial.println("Connected to the WiFi network");
 
+  //////////MQTT CONNECTION/////////////////////////////////////////
 
-    Serial.println("mDNS responder started");
-    // Look for the local IP of the rasbperry pi 
+  if (!MDNS.begin(DEVICE_ID))
+  {
+    Serial.println("Error setting up MDNS responder!");
+    delay(1000);
+    Serial.println("wrong credentials, have to restart the esp32");
+    clearEEPROM();
+    delay(1000);
+    ESP.restart();
+    return;
+  }
+
+  Serial.println("mDNS responder started");
+  // Look for the local IP of the rasbperry pi
+  mqttServer = MDNS.queryHost(mqttHostname);
+
+  while (mqttServer.toString() == "0.0.0.0")
+  {
+    Serial.println("Trying again to resolve mDNS");
+    delay(250);
     mqttServer = MDNS.queryHost(mqttHostname);
+  }
 
-    while (mqttServer.toString() == "0.0.0.0")
+  Serial.print("IP address of server: ");
+  Serial.println(mqttServer.toString());
+  // Connect to the MQTT broker
+  client.setServer(mqttServer, mqttPort);
+  client.setCallback(callback);
+  while (!client.connected())
+  {
+    Serial.println("Connecting to MQTT...");
+    if (client.connect(DEVICE_ID, mqttUser, mqttPassword))
     {
-      Serial.println("Trying again to resolve mDNS");
-      delay(250);
-      mqttServer = MDNS.queryHost(mqttHostname);     
+      Serial.println("connected to the broker");
     }
-    
-    Serial.print("IP address of server: ");
-    Serial.println(mqttServer.toString());
-    // Connect to the MQTT broker 
-    client.setServer(mqttServer, mqttPort);
-    client.setCallback(callback);
-    while (!client.connected()) {
-      Serial.println("Connecting to MQTT...");
-      if (client.connect(DEVICE_ID, mqttUser, mqttPassword )) {
-        Serial.println("connected to the broker");
-      } else {
-        /*Serial.print("failed with state ");
+    else
+    {
+      /*Serial.print("failed with state ");
         Serial.print(client.state());
         delay(1000);
         Serial.println("wrong credentials, have to restart the esp32");
         clearEEPROM();
         delay(1000);
         ESP.restart();*/
-      }
     }
+  }
 }
 
-void eepromConnection(){
+void eepromConnection()
+{
 
-//////////WIFI CONNECTION/////////////////////////////////////////
-    WiFi.begin(ssid, psw);
+  //////////WIFI CONNECTION/////////////////////////////////////////
+  WiFi.begin(ssid, psw);
+  delay(500);
+  wifi_timeout = 0;
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
-    wifi_timeout = 0;
-    while (WiFi.status() != WL_CONNECTED)
+    Serial.println("Connecting to WiFi..");
+    wifi_timeout++;
+    if (wifi_timeout % 5 == 0)
     {
-      delay(500);
-      Serial.println("Connecting to WiFi..");
-      wifi_timeout++;
-      if (wifi_timeout % 5 == 0)
-      {
-        Serial.println("\t--> Retry...");
-        WiFi.begin(ssid, psw);
-      }
+      Serial.println("\t--> Retry...");
+      WiFi.begin(ssid, psw);
     }
-    
-    Serial.println("Connected to the WiFi network");
+  }
 
-//////////MQTT CONNECTION/////////////////////////////////////////
-    
-    if (!MDNS.begin(DEVICE_ID))
-    {
-      Serial.println("Error setting up MDNS responder!");
-      delay(1000);
-      Serial.println("wrong credentials, have to restart the esp32");
-      clearEEPROM();
-      delay(1000);
-      ESP.restart();
-      return;
-    }
+  Serial.println("Connected to the WiFi network");
 
+  //////////MQTT CONNECTION/////////////////////////////////////////
 
-    Serial.println("mDNS responder started");
-    // Look for the local IP of the rasbperry pi 
+  if (!MDNS.begin(DEVICE_ID))
+  {
+    Serial.println("Error setting up MDNS responder!");
+    delay(1000);
+    Serial.println("wrong credentials, have to restart the esp32");
+    clearEEPROM();
+    delay(1000);
+    ESP.restart();
+    return;
+  }
+
+  Serial.println("mDNS responder started");
+  // Look for the local IP of the rasbperry pi
+  mqttServer = MDNS.queryHost(mqttHostname);
+
+  while (mqttServer.toString() == "0.0.0.0")
+  {
+    Serial.println("Trying again to resolve mDNS");
+    delay(250);
     mqttServer = MDNS.queryHost(mqttHostname);
+  }
 
-    while (mqttServer.toString() == "0.0.0.0")
+  Serial.print("IP address of server: ");
+  Serial.println(mqttServer.toString());
+  // Connect to the MQTT broker
+  client.setServer(mqttServer, mqttPort);
+  client.setCallback(callback);
+  while (!client.connected())
+  {
+    Serial.println("Connecting to MQTT...");
+    if (client.connect(DEVICE_ID, mqttUser, mqttPassword))
     {
-      Serial.println("Trying again to resolve mDNS");
-      delay(250);
-      mqttServer = MDNS.queryHost(mqttHostname);     
+      Serial.println("connected to the broker");
     }
-
-    
-    Serial.print("IP address of server: ");
-    Serial.println(mqttServer.toString());
-    // Connect to the MQTT broker 
-    client.setServer(mqttServer, mqttPort);
-    client.setCallback(callback);
-    while (!client.connected()) {
-      Serial.println("Connecting to MQTT...");
-      if (client.connect(DEVICE_ID, mqttUser, mqttPassword )) {
-        Serial.println("connected to the broker");
-      } else {
-        /*Serial.print("failed with state ");
+    else
+    {
+      /*Serial.print("failed with state ");
         Serial.print(client.state());
         delay(1000);
         Serial.println("wrong credentials, have to restart the esp32");
         clearEEPROM();
         delay(1000);
         ESP.restart();*/
-      }
     }
-    
-/////////////////////////////////////////////////////////////////////
-    
-    Serial.println("setup done, everything is connected");
+  }
+
+  /////////////////////////////////////////////////////////////////////
+
+  Serial.println("setup done, everything is connected");
 }
 
-void normalConnection(){
+void normalConnection()
+{
   waitingLowPin();
   testTransmission();
 
   ssidpsw();
-  wifiConnection();  
+  wifiConnection();
   room();
   mqttConnection();
-  
+
   Serial.println("setup done, everything is connected");
   SerialBT.end();
   //Serial.println("SerialBT NOT ended");
-  
-  EEPROM.writeString(addressone, ssidc);     //writes ssid into EEPROM at address 1
+
+  EEPROM.writeString(addressone, ssidc); //writes ssid into EEPROM at address 1
   EEPROM.commit();
   Serial.println("ssid written in EEPROM");
 
-  EEPROM.writeString(addresstwo, pswc);      //writes psw into EEPROM at address 65 (1+64)
+  EEPROM.writeString(addresstwo, pswc); //writes psw into EEPROM at address 65 (1+64)
   EEPROM.commit();
   Serial.println("psw written in EEPROM");
-  
+
   //EEPROM.writeString(addressthree, mqttHostnamec);     //writes hostname in address 129 (65+64)
   //EEPROM.commit();
   //Serial.println("mqttHostname written in EEPROM");
 
-  EEPROM.writeString(addressfour, roomNamec);   //writes roomName at address 149 (129+20)
+  EEPROM.writeString(addressfour, roomNamec); //writes roomName at address 149 (129+20)
   EEPROM.commit();
   Serial.println("roomName written in EEPROM");
 
-  EEPROM.writeChar(addressfive, roomNamec[roomNamec_index-1]);
+  EEPROM.writeChar(addressfive, roomNamec[roomNamec_index - 1]);
   EEPROM.commit();
   Serial.println("room ID written in EEPROM");
-  
-  EEPROM.writeChar(address, 'F');     //writes ack char into EEPROM at address 0
+
+  EEPROM.writeChar(address, 'F'); //writes ack char into EEPROM at address 0
   EEPROM.commit();
-  Serial.println("ack char written in EEPROM");   
+  Serial.println("ack char written in EEPROM");
 }
