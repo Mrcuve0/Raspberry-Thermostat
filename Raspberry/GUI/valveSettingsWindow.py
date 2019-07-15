@@ -179,7 +179,7 @@ class Ui_ValveSettingsWindow(object):
                             database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
                             database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
 
-                            msg = {"room" : str(self.actualRoomID), "actuator" : str(actuatorID), "valve" : str(valveID)}
+                            msg = {"room": str(self.actualRoomID), "actuator": str(actuatorID), "valve": str(valveID)}
                             connection_manager.mqtt_publish(self.mqttClient, "actuator/configuration", str(msg))
 
                             msg = QtWidgets.QMessageBox()

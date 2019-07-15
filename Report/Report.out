@@ -3,7 +3,7 @@
 \BOOKMARK [2][-]{subsection.1.2}{General organization}{section.1}% 3
 \BOOKMARK [2][-]{subsection.1.3}{A Smart-Home Thermostat}{section.1}% 4
 \BOOKMARK [1][-]{section.2}{Hardware and Communication Logic}{}% 5
-\BOOKMARK [1][-]{section.3}{Backend SW Logic}{}% 6
+\BOOKMARK [1][-]{section.3}{Back-end SW Logic and local Web logic}{}% 6
 \BOOKMARK [1][-]{section.4}{Front-End SW Logic and User Experience}{}% 7
 \BOOKMARK [2][-]{subsection.4.1}{Introduction}{section.4}% 8
 \BOOKMARK [2][-]{subsection.4.2}{GUI framework and languages used}{section.4}% 9

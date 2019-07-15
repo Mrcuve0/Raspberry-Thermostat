@@ -55,10 +55,10 @@ def drive_actuator(room, actuator_type, power):
 	global mqtt_manager
 	topic = ''
 	if (actuator_type == constants.actuator_hot):
-		topic = constants.actuator_hot_topic
+		topic = constants.actuator_hot_topic + room
 	elif (actuator_type == constants.actuator_cold):
-		topic = constants.actuator_cold_topic
-	msg = json.dumps({'room': room, 'power': power})
+		topic = constants.actuator_cold_topic + room
+	msg = json.dumps({'cmd': power})
 	mqtt_manager.mqtt_publish(topic, msg)
 
 def programmable_time_classification(day, hour):
