@@ -133,16 +133,26 @@ angular.module('thermostat')
       }
     }
     function nodesSensorList(data, sensorList) {
+      var count = 0;
       for (var i = 0; i < sensorList.length; i++) {
-        pushToNodes(data, sensorList[i].sensorID, 3);
-        pushToLinks(data, 1, $scope.count, 4)
+        if (sensorList[i].sensorID != undefined && sensorList[i].sensorID != '') {
+          pushToNodes(data, sensorList[i].sensorID, 3);
+          pushToLinks(data, 1, $scope.count, 4)
+          count += 1;
+        }
       }
+      return count;
     }
     function nodesActuatorList(data, actuatorList) {
+      var count = 0;
       for (var i = 0; i < actuatorList.length; i++) {
-        pushToNodes(data, actuatorList[i].type + '' + actuatorList[i].actuatorID, 4);
-        pushToLinks(data, 2, $scope.count, 4)
+        if (actuatorList[i].actuatorID != undefined && actuatorList[i].actuatorID != '') {
+          pushToNodes(data, actuatorList[i].type + '' + actuatorList[i].actuatorID, 4);
+          pushToLinks(data, 2, $scope.count, 4)
+          count += 1;
+        }
       }
+      return count;
     }
     function updateGraph(roomdata) {
       $scope.data = [];
@@ -152,10 +162,10 @@ angular.module('thermostat')
         $scope.data[i] = { "nodes": [], "links": [] };
         var room_name = searchRoomGivenId(roomdata.conf[i].roomID);
         initGraph($scope.data[i], room_name);
-        nodesSensorList($scope.data[i], roomdata.conf[i].sensors);
-        nodesActuatorList($scope.data[i], roomdata.conf[i].actuators);
+        var num_sensors = nodesSensorList($scope.data[i], roomdata.conf[i].sensors);
+        var num_actuators = nodesActuatorList($scope.data[i], roomdata.conf[i].actuators);
 
-        $scope.repeat_var.push({ 'data': $scope.data[i], 'roomdata': roomdata.conf[i] });
+        $scope.repeat_var.push({ 'data': $scope.data[i], 'roomdata': {'roomdata': roomdata.conf[i], 'sensors': num_sensors, 'actuators': num_actuators} });
       }
     }
 
