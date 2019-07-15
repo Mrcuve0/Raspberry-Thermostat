@@ -197,7 +197,7 @@ void eepromConnection()
   while (mqttServer.toString() == "0.0.0.0")
   {
     Serial.println("Trying again to resolve mDNS");
-    delay(250);
+    delay(500);
     mqttServer = MDNS.queryHost(mqttHostname);
   }
 
