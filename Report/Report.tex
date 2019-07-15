@@ -32,12 +32,12 @@
     \section{The project}
 
         \subsection{Introduction}
-        This final project consists of a Smart-Home Thermostat, realized using a given \emph{Raspberry Pi3} together a capacitive touch screen.
+        This final project consists of a Smart-Home Thermostat, realized using \emph{Raspberry Pi3} together with a capacitive touch screen.
         Additional components were added by ourselves in order to positevely respond to the given and mandatory requirements.
         While developing the project we have paid particular attention to the organizational phases, trying to think as much as possible as final customers of our product, while delivering something that we hope can be considered something more than a mere \emph{Proof-Of-Concept}.
             
         \subsection{General organization}
-        Since the group is composed of 3 people, we divided the project in 3 main components that we will call here, for the sake of simplicity, \textbf{\emph{Backend SW Logic}}, \textbf{\emph{Front-End SW Logic and User Experience}} and finally \textbf{\emph{Hardware and Communication Logic}}.
+        Since the group is composed of 3 people, we divided the project in 3 main components that we will call here, for the sake of simplicity, \textbf{\emph{Backend SW Logic and Web Logic}}, \textbf{\emph{Front-End SW Logic and User Experience}} and finally \textbf{\emph{Hardware and Communication Logic}}.
         Finally, these three main components of the project were merged together during the final phases of the development to build and test the final product.
 
         \subsection{A Smart-Home Thermostat}
@@ -46,13 +46,13 @@
         Our system is composed by three main Hardware components: the \emph{Central Unit}, composed by a \emph{Raspberry Pi3} and its related capacitive touch-screen, a multiple number of \emph{sensor modules} to retrieve temperature data from each room (built using \emph{ESP32 Microcontrollers}) and finally multiple \emph{actuator modules} that can control the heating system of the building.
 
         As an example and to keep things in perspective, our home is ideally made of multiple rooms (4 in our case) where each room can be equipped with a stand-alone air conditioner. The heating system for each room is handled by a centralized \emph{actuator module} that groups and drives all the valves required by all the rooms. Each room can have more than one valve serving it, depending on the area to be served by the system, of course.
-        Given the aforementioned scenario, our product has been designed to handle more than one room, where each room can be equipped by one \emph{sensor module} (to measure the ambient temperature of the room),as long as an Infrared system to drive a stand-alone air conditioner, if any.
+        Given the aforementioned scenario, our product has been designed to handle more than one room, where each room can be equipped by one \emph{sensor module} (to measure the ambient temperature of the room), as long as an Infrared system to drive a stand-alone air conditioner, if any.
 
         The \emph{Central Unit} has to be intended as the every-day interface to the system for the customer. It permits to easily add/remove rooms to be controlled, as well as add/remove \emph{sensor modules} and \emph{actuator modules}. We think the system can be easily installed by a normal user with some DIY skills. No big experience is required for using it daily.
 
     \section{Hardware and Communication Logic}
 
-    \section{Backend SW Logic}
+    \section{Back-end SW Logic and local Web logic}
 
     \section{Front-End SW Logic and User Experience}
         \subsection{Introduction}
