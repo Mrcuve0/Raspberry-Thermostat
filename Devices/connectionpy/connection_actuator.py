@@ -60,6 +60,10 @@ def sendpsw(BTsocket, net_PWD):
   BTsocket.send(str(net_PWD))
   time.sleep(1)
 
+def sendname(BTsocket, roomName):
+  BTsocket.send(str(roomName))
+  time.sleep(1)
+
 def disconnect(BTsocket):
   BTsocket.close()
 
@@ -91,13 +95,21 @@ def connection(actuatorID, net_SSID, net_PWD):
       receiveMessages(BTsocket)
       print(data)
       if (data == b'@'):
-        print ("connection successful")
-        disconnect(BTsocket)
-        return 0
+        sendname(BTsocket, str("roomName") + str(actuatorID))
+        receiveMessages(BTsocket)
+        print(data)
+        if (data == b'@'):
+          print ("connection successful")
+          disconnect(BTsocket)
+          return 0
+        else:
+          print ("connection unsuccessful")
+          disconnect(BTsocket)
+          return -7
       else:
         print ("connection unsuccessful")
         disconnect(BTsocket)
-        return -7
+        return -6
     else:
       print ("connection unsuccessful")
       disconnect(BTsocket)
