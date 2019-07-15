@@ -67,6 +67,8 @@ class Ui_deleteActuatorWindow(object):
             for i in range(0, actualNumActuators):
                 if (str(actuatorID).lower() == str(self.actuatorsConfiguration["conf"][i]["actuatorID"]).lower()):
                     del self.actuatorsConfiguration["conf"][i]
+                    if (len(self.actuatorsConfiguration["conf"]) == 0):
+                        self.actuatorsConfiguration["conf"].append({"actuatorID" : "", "type": "cold", "valves" : [{"valveID" : ""}]})
                     flag = 1
                     break
                     

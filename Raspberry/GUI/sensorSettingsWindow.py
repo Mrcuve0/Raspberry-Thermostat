@@ -248,6 +248,8 @@ class Ui_SensorSettingsWindow(object):
             for i in range(0, actualNumSensors):
                 if (str(sensorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][i]["sensorID"]).lower()):
                     del self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][i]
+                    if (len(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"]) == 0):
+                        self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"].append({"sensorID" : ""})
                     flag = 1
                     break
                     

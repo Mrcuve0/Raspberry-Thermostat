@@ -69,7 +69,11 @@ class Ui_deleteRoomWindow(object):
             if (str(roomName).lower() == str(self.configuration["rooms_settings"][i]["room_name"]).lower()):
                 if (str(roomName).lower() == str(self.roomDataConfiguration["conf"][i]["roomName"]).lower()):
                     del self.configuration["rooms_settings"][i]
+                    if (len(self.configuration["rooms_settings"]) == 0):
+                        self.configuration["rooms_settings"].append({'room': "0", 'room_name': 'default', 'mode': 'manual', 'info': {'temp': 25, 'weekend': 0}, 'season': 'hot', "program" : {"MFM" : "", "MFE" : "", "MFN" : "", "WEM" : "", "WEE" : "", "WEN" : ""}})
                     del self.roomDataConfiguration["conf"][i]
+                    if (len(self.roomDataConfiguration["conf"]) == 0):
+                        self.roomDataConfiguration["conf"].append({"roomID" : "0", "roomName" : "default",  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "type" : "hot", "valves" : [{"valveID": ""}]}]})
                     flag = 1
                     break
 
