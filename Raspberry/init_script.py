@@ -43,4 +43,6 @@ if actuators_config == None:
 # Raspberry config
 subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/logic.py'])
 subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/sensor.py'])
-subprocess.Popen(["python", "remote_service.py"])
+
+# TODO: Uncomment for presentation
+# subprocess.Popen(["python", "remote_service.py"])
