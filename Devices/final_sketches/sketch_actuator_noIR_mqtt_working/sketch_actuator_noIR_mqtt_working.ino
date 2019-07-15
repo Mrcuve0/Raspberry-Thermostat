@@ -8,7 +8,7 @@
 #include <string>
 #include <cstring>
 #include <string.h>
-#include <ArduinoJson.h>
+#include "ArduinoJson.h"
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
@@ -76,7 +76,7 @@ int roomNamec_index = 0;
 int roomToValve[8];
 
 // Device ID, change this for each ESP you are going to flash
-char ESPname[] = "5";
+char ESPname[] = "2";
 char ack_char = '@';
 char no_ack_char = '#';
 char roomIDc;
@@ -878,9 +878,9 @@ void setup()
 
   Serial.println("after initializing EEPROM");
 
-  clearEEPROM()
+  // clearEEPROM();
 
-      if (EEPROM.readChar(address) == 'F')
+  if (EEPROM.readChar(address) == 'F')
   { //ack char for credentials
     //credentials already stored in eeprom
     Serial.println("eeprom connection in if {}");
