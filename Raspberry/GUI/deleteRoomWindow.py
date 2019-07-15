@@ -10,13 +10,13 @@ from database_manager import database_manager
 class MyQLineEdit(QtWidgets.QLineEdit):
     def focusInEvent(self, e):
         try:
-            subprocess.Popen(["onboard"])
+            subprocess.Popen(["dbus-send", "--type=method_call", "--print-reply", "--dest=org.onboard.Onboard", "/org/onboard/Onboard/Keyboard", "org.onboard.Onboard.Keyboard.Show"])
         except FileNotFoundError:
             pass
         super(MyQLineEdit, self).focusInEvent(e)
 
     def focusOutEvent(self, e):
-        subprocess.Popen(["killall", "onboard"])
+        subprocess.Popen(["dbus-send", "--type=method_call", "--print-reply", "--dest=org.onboard.Onboard", "/org/onboard/Onboard/Keyboard", "org.onboard.Onboard.Keyboard.Hide"])
         super(MyQLineEdit, self).focusOutEvent(e)
 
 

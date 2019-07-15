@@ -39,10 +39,12 @@ if actuators_config == None:
 	# actuators_config = {"conf" : [{"actuatorID" : "", "valves" : [{"valveID" : "", "linkedRoomID" : ""}]}]}
 	db.update_actuators_configuration(actuators_config)
 
+# Restart avahi-deamon
+subprocess.Popen(["sudo", "systemctl", "restart", "avahi-daemon.service"])
 
 # Raspberry config
 subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/logic.py'])
 subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/sensor.py'])
 
 # TODO: Uncomment for presentation
-# subprocess.Popen(["python", "remote_service.py"])
+subprocess.Popen(["python", "remote_service.py"])

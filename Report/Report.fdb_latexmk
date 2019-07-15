@@ -1,14 +1,14 @@
 # Fdb version 3
-["pdflatex"] 1563166495 "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.tex" "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.pdf" "Report" 1563166497
+["pdflatex"] 1563166844 "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.tex" "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.pdf" "Report" 1563166863
   "/dev/null" 1563092163 0 d41d8cd98f00b204e9800998ecf8427e ""
   "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/./Diagram.png" 1563161626 46569 516a5c70d37da7764fedaca31d7607e8 ""
   "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/./main.png" 1563164875 27875 22195bd3ed1d0721ef13f341b6f60d06 ""
   "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/./prog.png" 1563165170 30729 d9a1be09a0c24dc6f3712d303d9c36a1 ""
   "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/PoliLogo.png" 1547290551 315881 bac871f6973bca8f6d229783f49f73b6 ""
-  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.aux" 1563166497 6293 3fce9fe5ee48789feeba29c4e52bfc8b "pdflatex"
-  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.out" 1563166497 2385 328efa4cdf567ed20cbe5cddbcd03061 "pdflatex"
-  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.tex" 1563166495 23741 d1970d03660e8762e7aa70d3e6bad062 ""
-  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.toc" 1563166497 2973 d651bfdc903b8ef8c04fb72b01d2d4e4 "pdflatex"
+  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.aux" 1563166846 6293 3fce9fe5ee48789feeba29c4e52bfc8b "pdflatex"
+  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.out" 1563166846 2385 328efa4cdf567ed20cbe5cddbcd03061 "pdflatex"
+  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.tex" 1563166863 23744 b293f299e9f6c82de03e9d4df599b861 ""
+  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.toc" 1563166846 2973 d651bfdc903b8ef8c04fb72b01d2d4e4 "pdflatex"
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1557554374 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1557554374 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texmf-dist/fonts/tfm/jknappen/ec/ecbi1000.tfm" 1557554374 3072 e6fe53b666f9cbd66cb135c6fdea66d3 ""
@@ -113,8 +113,8 @@
   "main.png" 1563164875 27875 22195bd3ed1d0721ef13f341b6f60d06 ""
   "prog.png" 1563165170 30729 d9a1be09a0c24dc6f3712d303d9c36a1 ""
   (generated)
+  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.pdf"
+  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.toc"
+  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.out"
   "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.aux"
   "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.log"
-  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.out"
-  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.toc"
-  "/home/sem/Desktop/PLCS/Labs/Raspberry-Thermostat/Report/Report.pdf"
