@@ -323,7 +323,7 @@ class Ui_MainWindow(object):
         # lastTemperatures = []
         # lastTemperatures.append(18.5)
         # lastTemperatures.append(20.2)
-        print(self.lastTemperatures)
+        # print(self.lastTemperatures)
         # print(str(self.lastTemperatures["room"]))
         # print(str(self.lastTemperatures["temperature"]))
         
