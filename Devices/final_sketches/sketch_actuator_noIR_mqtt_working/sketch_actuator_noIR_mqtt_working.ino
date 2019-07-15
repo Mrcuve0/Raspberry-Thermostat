@@ -26,6 +26,10 @@
 #define rele_seven 16
 #define rele_eight 15
 
+#define resetPin 26
+#define greenLed 33 //used for BT transmission
+#define blueLed 35  //used for reconnection
+
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 /*first address is test
@@ -73,7 +77,8 @@ int test_index = 0;
 int wifi_timeout = 0;
 int roomNamec_index = 0;
 
-int roomToValve[8];
+//int roomToValve[8];
+int roomToValve[10];
 
 // Device ID, change this for each ESP you are going to flash
 char ESPname[] = "2";
@@ -94,6 +99,8 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 BluetoothSerial SerialBT;
 
+void IRAM_ATTR handleInterrupt();
+
 ///////////////////////////////////////////////////////////////////
 void showCredentials()
 {
@@ -113,6 +120,8 @@ void showCredentials()
   roomToValve[5] = EEPROM.readInt(addressvalves + 20);
   roomToValve[6] = EEPROM.readInt(addressvalves + 24);
   roomToValve[7] = EEPROM.readInt(addressvalves + 28);
+  roomToValve[8] = EEPROM.readInt(addressvalves + 32);
+  roomToValve[9] = EEPROM.readInt(addressvalves + 36);
 
   //printing the credentials from EEPROM
   Serial.print("test is ");
@@ -128,22 +137,26 @@ void showCredentials()
   Serial.print("room ID is ");
   Serial.println(roomIDc);
 
-  Serial.print("valve of room 1 is ");
+  Serial.print("valve of room 0 is ");
   Serial.println(roomToValve[0]);
-  Serial.print("valve of room 2 is ");
+  Serial.print("valve of room 1 is ");
   Serial.println(roomToValve[1]);
-  Serial.print("valve of room 3 is ");
+  Serial.print("valve of room 2 is ");
   Serial.println(roomToValve[2]);
-  Serial.print("valve of room 4 is ");
+  Serial.print("valve of room 3 is ");
   Serial.println(roomToValve[3]);
-  Serial.print("valve of room 5 is ");
+  Serial.print("valve of room 4 is ");
   Serial.println(roomToValve[4]);
-  Serial.print("valve of room 6 is ");
+  Serial.print("valve of room 5 is ");
   Serial.println(roomToValve[5]);
-  Serial.print("valve of room 7 is ");
+  Serial.print("valve of room 6 is ");
   Serial.println(roomToValve[6]);
-  Serial.print("valve of room 8 is ");
+  Serial.print("valve of room 7 is ");
   Serial.println(roomToValve[7]);
+  Serial.print("valve of room 8 is ");
+  Serial.println(roomToValve[8]);
+  Serial.print("valve of room 9 is ");
+  Serial.println(roomToValve[9]);
 }
 
 void clearEEPROM()
@@ -197,7 +210,7 @@ void eepromConnection()
   while (mqttServer.toString() == "0.0.0.0")
   {
     Serial.println("Trying again to resolve mDNS");
-    delay(500);
+    delay(250);
     mqttServer = MDNS.queryHost(mqttHostname);
   }
 
@@ -269,7 +282,7 @@ void waitingLowPin()
   ////////////////////////////WAITING FOR LOW PIN//////////////////////
   SerialBT.begin(ESPname); //Bluetooth device name
   Serial.println("The device started, now you can pair it with bluetooth!");
-
+  digitalWrite(greenLed, HIGH);
   while (digitalRead(interruptPin) == HIGH)
   {
     if (SerialBT.available())
@@ -281,6 +294,7 @@ void waitingLowPin()
     }
   }
   Serial.println("pin low, waiting for a transmission");
+  digitalWrite(greenLed, LOW);
 }
 
 void testTransmission()
@@ -551,6 +565,15 @@ void reSubHotTopic()
 {
   if ((EEPROM.readInt(addressvalves)))
   {
+    if (client.subscribe("actuator/hot/0") == false)
+    {
+      Serial.println("not subscribed to actuator/hot/0 topic");
+    }
+    Serial.println("Subscribed to actuator/hot/0 topic");
+  }
+
+  if ((EEPROM.readInt(addressvalves + 4)))
+  {
     if (client.subscribe("actuator/hot/1") == false)
     {
       Serial.println("not subscribed to actuator/hot/1 topic");
@@ -558,7 +581,7 @@ void reSubHotTopic()
     Serial.println("Subscribed to actuator/hot/1 topic");
   }
 
-  if ((EEPROM.readInt(addressvalves + 4)))
+  if ((EEPROM.readInt(addressvalves + 8)))
   {
     if (client.subscribe("actuator/hot/2") == false)
     {
@@ -567,7 +590,7 @@ void reSubHotTopic()
     Serial.println("Subscribed to actuator/hot/2 topic");
   }
 
-  if ((EEPROM.readInt(addressvalves + 8)))
+  if ((EEPROM.readInt(addressvalves + 12)))
   {
     if (client.subscribe("actuator/hot/3") == false)
     {
@@ -576,7 +599,7 @@ void reSubHotTopic()
     Serial.println("Subscribed to actuator/hot/3 topic");
   }
 
-  if ((EEPROM.readInt(addressvalves + 12)))
+  if ((EEPROM.readInt(addressvalves + 16)))
   {
     if (client.subscribe("actuator/hot/4") == false)
     {
@@ -585,7 +608,7 @@ void reSubHotTopic()
     Serial.println("Subscribed to actuator/hot/4 topic");
   }
 
-  if ((EEPROM.readInt(addressvalves + 16)))
+  if ((EEPROM.readInt(addressvalves + 20)))
   {
     if (client.subscribe("actuator/hot/5") == false)
     {
@@ -594,7 +617,7 @@ void reSubHotTopic()
     Serial.println("Subscribed to actuator/hot/5 topic");
   }
 
-  if ((EEPROM.readInt(addressvalves + 20)))
+  if ((EEPROM.readInt(addressvalves + 24)))
   {
     if (client.subscribe("actuator/hot/6") == false)
     {
@@ -603,7 +626,7 @@ void reSubHotTopic()
     Serial.println("Subscribed to actuator/hot/6 topic");
   }
 
-  if ((EEPROM.readInt(addressvalves + 24)))
+  if ((EEPROM.readInt(addressvalves + 28)))
   {
     if (client.subscribe("actuator/hot/7") == false)
     {
@@ -612,7 +635,7 @@ void reSubHotTopic()
     Serial.println("Subscribed to actuator/hot/7 topic");
   }
 
-  if ((EEPROM.readInt(addressvalves + 28)))
+  if ((EEPROM.readInt(addressvalves + 32)))
   {
     if (client.subscribe("actuator/hot/8") == false)
     {
@@ -620,6 +643,23 @@ void reSubHotTopic()
     }
     Serial.println("Subscribed to actuator/hot/8 topic");
   }
+
+  if ((EEPROM.readInt(addressvalves + 36)))
+  {
+    if (client.subscribe("actuator/hot/9") == false)
+    {
+      Serial.println("not subscribed to actuator/hot/9 topic");
+    }
+    Serial.println("Subscribed to actuator/hot/9 topic");
+  }
+}
+
+void IRAM_ATTR handleInterrupt()
+{
+  Serial.println("reset button pressed");
+  delay(1000);
+  clearEEPROM();
+  ESP.restart();
 }
 ////////////////////////////////////////////////////////////////////////
 
@@ -671,7 +711,8 @@ void callback(char *topic, byte *payload, unsigned int length)
 
     if (actuator[0] == roomIDc)
     {
-      int vectorPosition = (room[0] - '0') - 1;
+      //int vectorPosition = (room[0] - '0')-1;
+      int vectorPosition = (room[0] - '0');
       Serial.print("the vector position is ");
       Serial.println(vectorPosition);
       roomToValve[vectorPosition] = valve[0] - '0';
@@ -695,10 +736,29 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
   }
 
+  if (String(topic) == "actuator/hot/0")
+  {
+    Serial.println("received message in topic actuator/hot/0");
+    int relePin = correspondance(roomToValve[0]);
+    Serial.print("relePin is ");
+    Serial.println(relePin);
+
+    if (messageTemp == "{\"cmd\": \"ON\"}")
+    {
+      Serial.println("Rele ON");
+      digitalWrite(relePin, HIGH);
+    }
+    else if (messageTemp == "{\"cmd\": \"OFF\"}")
+    {
+      Serial.println("Rele OFF");
+      digitalWrite(relePin, LOW);
+    }
+  }
+
   if (String(topic) == "actuator/hot/1")
   {
     Serial.println("received message in topic actuator/hot/1");
-    int relePin = correspondance(roomToValve[0]);
+    int relePin = correspondance(roomToValve[1]);
     Serial.print("relePin is ");
     Serial.println(relePin);
 
@@ -717,7 +777,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   if (String(topic) == "actuator/hot/2")
   {
     Serial.println("received message in topic actuator/hot/2");
-    int relePin = correspondance(roomToValve[1]);
+    int relePin = correspondance(roomToValve[2]);
     Serial.print("relePin is ");
     Serial.println(relePin);
 
@@ -736,7 +796,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   if (String(topic) == "actuator/hot/3")
   {
     Serial.println("received message in topic actuator/hot/3");
-    int relePin = correspondance(roomToValve[2]);
+    int relePin = correspondance(roomToValve[3]);
     Serial.print("relePin is ");
     Serial.println(relePin);
 
@@ -755,7 +815,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   if (String(topic) == "actuator/hot/4")
   {
     Serial.println("received message in topic actuator/hot/4");
-    int relePin = correspondance(roomToValve[3]);
+    int relePin = correspondance(roomToValve[4]);
     Serial.print("relePin is ");
     Serial.println(relePin);
 
@@ -774,7 +834,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   if (String(topic) == "actuator/hot/5")
   {
     Serial.println("received message in topic actuator/hot/5");
-    int relePin = correspondance(roomToValve[4]);
+    int relePin = correspondance(roomToValve[5]);
     Serial.print("relePin is ");
     Serial.println(relePin);
 
@@ -793,7 +853,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   if (String(topic) == "actuator/hot/6")
   {
     Serial.println("received message in topic actuator/hot/6");
-    int relePin = correspondance(roomToValve[5]);
+    int relePin = correspondance(roomToValve[6]);
     Serial.print("relePin is ");
     Serial.println(relePin);
 
@@ -812,7 +872,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   if (String(topic) == "actuator/hot/7")
   {
     Serial.println("received message in topic actuator/hot/7");
-    int relePin = correspondance(roomToValve[6]);
+    int relePin = correspondance(roomToValve[7]);
     Serial.print("relePin is ");
     Serial.println(relePin);
 
@@ -831,7 +891,26 @@ void callback(char *topic, byte *payload, unsigned int length)
   if (String(topic) == "actuator/hot/8")
   {
     Serial.println("received message in topic actuator/hot/8");
-    int relePin = correspondance(roomToValve[7]);
+    int relePin = correspondance(roomToValve[8]);
+    Serial.print("relePin is ");
+    Serial.println(relePin);
+
+    if (messageTemp == "{\"cmd\": \"ON\"}")
+    {
+      Serial.println("Rele ON");
+      digitalWrite(relePin, HIGH);
+    }
+    else if (messageTemp == "{\"cmd\": \"OFF\"}")
+    {
+      Serial.println("Rele OFF");
+      digitalWrite(relePin, LOW);
+    }
+  }
+
+  if (String(topic) == "actuator/hot/9")
+  {
+    Serial.println("received message in topic actuator/hot9");
+    int relePin = correspondance(roomToValve[9]);
     Serial.print("relePin is ");
     Serial.println(relePin);
 
@@ -866,6 +945,12 @@ void setup()
   pinMode(rele_seven, OUTPUT);
   pinMode(rele_eight, OUTPUT);
 
+  pinMode(greenLed, OUTPUT);
+  pinMode(blueLed, OUTPUT);
+
+  pinMode(resetPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(resetPin), handleInterrupt, FALLING);
+
   Serial.println("before initializing EEPROM");
 
   if (!EEPROM.begin(EEPROM_SIZE))
@@ -878,21 +963,23 @@ void setup()
 
   Serial.println("after initializing EEPROM");
 
-  // clearEEPROM();
-
   if (EEPROM.readChar(address) == 'F')
   { //ack char for credentials
     //credentials already stored in eeprom
     Serial.println("eeprom connection in if {}");
     showCredentials();
+    digitalWrite(blueLed, HIGH);
     eepromConnection();
+    digitalWrite(blueLed, LOW);
     reSubHotTopic();
   }
   else
   {
     //credentials not yet stored in eeprom
     Serial.println("normal connection in else {}");
+    digitalWrite(blueLed, HIGH);
     normalConnection();
+    digitalWrite(blueLed, LOW);
   }
 
   if (client.subscribe("actuator/configuration") == false)
@@ -910,7 +997,9 @@ void loop()
   {
     Serial.println("client not connected");
     //ESP.restart();
+    digitalWrite(blueLed, HIGH);
     reconnect();
+    digitalWrite(blueLed, LOW);
 
     if (client.subscribe("actuator/configuration") == false)
     {
@@ -929,6 +1018,8 @@ void loop()
     Serial.print(roomToValve[5]);
     Serial.print(roomToValve[6]);
     Serial.print(roomToValve[7]);
+    Serial.print(roomToValve[8]);
+    Serial.print(roomToValve[9]);
   }
 
   if (millis() - start_time > time_interval)
