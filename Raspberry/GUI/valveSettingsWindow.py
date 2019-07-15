@@ -256,6 +256,8 @@ class Ui_ValveSettingsWindow(object):
                     if (valveFlag == 1): # La valvola è stata trovata
                         # Cancelliamo la valvola, ora non sarà più usata dalla stanza attuale
                         del self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"][indexInValveList]
+                        if (len(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"]) == 0):
+                            self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"].append({"valveID": ""})
 
                         actuatorFlag = 0
                         indexInActuatorList = 0
@@ -267,6 +269,8 @@ class Ui_ValveSettingsWindow(object):
                                 break
                         if (actuatorFlag == 1):
                             del self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"][indexInValveList]
+                            if (len(self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"]) == 0):
+                                self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"].append({"valveID" : ""})
 
                         print("\t --> COMMIT actuatorsConfiguration")
                         print("\t --> COMMIT roomDataConfiguration")
