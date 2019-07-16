@@ -56,7 +56,7 @@ def drive_actuator(room, actuator_type, power):
 	topic = ''
 	if (actuator_type == constants.actuator_hot):
 		debugstring = constants.actuator_hot_topic + room
-		print(debugstring)
+		# print(debugstring)
 		topic = debugstring
 	elif (actuator_type == constants.actuator_cold):
 		topic = constants.actuator_cold_topic + room

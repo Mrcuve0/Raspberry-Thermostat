@@ -15,7 +15,7 @@ def lookUpNearbyBluetoothDevices(actuatorID):
 
   for bdaddr in nearby_devices:
       recName = bluetooth.lookup_name( bdaddr )
-      if actuatorID == recName:
+      if actuatorID + "group01" == recName:
           global target_address
           target_address = bdaddr
           break
