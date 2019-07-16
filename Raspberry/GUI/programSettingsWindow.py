@@ -320,7 +320,7 @@ class Ui_ProgramSettingsWindow(object):
         self.timeEdit.setDisplayFormat(_translate("ProgramSettingsWindow", "HH : mm"))
         self.dateEdit.setDisplayFormat(_translate("ProgramSettingsWindow", "dd - MM - yyyy"))
         self.PB_goBack.setText(_translate("ProgramSettingsWindow", "<"))
-        self.label_ValveSettings.setText(_translate("ProgramSettingsWindow", "Sensor\n"
+        self.label_ValveSettings.setText(_translate("ProgramSettingsWindow", "Program\n"
 "Settings"))
         self.PB_apply.setText(_translate("ProgramSettingsWindow", "Apply"))
         self.label_ValveName.setText(_translate("ProgramSettingsWindow", "Actual Room: " + str(self.actualRoomName)))
