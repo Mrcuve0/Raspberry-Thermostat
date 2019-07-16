@@ -25,9 +25,9 @@ os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
 class MainWindow(QMainWindow, mainWindow.Ui_MainWindow):
 
-    def __init__(self, db, actualRoomID):
+    def __init__(self, db, actualRoomIndex):
         super(self.__class__, self).__init__()
-        self.setupUi(self, db, actualRoomID)
+        self.setupUi(self, db, actualRoomIndex)
         # self.initDB(db)
 
 

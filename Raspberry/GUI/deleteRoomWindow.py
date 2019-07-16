@@ -35,6 +35,7 @@ class Ui_deleteRoomWindow(object):
     def reloadRoomData(self):
         self.configuration = database_manager.get_configuration(self.db)
         self.roomDataConfiguration = database_manager.get_roomData_configuration(self.db)
+        self.actuatorsConfiguration = database_manager.get_actuators_configuration(self.db)
 
     def on_PB_goBack_clicked(self):
         self.close()
@@ -68,6 +69,33 @@ class Ui_deleteRoomWindow(object):
         for i in range(0, self.actualNumRooms): 
             if (str(roomName).lower() == str(self.configuration["rooms_settings"][i]["room_name"]).lower()):
                 if (str(roomName).lower() == str(self.roomDataConfiguration["conf"][i]["roomName"]).lower()):
+
+                    # Se ci sono valvole associate, elimina la valvola utilizzata rendendola libera per altre stanze
+                    actualNumActuators = len(self.roomDataConfiguration["conf"][i]["actuators"])
+                    for j in range(0, actualNumActuators):  # Cicla sugli attatori disponibili per questa stanza
+                        actualNumValves = len(self.roomDataConfiguration["conf"][i]["actuators"][j]["valves"])
+                        actualNumValves_actuatorsConfig = actualNumValves
+                        for k in range(0, actualNumValves): # Cicla sulle valvole disponibili per questo attuatore
+                            # if (k < actualNumValves_actuatorsConfig):
+                            if (str(self.roomDataConfiguration["conf"][i]["actuators"][j]["valves"][k]["valveID"]) != "" and str(self.roomDataConfiguration["conf"][i]["actuators"][j]["type"]) == "hot"):
+                                # Questa valvola è collegata, togliamola da actuatorsConfiguration perché è tornata libera
+                                connectedValveID = self.roomDataConfiguration["conf"][i]["actuators"][j]["valves"][k]["valveID"]
+                                connectedActuatorID = self.roomDataConfiguration["conf"][i]["actuators"][j]["actuatorID"]
+                                
+                                actualNumActuators_actuatorsConfig = len(self.actuatorsConfiguration["conf"])
+                                for l in range(0, actualNumActuators_actuatorsConfig): # Cicla sugli attuatori disponibili nella actuatorsConfiguration
+                                    if (str(self.actuatorsConfiguration["conf"][l]["actuatorID"]) == connectedActuatorID):
+                                        actualNumValves_actuatorsConfig = len(self.actuatorsConfiguration["conf"][l]["valves"])
+                                        for m in range(0, actualNumValves_actuatorsConfig):
+                                            if (m < len(self.actuatorsConfiguration["conf"][l]["valves"])):
+                                                if (str(self.actuatorsConfiguration["conf"][l]["valves"][m]["valveID"]) == connectedValveID):
+                                                    # self.actuatorsConfiguration["conf"][l]["valves"][m]["valveID"] = "" # Imposta la valvola come libera
+                                                    del self.actuatorsConfiguration["conf"][l]["valves"][m]
+                                                    actualNumValves_actuatorsConfig = actualNumValves_actuatorsConfig - 1
+                                                    # actualNumValves = actualNumValves - 1
+                                                    if (len(self.actuatorsConfiguration["conf"][l]["valves"]) == 0):
+                                                        self.actuatorsConfiguration["conf"][l]["valves"].append({"valveID" : ""})
+
                     del self.configuration["rooms_settings"][i]
                     if (len(self.configuration["rooms_settings"]) == 0):
                         self.configuration["rooms_settings"].append({'room': "0", 'room_name': 'default', 'mode': 'manual', 'info': {'temp': 25, 'weekend': 0}, 'season': 'hot', "program" : {"MFM" : "", "MFE" : "", "MFN" : "", "WEM" : "", "WEE" : "", "WEN" : ""}})
@@ -75,12 +103,14 @@ class Ui_deleteRoomWindow(object):
                     if (len(self.roomDataConfiguration["conf"]) == 0):
                         self.roomDataConfiguration["conf"].append({"roomID" : "0", "roomName" : "default",  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "type" : "hot", "valves" : [{"valveID": ""}]}]})
                     flag = 1
+
                     break
 
         if (flag == 1):
             self.newConfiguration = self.configuration
             database_manager.update_configuration(self.db, self.newConfiguration)
             database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
+            database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
 
             print("\t --> COMMIT: Stanza rimossa")
             msg = QtWidgets.QMessageBox()

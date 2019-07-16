@@ -46,6 +46,7 @@ class Ui_addRoomWindow(object):
     def on_PB_addRoom_clicked(self):
 
         self.actualNumRooms = len(self.configuration["rooms_settings"])
+        self.nextRoomID = int(self.configuration["rooms_settings"][self.actualNumRooms - 1]["room"]) + 1
 
         roomName = self.LE_room.text()
         if (roomName == ""):
@@ -58,9 +59,9 @@ class Ui_addRoomWindow(object):
             return
 
         # Aggiungi stanza alla configurazione
-        self.configuration["rooms_settings"].append({"room" : str(self.actualNumRooms), "room_name" : roomName, "mode" : "manual", "info" : {"temp" : 25, "weekend" : 0}, "season" : "hot", "program" : {"MFM" : "", "MFE" : "", "MFN" : "", "WEM" : "", "WEE" : "", "WEN" : ""}})
+        self.configuration["rooms_settings"].append({"room" : str(self.nextRoomID), "room_name" : roomName, "mode" : "manual", "info" : {"temp" : 25, "weekend" : 0}, "season" : "hot", "program" : {"MFM" : "", "MFE" : "", "MFN" : "", "WEM" : "", "WEE" : "", "WEN" : ""}})
         # self.roomDataConfiguration = {"conf" : [{"roomID" : 0, "roomName" : "default",  "sensors" : {"sensorID" : ""}, "actuators" : {"actuatorID" : "", "valves" : {"valveID": ""}}}]}
-        self.roomDataConfiguration["conf"].append({"roomID" : str(self.actualNumRooms), "roomName" : roomName,  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "type": "hot", "valves" : [{"valveID": ""}]}]})
+        self.roomDataConfiguration["conf"].append({"roomID" : str(self.nextRoomID), "roomName" : roomName,  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "type": "hot", "valves" : [{"valveID": ""}]}]})
 
         self.newConfiguration = self.configuration
         database_manager.update_configuration(self.db, self.newConfiguration)

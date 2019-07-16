@@ -28,6 +28,7 @@ class Ui_ValveSettingsWindow(object):
     configuration = None
     roomDataConfiguration = None
     actuatorsConfiguration = None
+    actualRoomIndex = 0
     actualRoomID = 0
     actualRoomName = ""
 
@@ -35,6 +36,11 @@ class Ui_ValveSettingsWindow(object):
 
     def initDB(self, db):
         self.db = db
+
+    def searchActualRoomID(self):
+        self.configuration = database_manager.get_configuration(self.db)
+
+        self.actualRoomID = self.configuration["rooms_settings"][self.actualRoomIndex]["room"]
 
     def initMqttClinet(self):
         print("Sono nel clinet")
@@ -50,7 +56,7 @@ class Ui_ValveSettingsWindow(object):
         self.close()
         self.valveSettingsWindow = QtWidgets.QMainWindow()
         self.uiSensorValveProgramWindow = sensorValveProgramWindow.Ui_SensorValveProgramWindow()
-        self.uiSensorValveProgramWindow.setupUi(self.valveSettingsWindow, self.db, self.actualRoomID, self.actualRoomName)
+        self.uiSensorValveProgramWindow.setupUi(self.valveSettingsWindow, self.db, self.actualRoomIndex, self.actualRoomName)
         self.valveSettingsWindow.showMaximized()
 
     def on_PB_connectValve_clicked(self):
@@ -102,13 +108,13 @@ class Ui_ValveSettingsWindow(object):
 
                         # Prima devo linkare l'attuatore alla stanza
                         # Vediamo prima se non è già stato linkato
-                        actualNumActuators = len(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"])
+                        actualNumActuators = len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"])
 
                         # Faccio un loop su tutti gli attuatori della stanza, se non trovo il mio attuatore vuol dire che non è stato ancora associato alla stanza
                         for i in range(0, actualNumActuators):
                             associatedFlag = 0
 
-                            if (str(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["actuatorID"]).lower() == str(actuatorID).lower() and str(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["type"]) == "hot"):
+                            if (str(self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][i]["actuatorID"]).lower() == str(actuatorID).lower() and str(self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][i]["type"]) == "hot"):
                                 # L'Actuator è già associato alla stanza corrente, è solo necessario linkare la valvola
                 
                                 associatedFlag = 1
@@ -118,7 +124,7 @@ class Ui_ValveSettingsWindow(object):
                                 # so già per certo che devo fare la append sulla lista delle valvole.
 
                                 # Linkiamo ora la valvola al suo attuatore e alla stanza attuale
-                                self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"].append({"valveID": valveID})
+                                self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][indexInActuatorList]["valves"].append({"valveID": valveID})
 
                                 # Aggiungiamo la valvola anche nella lista delle valvole del singolo attuatore
                                 # Stessa cosa di prima, basta una append sulla lista delle valvole
@@ -145,30 +151,30 @@ class Ui_ValveSettingsWindow(object):
                         if (associatedFlag == 0):
                             # L'actuator non è stato ancora associato alla stanza corrente
                         
-                            if (actualNumActuators == 1 and self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][0]["actuatorID"] == ""):
+                            if (actualNumActuators == 1 and self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][0]["actuatorID"] == ""):
                                 # Se è anche il primo actuator ad essere associato alla stanza corrente...
-                                self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][0]["actuatorID"] = actuatorID
+                                self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][0]["actuatorID"] = actuatorID
 
                                 # Linkiamo ora la valvola al suo attuatore e alla stanza attuale
-                                actualNumValves = len(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][0]["valves"])
-                                if (actualNumValves == 1 and self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][0]["valves"][0]["valveID"] == ""):
-                                    self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][0]["valves"][0]["valveID"] = valveID
+                                actualNumValves = len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][0]["valves"])
+                                if (actualNumValves == 1 and self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][0]["valves"][0]["valveID"] == ""):
+                                    self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][0]["valves"][0]["valveID"] = valveID
                                 else:
-                                    self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][actualNumActuators]["valves"].append({"valveID": valveID})                                        
+                                    self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][actualNumActuators]["valves"].append({"valveID": valveID})                                        
 
                             else:
                                 # Questo non è il primo actuator che è stato associato alla stanza corrente
-                                self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"].append({"actuatorID" : actuatorID, "type": "hot", "valves" : [{"valveID": ""}]})
+                                self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"].append({"actuatorID" : actuatorID, "type": "hot", "valves" : [{"valveID": ""}]})
 
                                 # Linkiamo ora la valvola al suo attuatore e alla stanza attuale
-                                actualNumValves = len(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][actualNumActuators]["valves"])
+                                actualNumValves = len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][actualNumActuators]["valves"])
 
-                                if (actualNumValves == 1 and self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][actualNumActuators]["valves"][0]["valveID"] == ""):
+                                if (actualNumValves == 1 and self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][actualNumActuators]["valves"][0]["valveID"] == ""):
                                     # Se questa è la prima valvola ad essere associata all'actuator corrente
-                                    self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][actualNumActuators]["valves"][0]["valveID"] = valveID
+                                    self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][actualNumActuators]["valves"][0]["valveID"] = valveID
                                 else:
                                     # Questa non è la prima valvola associata all'actuator corrente
-                                    self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][actualNumActuators]["valves"].append({"valveID": valveID})
+                                    self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][actualNumActuators]["valves"].append({"valveID": valveID})
 
                             actualNumValves = len(self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"])
                             if (actualNumValves == 1 and self.actuatorsConfiguration["conf"][indexInActuatorList]["valves"][0]["valveID"] == ""):
@@ -180,7 +186,7 @@ class Ui_ValveSettingsWindow(object):
                             print("\t --> COMMIT roomDataConfiguration")
                             database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
                             database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
-
+                            
                             msg = {"room": str(self.actualRoomID), "actuator": str(actuatorID), "valve": str(valveID)}
                             connection_manager.mqtt_publish(self.mqttClient, "actuator/configuration", str(msg))
 
@@ -233,7 +239,7 @@ class Ui_ValveSettingsWindow(object):
             actualNumActuators = len(self.actuatorsConfiguration["conf"])
 
             for i in range(0, actualNumActuators):
-                if (str(actuatorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["actuatorID"]).lower() and str(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["type"]) == "hot"):
+                if (str(actuatorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][i]["actuatorID"]).lower() and str(self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][i]["type"]) == "hot"):
                     indexInActuatorList = i
                     actuatorFlag = 1
                     break
@@ -246,18 +252,18 @@ class Ui_ValveSettingsWindow(object):
                     # Cerchiamo la valvola
                     valveFlag = 0
                     indexInValveList = 0
-                    actualNumValves = len(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["valves"])
+                    actualNumValves = len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][i]["valves"])
                     for j in range(0, actualNumValves):
-                        if (str(valveID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][i]["valves"][j]["valveID"]).lower()):
+                        if (str(valveID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][i]["valves"][j]["valveID"]).lower()):
                             indexInValveList = j
                             valveFlag = 1
                             break
                     
                     if (valveFlag == 1): # La valvola è stata trovata
                         # Cancelliamo la valvola, ora non sarà più usata dalla stanza attuale
-                        del self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"][indexInValveList]
-                        if (len(self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"]) == 0):
-                            self.roomDataConfiguration["conf"][self.actualRoomID]["actuators"][indexInActuatorList]["valves"].append({"valveID": ""})
+                        del self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][indexInActuatorList]["valves"][indexInValveList]
+                        if (len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][indexInActuatorList]["valves"]) == 0):
+                            self.roomDataConfiguration["conf"][self.actualRoomIndex]["actuators"][indexInActuatorList]["valves"].append({"valveID": ""})
 
                         actuatorFlag = 0
                         indexInActuatorList = 0
@@ -328,7 +334,7 @@ class Ui_ValveSettingsWindow(object):
         self.timer.stop()
         self.valveSettingsWindow.close()
 
-    def setupUi(self, ValveSettingsWindow, db, actualRoomID, actualRoomName):
+    def setupUi(self, ValveSettingsWindow, db, actualRoomIndex, actualRoomName):
 
         self.valveSettingsWindow = ValveSettingsWindow
         self.valveSettingsWindow.setWindowFlags(
@@ -450,8 +456,9 @@ class Ui_ValveSettingsWindow(object):
 
         self.initDB(db)
         self.initMqttClinet()
-        self.actualRoomID = actualRoomID
+        self.actualRoomIndex = actualRoomIndex
         self.actualRoomName = actualRoomName
+        self.searchActualRoomID()
 
         self.reloadRoomData()
 

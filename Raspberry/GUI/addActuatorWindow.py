@@ -85,7 +85,6 @@ class Ui_addActuatorWindow(object):
                             "AddActuatorWindow", "Connect"))
                 return
 
-            # TODO: Remove STUB
             net_SSID = data.networkData["net_SSID"]
             net_PWD = data.networkData["net_PWD"]
             # net_SSID = "ciao"
@@ -103,7 +102,6 @@ class Ui_addActuatorWindow(object):
                 msg.exec_()
 
             else:
-                # TODO: Remove STUB 
                 returnID = connection_actuator.connection(actuatorID, net_SSID, net_PWD)    
                 # returnID = 0
                 if (returnID == 0):

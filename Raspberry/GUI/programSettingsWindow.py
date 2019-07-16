@@ -25,32 +25,39 @@ class Ui_ProgramSettingsWindow(object):
     configuration = None
     newConfiguration = None
 
+    actualRoomIndex = 0
     actualRoomID = 0
     actualRoomName = ""
 
     def initDB(self, db):
         self.db = db
 
+    
+    def searchActualRoomID(self):
+        self.configuration = database_manager.get_configuration(self.db)
+
+        self.actualRoomID = self.configuration["rooms_settings"][self.actualRoomIndex]["room"]
+
     def loadScreenData(self):
         self.configuration = database_manager.get_configuration(self.db)
-        if (self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFM"] != "" and \
-            self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFE"] != "" and \
-            self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFN"] != "" and \
-            self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEM"] != "" and \
-            self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEE"] != "" and \
-            self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEN"] != ""):
-                self.LE_MFM.setText(str(self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFM"]))
-                self.LE_MFE.setText(str(self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFE"]))
-                self.LE_MFN.setText(str(self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFN"]))
-                self.LE_WEM.setText(str(self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEM"]))
-                self.LE_WEE.setText(str(self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEE"]))
-                self.LE_WEN.setText(str(self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEN"]))
+        if (self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["MFM"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["MFE"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["MFN"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["WEM"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["WEE"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["WEN"] != ""):
+                self.LE_MFM.setText(str(self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["MFM"]))
+                self.LE_MFE.setText(str(self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["MFE"]))
+                self.LE_MFN.setText(str(self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["MFN"]))
+                self.LE_WEM.setText(str(self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["WEM"]))
+                self.LE_WEE.setText(str(self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["WEE"]))
+                self.LE_WEN.setText(str(self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["WEN"]))
 
     def on_PB_goBack_clicked(self):
         self.close()
         self.programSettingsWindow = QtWidgets.QMainWindow()
         self.uiSensorValveProgramWindow = sensorValveProgramWindow.Ui_SensorValveProgramWindow()
-        self.uiSensorValveProgramWindow.setupUi(self.programSettingsWindow, self.db, self.actualRoomID, self.actualRoomName)
+        self.uiSensorValveProgramWindow.setupUi(self.programSettingsWindow, self.db, self.actualRoomIndex, self.actualRoomName)
         self.programSettingsWindow.showMaximized()
 
     def on_PB_apply_clicked(self):
@@ -66,13 +73,13 @@ class Ui_ProgramSettingsWindow(object):
         else:
             self.configuration = database_manager.get_configuration(self.db)
             self.newConfiguration = self.configuration
-            # self.newConfiguration["rooms_settings"][self.actualRoomID]["program"] = {"temp": {"MFM" : self.LE_MFM.text(), "MFE" : self.LE_MFE.text(), "MFN" : self.LE_MFN.text(), "WEM" : self.LE_WEM.text(), "WEE" : self.LE_WEE.text(), "WEN" : self.LE_WEN.text()}}
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"]["MFM"] = int(self.LE_MFM.text())
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"]["MFE"] = int(self.LE_MFE.text())
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"]["MFN"] = int(self.LE_MFN.text())
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"]["WEM"] = int(self.LE_WEM.text())
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"]["WEE"] = int(self.LE_WEE.text())
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"]["WEN"] = int(self.LE_WEN.text())
+            # self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"] = {"temp": {"MFM" : self.LE_MFM.text(), "MFE" : self.LE_MFE.text(), "MFN" : self.LE_MFN.text(), "WEM" : self.LE_WEM.text(), "WEE" : self.LE_WEE.text(), "WEN" : self.LE_WEN.text()}}
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"]["MFM"] = int(self.LE_MFM.text())
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"]["MFE"] = int(self.LE_MFE.text())
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"]["MFN"] = int(self.LE_MFN.text())
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"]["WEM"] = int(self.LE_WEM.text())
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"]["WEE"] = int(self.LE_WEE.text())
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"]["WEN"] = int(self.LE_WEN.text())
 
             database_manager.update_configuration(self.db, self.newConfiguration)
 
@@ -112,7 +119,7 @@ class Ui_ProgramSettingsWindow(object):
         self.timer.stop()
         self.programSettingsWindow.close()
 
-    def setupUi(self, ProgramSettingsWindow, db, actualRoomID, actualRoomName):
+    def setupUi(self, ProgramSettingsWindow, db, actualRoomIndex, actualRoomName):
 
         self.programSettingsWindow = ProgramSettingsWindow
         self.programSettingsWindow.setWindowFlags(
@@ -296,8 +303,10 @@ class Ui_ProgramSettingsWindow(object):
         ProgramSettingsWindow.setCentralWidget(self.centralwidget)
 
         self.initDB(db)
-        self.actualRoomID = actualRoomID
+        self.actualRoomIndex = actualRoomIndex
         self.actualRoomName = actualRoomName
+
+        self.searchActualRoomID()
 
         self.timer = QTimer()
 

@@ -25,6 +25,7 @@ class MyQLineEdit(QtWidgets.QLineEdit):
 class Ui_SensorSettingsWindow(object):
 
     db = None
+    actualRoomIndex = 0
     actualRoomID = 0
     actualRoomName = ""
     configuration = None
@@ -33,11 +34,17 @@ class Ui_SensorSettingsWindow(object):
     def initDB(self, db):
         self.db = db
 
+    def searchActualRoomID(self):
+        self.configuration = database_manager.get_configuration(self.db)
+
+        self.actualRoomID = self.configuration["rooms_settings"][self.actualRoomIndex]["room"]
+
+
     def on_PB_goBack_clicked(self):
         self.close()
         self.sensorSettingsWindow = QtWidgets.QMainWindow()
         self.uiSensorValveProgramWindow = sensorValveProgramWindow.Ui_SensorValveProgramWindow()
-        self.uiSensorValveProgramWindow.setupUi(self.sensorSettingsWindow, self.db, self.actualRoomID, self.actualRoomName)
+        self.uiSensorValveProgramWindow.setupUi(self.sensorSettingsWindow, self.db, self.actualRoomIndex, self.actualRoomName)
         self.sensorSettingsWindow.showMaximized()
 
     def on_PB_connectSensor_pressed(self):
@@ -63,9 +70,9 @@ class Ui_SensorSettingsWindow(object):
 
                         # Check se ID attuatore già presente
             flag = 0
-            actualNumSensors = len(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"])
+            actualNumSensors = len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"])
             for i in range(0, actualNumSensors):
-                if (str(sensorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][i]["sensorID"]).lower()):
+                if (str(sensorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"][i]["sensorID"]).lower()):
                     flag = 1
                     break
             if (flag == 1): # L'ID Attuatore esiste già, ritorna errore
@@ -100,10 +107,10 @@ class Ui_SensorSettingsWindow(object):
                 if (returnID == 0):
                     print("OK! Sensor is being connected!")
 
-                    if (len(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"]) == 1 and str(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][0]["sensorID"]) == ""):
-                        self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][0]["sensorID"] = sensorID
+                    if (len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"]) == 1 and str(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"][0]["sensorID"]) == ""):
+                        self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"][0]["sensorID"] = sensorID
                     else:
-                        self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"].append({"sensorID" : sensorID})
+                        self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"].append({"sensorID" : sensorID})
 
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -244,12 +251,12 @@ class Ui_SensorSettingsWindow(object):
         else: # ID sensore inserito correttamente
             # Cerca il sensore, se esiste eliminalo
             flag = 0
-            actualNumSensors = len(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"])
+            actualNumSensors = len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"])
             for i in range(0, actualNumSensors):
-                if (str(sensorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][i]["sensorID"]).lower()):
-                    del self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][i]
-                    if (len(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"]) == 0):
-                        self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"].append({"sensorID" : ""})
+                if (str(sensorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"][i]["sensorID"]).lower()):
+                    del self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"][i]
+                    if (len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"]) == 0):
+                        self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"].append({"sensorID" : ""})
                     flag = 1
                     break
                     
@@ -294,7 +301,7 @@ class Ui_SensorSettingsWindow(object):
         self.configuration = database_manager.get_configuration(self.db)
         self.roomDataConfiguration = database_manager.get_roomData_configuration(self.db)
 
-    def setupUi(self, SensorSettingsWindow, db, actualRoomID, actualRoomName):
+    def setupUi(self, SensorSettingsWindow, db, actualRoomIndex, actualRoomName):
 
         self.sensorSettingsWindow = SensorSettingsWindow
         self.sensorSettingsWindow.setWindowFlags(
@@ -405,8 +412,9 @@ class Ui_SensorSettingsWindow(object):
 
         self.initDB(db)
         self.reloadRoomData()
-        self.actualRoomID = actualRoomID
+        self.actualRoomIndex = actualRoomIndex
         self.actualRoomName = actualRoomName
+        self.searchActualRoomID()
 
         self.timer = QTimer()
 
