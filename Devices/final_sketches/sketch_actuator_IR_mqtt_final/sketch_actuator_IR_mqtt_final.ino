@@ -17,6 +17,10 @@
 #define EEPROM_SIZE 256
 
 #define interruptPin 25 //Digital pin connected to the push button
+#define resetPin 26
+#define greenLed 33     //used for BT transmission
+#define redLed 32       //used for IR code
+#define blueLed 35      //used for reconnection
 
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
@@ -89,6 +93,8 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 BluetoothSerial SerialBT;
 
+void IRAM_ATTR handleInterrupt();
+
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived in topic: ");
   Serial.println(topic);
@@ -143,6 +149,11 @@ void setup() {
   /* Init serial communication for debug purposes */
   Serial.begin(115200);
   pinMode(interruptPin, INPUT_PULLUP);
+  pinMode(greenLed, OUTPUT);
+  pinMode(redLed, OUTPUT);
+  pinMode(blueLed, OUTPUT);
+  pinMode(resetPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(resetPin), handleInterrupt, FALLING);
 
   Serial.println("before initializing EEPROM");
  
@@ -159,12 +170,16 @@ void setup() {
     //credentials already stored in eeprom 
     Serial.println("eeprom connection in if {}");
     showCredentials();
+    digitalWrite(blueLed,HIGH);
     eepromConnection(); 
+    digitalWrite(blueLed,LOW);
     airTopicAttach();
   }else{
     //credentials not yet stored in eeprom  
     Serial.println("normal connection in else {}");
+    digitalWrite(blueLed,HIGH);
     normalConnection();
+    digitalWrite(blueLed,LOW);
     airTopicAttach();
   }
 
@@ -185,7 +200,9 @@ void loop() {
   if(!client.connected()){
       Serial.println("client not connected");
       //ESP.restart();
+      digitalWrite(blueLed,HIGH);
       reconnect();
+      digitalWrite(blueLed,LOW);
       //showCredentials();
       //airTopicAttach();
       if(client.subscribe(airConditioningTopic) == false){
@@ -205,8 +222,16 @@ void loop() {
 }
 
 ///////////////////////////////////////////////////////////////////
+void IRAM_ATTR handleInterrupt() {
+  Serial.println("reset button pressed");
+  delay(1000);
+  clearEEPROM();
+  ESP.restart();
+}
+
 void newIRcode(){
   Serial.println("looking for a new IR code");
+  digitalWrite(redLed,HIGH);
   irrecv.enableIRIn(); // Start the receiver
   Serial.println("IR enabled");
   while (digitalRead(interruptPin) == HIGH){
@@ -219,6 +244,7 @@ void newIRcode(){
   Serial.print("code is ");
   Serial.println(code, HEX);
   Serial.println("IR setup done");
+  digitalWrite(redLed,LOW);
 }
 
 char* appendCharToCharArray(char* array, char a)
@@ -379,7 +405,7 @@ void waitingLowPin(){
   ////////////////////////////WAITING FOR LOW PIN//////////////////////
   SerialBT.begin(ESPname); //Bluetooth device name
   Serial.println("The device started, now you can pair it with bluetooth!");
-  
+  digitalWrite(greenLed,HIGH);
   while (digitalRead(interruptPin) == HIGH)
   {
     if (SerialBT.available())
@@ -391,6 +417,7 @@ void waitingLowPin(){
     }
   }
   Serial.println("pin low, waiting for a transmission");  
+  digitalWrite(greenLed,LOW);
 }
 
 void testTransmission(){
