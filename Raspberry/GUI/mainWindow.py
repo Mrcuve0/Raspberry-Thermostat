@@ -50,13 +50,11 @@ class Ui_MainWindow(object):
     def on_PB_winter_pressed(self):
         self.season = "cold"
         self.lastModifiedBy = "GUI"
-        self.weekend = 0
         self.updateScreenData()
 
     def on_PB_summer_pressed(self):
         self.season = "hot"
         self.lastModifiedBy = "GUI"
-        self.weekend = 0
         self.updateScreenData()
         
     # Mode
@@ -64,19 +62,16 @@ class Ui_MainWindow(object):
         self.mode = "programmable"
         self.lastModifiedBy = "GUI"
         self.lastModifiedBy = "GUI"
-        self.weekend = 0
         self.updateScreenData()
 
     def on_PB_manual_pressed(self):
         self.mode = "manual"
         self.lastModifiedBy = "GUI"
-        self.weekend = 0
         self.updateScreenData()
 
     def on_PB_antiFreeze_pressed(self):
         self.mode = "antifreeze"
         self.lastModifiedBy = "GUI"
-        self.weekend = 0
         self.updateScreenData()
 
     def on_PB_weekend_pressed(self):
@@ -93,12 +88,6 @@ class Ui_MainWindow(object):
         self.PB_tempIncrease.setDisabled(True)
         self.PB_tempDecrease.setDisabled(True)
         self.LCDTempSet.setDisabled(True)
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        font.setBold(True)
-        font.setWeight(75)
-        font.setUnderline(False)
-        self.PB_weekend.setFont(font)
         self.PB_weekend.setDisabled(True)
 
     def enableManualButtons(self):
