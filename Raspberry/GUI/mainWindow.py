@@ -28,7 +28,8 @@ class Ui_MainWindow(object):
     actualRoomID = 0
 
     season = "" # can be "hot" or "cold"
-    mode = "" # can be "manual", "antifreeze" or "programmable""
+    mode = "" # can be "manual", "antifreeze", "programmable"
+    weekend = 0 # Can be 0 or 1
     lastModifiedBy = "WEB"
 
     def initDB(self, db):
@@ -49,26 +50,41 @@ class Ui_MainWindow(object):
     def on_PB_winter_pressed(self):
         self.season = "cold"
         self.lastModifiedBy = "GUI"
+        self.weekend = 0
         self.updateScreenData()
 
     def on_PB_summer_pressed(self):
         self.season = "hot"
         self.lastModifiedBy = "GUI"
+        self.weekend = 0
         self.updateScreenData()
         
     # Mode
     def on_PB_program_pressed(self):
         self.mode = "programmable"
         self.lastModifiedBy = "GUI"
+        self.lastModifiedBy = "GUI"
+        self.weekend = 0
         self.updateScreenData()
 
     def on_PB_manual_pressed(self):
         self.mode = "manual"
         self.lastModifiedBy = "GUI"
+        self.weekend = 0
         self.updateScreenData()
 
     def on_PB_antiFreeze_pressed(self):
         self.mode = "antifreeze"
+        self.lastModifiedBy = "GUI"
+        self.weekend = 0
+        self.updateScreenData()
+
+    def on_PB_weekend_pressed(self):
+        if (self.weekend == 0):
+            self.weekend = 1
+        elif (self.weekend == 1):
+            self.weekend = 0
+
         self.lastModifiedBy = "GUI"
         self.updateScreenData()
 
@@ -77,12 +93,20 @@ class Ui_MainWindow(object):
         self.PB_tempIncrease.setDisabled(True)
         self.PB_tempDecrease.setDisabled(True)
         self.LCDTempSet.setDisabled(True)
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        font.setUnderline(False)
+        self.PB_weekend.setFont(font)
+        self.PB_weekend.setDisabled(True)
 
     def enableManualButtons(self):
         # Se è in modalità manuale alcuni tasti devono essere abilitati
         self.PB_tempIncrease.setDisabled(False)
         self.PB_tempDecrease.setDisabled(False)
         self.LCDTempSet.setDisabled(False)
+        self.PB_weekend.setDisabled(False)
 
     # Signals
     def on_PB_roomList_clicked(self):
@@ -154,6 +178,7 @@ class Ui_MainWindow(object):
         self.PB_program.pressed.connect(self.on_PB_program_pressed)
         self.PB_manual.pressed.connect(self.on_PB_manual_pressed)    
         self.PB_antiFreeze.pressed.connect(self.on_PB_antiFreeze_pressed)
+        self.PB_weekend.pressed.connect(self.on_PB_weekend_pressed)
 
         #PB_RoomList
         self.PB_roomList.clicked.connect(self.on_PB_roomList_clicked)
@@ -219,12 +244,14 @@ class Ui_MainWindow(object):
             self.newConfiguration["rooms_settings"][self.actualRoomIndex]["info"]["temp"] = self.roomTempSet
             self.newConfiguration["rooms_settings"][self.actualRoomIndex]["season"] = self.season
             self.newConfiguration["rooms_settings"][self.actualRoomIndex]["mode"] = self.mode
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["info"]["weekend"] = self.weekend
 
             print("\t --> COMMIT: ")
             print("\t\tID: " + str(self.actualRoomID))
             print("\t\tTemp: " + str(self.roomTempSet))
             print("\t\tSeason: " + str(self.season))
             print("\t\tMode: " + str(self.mode))
+            print("\t\tWeekend: " + str(self.weekend))
 
             database_manager.update_configuration(self.db, self.newConfiguration)     
             self.lastModifiedBy = "WEB"
@@ -233,6 +260,7 @@ class Ui_MainWindow(object):
             self.roomTempSet = self.configuration["rooms_settings"][self.actualRoomIndex]["info"]["temp"]
             self.season = self.configuration["rooms_settings"][self.actualRoomIndex]["season"]
             self.mode = self.configuration["rooms_settings"][self.actualRoomIndex]["mode"]
+            self.weekend = self.configuration["rooms_settings"][self.actualRoomIndex]["info"]["weekend"]
 
         self.reloadRoomData()
 
@@ -287,6 +315,21 @@ class Ui_MainWindow(object):
             self.PB_antiFreeze.setFont(font)
 
             self.enableManualButtons()
+
+            if (self.weekend == 1):
+                font = QtGui.QFont()
+                font.setPointSize(16)
+                font.setBold(True)
+                font.setWeight(75)
+                font.setUnderline(True)
+                self.PB_weekend.setFont(font)
+            else:
+                font = QtGui.QFont()
+                font.setPointSize(16)
+                font.setBold(True)
+                font.setWeight(75)
+                font.setUnderline(False)
+                self.PB_weekend.setFont(font)
 
             self.LCDTempSet.display("%.1f" % round(float(self.roomTempSet), 1))
 
@@ -420,7 +463,7 @@ class Ui_MainWindow(object):
         self.PB_settings.setFont(font)
         self.PB_settings.setObjectName("PB_settings")
         self.PB_program = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_program.setGeometry(QtCore.QRect(130, 340, 81, 61))
+        self.PB_program.setGeometry(QtCore.QRect(30, 340, 81, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -432,7 +475,7 @@ class Ui_MainWindow(object):
         self.PB_program.setFlat(False)
         self.PB_program.setObjectName("PB_program")
         self.PB_manual = QtWidgets.QPushButton(self.centralwidget)
-        self.PB_manual.setGeometry(QtCore.QRect(220, 340, 81, 61))
+        self.PB_manual.setGeometry(QtCore.QRect(120, 340, 81, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -525,6 +568,15 @@ class Ui_MainWindow(object):
         self.PB_antiFreeze.setFont(font)
         self.PB_antiFreeze.setFlat(False)
         self.PB_antiFreeze.setObjectName("PB_antiFreeze")
+        self.PB_weekend = QtWidgets.QPushButton(self.centralwidget)
+        self.PB_weekend.setGeometry(QtCore.QRect(210, 340, 91, 61))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.PB_weekend.setFont(font)
+        self.PB_weekend.setFlat(False)
+        self.PB_weekend.setObjectName("PB_weekend")
         self.LCDTempAct.raise_()
         self.PB_tempIncrease.raise_()
         self.PB_tempDecrease.raise_()
@@ -542,6 +594,7 @@ class Ui_MainWindow(object):
         self.labelTempSet.raise_()
         self.PB_summer.raise_()
         self.PB_antiFreeze.raise_()
+        self.PB_weekend.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.initDB(db)
@@ -573,4 +626,5 @@ class Ui_MainWindow(object):
         self.labelTempSet.setText(_translate("MainWindow", "Temperature set: "))
         self.PB_summer.setText(_translate("MainWindow", "Summer"))
         self.PB_antiFreeze.setText(_translate("MainWindow", "AntiF"))
+        self.PB_weekend.setText(_translate("MainWindow", "WE"))
 
