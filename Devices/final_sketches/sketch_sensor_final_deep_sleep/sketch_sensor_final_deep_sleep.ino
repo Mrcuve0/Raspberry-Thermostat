@@ -25,6 +25,9 @@
 #define greenLed 33     //used for BT transmission
 #define blueLed 35      //used for reconnection
 
+#define TIME_TO_SLEEP  30        /* Time ESP32 will go to sleep (in seconds) */
+#define uS_TO_S_FACTOR 1000000  /* Conversion factor for micro seconds to seconds */
+
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 /*first address is test
@@ -132,7 +135,8 @@ void setup() {
   pinMode(blueLed, OUTPUT);
   pinMode(resetPin, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(resetPin), handleInterrupt, FALLING);
-
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+  Serial.println("esp sleep enabled");
 
   Serial.println("before initializing EEPROM");
   
@@ -160,19 +164,11 @@ void setup() {
     digitalWrite(blueLed,LOW);
   }
 
-
   if(client.subscribe("temperatures") == false){
     Serial.println("not subscribed to temperatures topic");  
   }
   Serial.println("subscribed to temperatures topic");
 
-  start_time = millis();
-  Serial.println("initialized the start time");
-  
-}
-
-void loop()
-{ 
   if(!client.connected()){
       Serial.println("client not connected");
       //ESP.restart();
@@ -184,30 +180,34 @@ void loop()
       }
       Serial.println("subscribed to temperatures topic");
   }
-  
-  if (millis() - start_time > time_interval)
-  {
-    temperature = dht.readTemperature();
 
-    temp_str = String(temperature);
-    temp_str.toCharArray(temp, temp_str.length() + 1);
+  temperature = dht.readTemperature();
 
-    Serial.print("temperature: ");
-    Serial.println(temperature);
+  temp_str = String(temperature);
+  temp_str.toCharArray(temp, temp_str.length() + 1);
 
-    Serial.println("concatenating strings");
-    temperature_string += stanza_string;
-    temperature_string += roomIDc;
-    temperature_string += temp_string;
-    temperature_string += temp_str;
-    temperature_string += closing_string;
-    Serial.println(temperature_string);
+  Serial.print("temperature: ");
+  Serial.println(temperature);
+
+  Serial.println("concatenating strings");
+  temperature_string += stanza_string;
+  temperature_string += roomIDc;
+  temperature_string += temp_string;
+  temperature_string += temp_str;
+  temperature_string += closing_string;
+  Serial.println(temperature_string);
     
-    client.publish("temperatures", temperature_string.c_str());
-    temperature_string = "";
-    start_time = millis();
-  }
+  client.publish("temperatures", temperature_string.c_str());
+  temperature_string = "";
+  
   client.loop();
+  Serial.println("Going to sleep now");
+  esp_deep_sleep_start();
+}
+
+void loop()
+{ 
+ 
 }
 
 ///////////////////////////////////////////////////////////////////
