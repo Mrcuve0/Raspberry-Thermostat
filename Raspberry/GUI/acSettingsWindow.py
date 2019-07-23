@@ -40,7 +40,7 @@ class Ui_ACSettingsWindow(object):
     def initDB(self, db):
         self.db = db
 
-     def searchActualRoomID(self):
+    def searchActualRoomID(self):
         self.configuration = database_manager.get_configuration(self.db)
 
         self.actualRoomID = self.configuration["rooms_settings"][self.actualRoomIndex]["room"]

@@ -26,7 +26,7 @@ roomData_config = db.get_roomData_configuration()
 # TODO: Uncomment below line to reset DB
 # roomData_config = None
 if roomData_config == None:
-	roomData_config = {"conf" : [{"roomID" : "0", "roomName" : "default",  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "type" : "hot", "valves" : [{"valveID": ""}]}]}]}
+	roomData_config = {"conf" : [{"roomID" : "0", "roomName" : "default",  "sensors" : [{"sensorID" : "0"}], "actuators" : [{"actuatorID" : "", "type" : "hot", "valves" : [{"valveID": ""}]}]}]}
 	db.update_roomData_configuration(roomData_config)
 
 # Check and init roomData
@@ -47,4 +47,4 @@ subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/l
 subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/sensor.py'])
 
 # TODO: Uncomment for presentation
-subprocess.Popen(["python", "remote_service.py"])
+subprocess.Popen(["python", "/home/pi/Documents/Raspberry-Thermostat/Raspberry/remote_service.py"])
