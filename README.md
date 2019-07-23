@@ -4,6 +4,7 @@
 [![DevelopmentStatus](https://img.shields.io/badge/Development-Stopped-red.svg)](https://img.shields.io/badge/Development-Stopped-red.svg)
 
 
+
 ### **--> Here's a main view of the entire system, together with the main components (SW and HW) that compose it**
 
 ![alt](https://raw.githubusercontent.com/Mrcuve0/Raspberry-Thermostat/master/Report/Diagram.png)
