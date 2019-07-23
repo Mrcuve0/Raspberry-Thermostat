@@ -7,11 +7,11 @@
 
 ### **--> Here's a main view of the entire system, together with the main components (SW and HW) that compose it**
 
-![alt](https://raw.githubusercontent.com/Mrcuve0/Raspberry-Thermostat/master/Report/Diagram.png)
+![diagram](https://raw.githubusercontent.com/Mrcuve0/Raspberry-Thermostat/master/Report/Diagram.png)
 
 ### **--> Here's the main window of the Graphical User Interface implemented**
 
-![alt](https://raw.githubusercontent.com/Mrcuve0/Raspberry-Thermostat/master/Slides/Screenshot_20190716_171453.png)
+![GUI](https://raw.githubusercontent.com/Mrcuve0/Raspberry-Thermostat/master/Slides/Screenshot_20190716_171453.png)
 
 ### **--> Additional informations**
 
