@@ -1,3 +1,19 @@
+# Copyright (C) 2019 Paolo Calao, Samuele Yves Cerini, Federico Pozzana
+
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import time
 from connection_manager import *
 from database_manager import *
@@ -56,7 +72,7 @@ def drive_actuator(room, actuator_type, power):
 	topic = ''
 	if (actuator_type == constants.actuator_hot):
 		debugstring = constants.actuator_hot_topic + room
-		print(debugstring)
+		# print(debugstring)
 		topic = debugstring
 	elif (actuator_type == constants.actuator_cold):
 		topic = constants.actuator_cold_topic + room
@@ -68,9 +84,9 @@ def programmable_time_classification(day, hour):
 	if day >= 6:
 		day_str = 'WE'
 	if hour >= 6 and hour <= 12:
-		hour_str = 'M' 
+		hour_str = 'M'
 	elif hour >= 13 and hour <= 23:
-		hour_str = 'E' 
+		hour_str = 'E'
 	elif hour >= 0 and hour <= 5:
 		hour_str = 'N'
 	return day_str + hour_str
@@ -80,26 +96,24 @@ def manual_mode(room, temperature, season, info):
 	# Check weekend settings
 	if info['weekend'] == 1 and datetime.datetime.now().isoweekday() >= 6:
 		requested_temperature -= 2
-	# If it is a cold season, hot actuators must be used 
+	# If it is a cold season, hot actuators must be used
 	if season == 'cold':
+		drive_actuator(room, constants.actuator_cold, constants.power_off)
 		# Enable the hot-actuator
-		print("Room:" + room)
-		print("temp: " + temperature)
-		print("reqtemp: " + requested_temperature)
 		if temperature < requested_temperature:
-			print("Power ON to thermo actuator")
-			drive_actuator(room, constants.actuator_hot, constants.power_on)						
+			drive_actuator(room, constants.actuator_hot, constants.power_on)
 		else:
-			print("Power OFF to thermo actuator")
 			drive_actuator(room, constants.actuator_hot, constants.power_off)
 	# If it is a hot season, cold actuators must be used
 	elif season == 'hot':
+		drive_actuator(room, constants.actuator_hot, constants.power_off)
 		if temperature > requested_temperature:
 			drive_actuator(room, constants.actuator_cold, constants.power_on)
 		else:
 			drive_actuator(room, constants.actuator_cold, constants.power_off)
 
 def antifreeze_mode(room, temperature):
+	drive_actuator(room, constants.actuator_cold, constants.power_off)
 	if temperature < 15:
 		# Enable the hot-actuator
 		drive_actuator(room, constants.actuator_hot, constants.power_on)
@@ -111,15 +125,17 @@ def programmable_mode(room, temperature, season, program):
 	hour = datetime.datetime.now().hour
 	prog_time = programmable_time_classification(day, hour)
 	requested_temperature = program[prog_time]
-	# If it is a cold season, hot actuators must be used 
+	# If it is a cold season, hot actuators must be used
 	if season == 'cold':
+		drive_actuator(room, constants.actuator_cold, constants.power_off)
 		# Enable the hot-actuator
 		if temperature < requested_temperature:
-			drive_actuator(room, constants.actuator_hot, constants.power_on)						
+			drive_actuator(room, constants.actuator_hot, constants.power_on)
 		else:
 			drive_actuator(room, constants.actuator_hot, constants.power_off)
 	# If it is a hot season, cold actuators must be used
 	elif season == 'hot':
+		drive_actuator(room, constants.actuator_hot, constants.power_off)
 		if temperature > requested_temperature:
 			drive_actuator(room, constants.actuator_cold, constants.power_on)
 		else:
@@ -140,17 +156,15 @@ while True:
 	# Manage only rooms from which temperatures are received since the last power-on
 	#for entry in last_temperatures:
 	#	temp_room = entry['room']
-	#	temp_temperature = entry['temperature'] 
+	#	temp_temperature = entry['temperature']
 	#	room_settings = find_room_in_list(temp_room, configuration['rooms_settings'])
 	#
 	# Manage every room of the configuration
 
 	for room_settings in configuration['rooms_settings']:
-		print("sono nel for")
 		temp_room = room_settings['room']
 		temp_elem = find_room_in_list(temp_room, last_temperatures)
 		if temp_elem is not None:
-			print("sono nell'if not none")
 			# Check if the last temperature received is recent or not
 			time_now = int(datetime.datetime.now().strftime("%Y%m%d%H"))
 			prev_timestamp = temp_elem['timestamp']
@@ -158,22 +172,18 @@ while True:
 			prev_time = int(prev_date.strftime("%Y%m%d%H"))
 			# if prev_time == time_now:
 			if True:
-				print("sono nell'if true")
 				# Take the room's last temperature
 				temp_temperature = temp_elem['temperature']
-				temp_season = room_settings['season'] 
+				temp_season = room_settings['season']
 				temp_info = room_settings['info']
 				# Manual mode
 				if (room_settings['mode'] == constants.manual_settings):
-					print("Sono nella manual mode")
 					manual_mode(temp_room, temp_temperature, temp_season, temp_info)
 				# Antifreeze mode
 				elif (room_settings['mode'] == constants.antifreeze_settings):
-					print("Sono nella AF mode")
 					antifreeze_mode(temp_room, temp_temperature)
 				# Programmable mode
 				elif (room_settings['mode'] == constants.programmable_settings):
-					print("Sono nella progam mode")
 					temp_program = room_settings['program']
 					programmable_mode(temp_room, temp_temperature, temp_season, temp_program)
 	time.sleep(30)

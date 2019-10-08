@@ -1,3 +1,19 @@
+# Copyright (C) 2019 Paolo Calao, Samuele Yves Cerini, Federico Pozzana
+
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import sys
 import subprocess
 
@@ -35,6 +51,7 @@ class Ui_deleteRoomWindow(object):
     def reloadRoomData(self):
         self.configuration = database_manager.get_configuration(self.db)
         self.roomDataConfiguration = database_manager.get_roomData_configuration(self.db)
+        self.actuatorsConfiguration = database_manager.get_actuators_configuration(self.db)
 
     def on_PB_goBack_clicked(self):
         self.close()
@@ -65,9 +82,36 @@ class Ui_deleteRoomWindow(object):
             return
 
         flag = 0
-        for i in range(0, self.actualNumRooms): 
+        for i in range(0, self.actualNumRooms):
             if (str(roomName).lower() == str(self.configuration["rooms_settings"][i]["room_name"]).lower()):
                 if (str(roomName).lower() == str(self.roomDataConfiguration["conf"][i]["roomName"]).lower()):
+
+                    # Se ci sono valvole associate, elimina la valvola utilizzata rendendola libera per altre stanze
+                    actualNumActuators = len(self.roomDataConfiguration["conf"][i]["actuators"])
+                    for j in range(0, actualNumActuators):  # Cicla sugli attatori disponibili per questa stanza
+                        actualNumValves = len(self.roomDataConfiguration["conf"][i]["actuators"][j]["valves"])
+                        actualNumValves_actuatorsConfig = actualNumValves
+                        for k in range(0, actualNumValves): # Cicla sulle valvole disponibili per questo attuatore
+                            # if (k < actualNumValves_actuatorsConfig):
+                            if (str(self.roomDataConfiguration["conf"][i]["actuators"][j]["valves"][k]["valveID"]) != "" and str(self.roomDataConfiguration["conf"][i]["actuators"][j]["type"]) == "hot"):
+                                # Questa valvola è collegata, togliamola da actuatorsConfiguration perché è tornata libera
+                                connectedValveID = self.roomDataConfiguration["conf"][i]["actuators"][j]["valves"][k]["valveID"]
+                                connectedActuatorID = self.roomDataConfiguration["conf"][i]["actuators"][j]["actuatorID"]
+
+                                actualNumActuators_actuatorsConfig = len(self.actuatorsConfiguration["conf"])
+                                for l in range(0, actualNumActuators_actuatorsConfig): # Cicla sugli attuatori disponibili nella actuatorsConfiguration
+                                    if (str(self.actuatorsConfiguration["conf"][l]["actuatorID"]) == connectedActuatorID):
+                                        actualNumValves_actuatorsConfig = len(self.actuatorsConfiguration["conf"][l]["valves"])
+                                        for m in range(0, actualNumValves_actuatorsConfig):
+                                            if (m < len(self.actuatorsConfiguration["conf"][l]["valves"])):
+                                                if (str(self.actuatorsConfiguration["conf"][l]["valves"][m]["valveID"]) == connectedValveID):
+                                                    # self.actuatorsConfiguration["conf"][l]["valves"][m]["valveID"] = "" # Imposta la valvola come libera
+                                                    del self.actuatorsConfiguration["conf"][l]["valves"][m]
+                                                    actualNumValves_actuatorsConfig = actualNumValves_actuatorsConfig - 1
+                                                    # actualNumValves = actualNumValves - 1
+                                                    if (len(self.actuatorsConfiguration["conf"][l]["valves"]) == 0):
+                                                        self.actuatorsConfiguration["conf"][l]["valves"].append({"valveID" : ""})
+
                     del self.configuration["rooms_settings"][i]
                     if (len(self.configuration["rooms_settings"]) == 0):
                         self.configuration["rooms_settings"].append({'room': "0", 'room_name': 'default', 'mode': 'manual', 'info': {'temp': 25, 'weekend': 0}, 'season': 'hot', "program" : {"MFM" : "", "MFE" : "", "MFN" : "", "WEM" : "", "WEE" : "", "WEN" : ""}})
@@ -75,12 +119,14 @@ class Ui_deleteRoomWindow(object):
                     if (len(self.roomDataConfiguration["conf"]) == 0):
                         self.roomDataConfiguration["conf"].append({"roomID" : "0", "roomName" : "default",  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "type" : "hot", "valves" : [{"valveID": ""}]}]})
                     flag = 1
+
                     break
 
         if (flag == 1):
             self.newConfiguration = self.configuration
             database_manager.update_configuration(self.db, self.newConfiguration)
             database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
+            database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
 
             print("\t --> COMMIT: Stanza rimossa")
             msg = QtWidgets.QMessageBox()
@@ -97,7 +143,7 @@ class Ui_deleteRoomWindow(object):
             msg.setWindowTitle("Error")
             msg.exec_()
 
-          
+
     def __handleTextChanged(self, text):
         if not self.LE_room.hasFocus:
             self.LE_room._beforeRoomName = text
@@ -110,7 +156,7 @@ class Ui_deleteRoomWindow(object):
             self.PB_deleteRoom.setText(QtCore.QCoreApplication.translate(
                 "DeleteRoomWindow", "Delete Room"))
             self.PB_deleteRoom.setEnabled(True)
-        
+
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
         self.PB_deleteRoom.clicked.connect(self.on_PB_deleteRoom_clicked)
@@ -178,12 +224,12 @@ class Ui_deleteRoomWindow(object):
         self.timeEdit.setReadOnly(True)
         self.timeEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.timeEdit.setObjectName("timeEdit")
-        
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        
+
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
         self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         font = QtGui.QFont()

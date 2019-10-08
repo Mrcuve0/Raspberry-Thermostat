@@ -1,3 +1,17 @@
+// Copyright (C) 2019 Paolo Calao, Samuele Yves Cerini, Federico Pozzana
+
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+// You should have received a copy of the GNU Lesser General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <WiFiClient.h>
@@ -31,11 +45,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println();
   Serial.println("-----------------------");
 }
- 
+
 void setup() {
   /* Init serial communication for debug purposes */
   Serial.begin(115200);
-  /* Loop to establish Wifi connection */ 
+  /* Loop to establish Wifi connection */
   WiFi.begin(ssid, password);
   int timeout = 10;
   while (WiFi.status() != WL_CONNECTED) {
@@ -62,7 +76,7 @@ void setup() {
   mqttServer = MDNS.queryHost(mqttHostname);
   Serial.print("IP address of server: ");
   Serial.println(mqttServer.toString());
-  /* Connect to the MQTT broker */ 
+  /* Connect to the MQTT broker */
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
   while (!client.connected()) {
@@ -79,7 +93,7 @@ void setup() {
   client.subscribe("actuators");
   start_time = millis();
 }
- 
+
 void loop() {
   client.loop();
   if (millis() - start_time > time_interval){

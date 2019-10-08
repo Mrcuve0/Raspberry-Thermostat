@@ -1,3 +1,17 @@
+// Copyright (C) 2019 Paolo Calao, Samuele Yves Cerini, Federico Pozzana
+
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+// You should have received a copy of the GNU Lesser General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "BluetoothSerial.h"
 #include <WiFi.h>
 #include "PubSubClient.h"
@@ -70,7 +84,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   Serial.println();
 
   //topic rele/IDattuatore/numeroRele
-  
+
   /*topic one*/
   if (String(topic) == "rele/IDatt/1")
   {

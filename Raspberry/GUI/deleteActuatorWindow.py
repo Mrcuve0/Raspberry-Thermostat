@@ -1,3 +1,19 @@
+# Copyright (C) 2019 Paolo Calao, Samuele Yves Cerini, Federico Pozzana
+
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import sys
 import subprocess
 
@@ -71,8 +87,8 @@ class Ui_deleteActuatorWindow(object):
                         self.actuatorsConfiguration["conf"].append({"actuatorID" : "", "type": "cold", "valves" : [{"valveID" : ""}]})
                     flag = 1
                     break
-                    
-            if (flag == 1): 
+
+            if (flag == 1):
                 database_manager.update_actuators_configuration(self.db, self.actuatorsConfiguration)
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -88,10 +104,10 @@ class Ui_deleteActuatorWindow(object):
                     "ID Actuator not found!")
                 msg.setWindowTitle("Error")
                 msg.exec_()
-                
+
         self.PB_deleteActuator.setText(QtCore.QCoreApplication.translate(
             "DeleteActuatorWindow", "Delete"))
-   
+
     def reloadRoomData(self):
         self.actuatorsConfiguration = database_manager.get_actuators_configuration(self.db)
 
@@ -163,12 +179,12 @@ class Ui_deleteActuatorWindow(object):
         self.timeEdit.setReadOnly(True)
         self.timeEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.timeEdit.setObjectName("timeEdit")
-        
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        
+
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
         self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         font = QtGui.QFont()

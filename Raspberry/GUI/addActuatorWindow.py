@@ -1,3 +1,19 @@
+# Copyright (C) 2019 Paolo Calao, Samuele Yves Cerini, Federico Pozzana
+
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import sys
 import subprocess
 
@@ -85,7 +101,6 @@ class Ui_addActuatorWindow(object):
                             "AddActuatorWindow", "Connect"))
                 return
 
-            # TODO: Remove STUB
             net_SSID = data.networkData["net_SSID"]
             net_PWD = data.networkData["net_PWD"]
             # net_SSID = "ciao"
@@ -103,8 +118,7 @@ class Ui_addActuatorWindow(object):
                 msg.exec_()
 
             else:
-                # TODO: Remove STUB 
-                returnID = connection_actuator.connection(actuatorID, net_SSID, net_PWD)    
+                returnID = connection_actuator.connection(actuatorID, net_SSID, net_PWD)
                 # returnID = 0
                 if (returnID == 0):
                     print("OK! Actuator is being connected!")
@@ -135,7 +149,7 @@ class Ui_addActuatorWindow(object):
                         "Actuator ID not found, please retry")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
-                    
+
                     self.PB_addActuator.setText(QtCore.QCoreApplication.translate(
                             "AddActuatorWindow", "Not connected, please retry..."))
                     self.PB_addActuator.setEnabled(True)
@@ -226,7 +240,7 @@ class Ui_addActuatorWindow(object):
 
     def reloadRoomData(self):
         self.actuatorsConfiguration = database_manager.get_actuators_configuration(self.db)
-   
+
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
         self.PB_addActuator.pressed.connect(self.on_PB_addActuator_pressed)
@@ -295,12 +309,12 @@ class Ui_addActuatorWindow(object):
         self.timeEdit.setReadOnly(True)
         self.timeEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.timeEdit.setObjectName("timeEdit")
-        
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        
+
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
         self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         font = QtGui.QFont()

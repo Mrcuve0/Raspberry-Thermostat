@@ -1,3 +1,19 @@
+# Copyright (C) 2019 Paolo Calao, Samuele Yves Cerini, Federico Pozzana
+
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import os
 import sys
 
@@ -9,50 +25,57 @@ import sensorSettingsWindow
 import valveSettingsWindow
 import programSettingsWindow
 import acSettingsWindow
+from database_manager import database_manager
 
 
 class Ui_SensorValveProgramWindow(object):
 
     db = None
+    actualRoomIndex = 0
     actualRoomID = 0
     actualRoomName = ""
 
     def initDB(self, db):
         self.db = db
 
+    def searchActualRoomID(self):
+        self.configuration = database_manager.get_configuration(self.db)
+
+        self.actualRoomID = self.configuration["rooms_settings"][self.actualRoomIndex]["room"]
+
     def on_PB_sensor_clicked(self):
         self.close()
         self.sensorValveProgramWindow = QtWidgets.QMainWindow()
         self.uiSensorSettingsWindow = sensorSettingsWindow.Ui_SensorSettingsWindow()
-        self.uiSensorSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomID, self.actualRoomName)
+        self.uiSensorSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomIndex, self.actualRoomName)
         self.sensorValveProgramWindow.showMaximized()
-    
+
     def on_PB_valve_clicked(self):
         self.close()
         self.sensorValveProgramWindow = QtWidgets.QMainWindow()
         self.uiValveSettingsWindow = valveSettingsWindow.Ui_ValveSettingsWindow()
-        self.uiValveSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomID, self.actualRoomName)
+        self.uiValveSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomIndex, self.actualRoomName)
         self.sensorValveProgramWindow.showMaximized()
 
     def on_PB_airConditioner_clicked(self):
         self.close()
         self.sensorValveProgramWindow = QtWidgets.QMainWindow()
         self.uiACSettingsWindow = acSettingsWindow.Ui_ACSettingsWindow()
-        self.uiACSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomID, self.actualRoomName)
+        self.uiACSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomIndex, self.actualRoomName)
         self.sensorValveProgramWindow.showMaximized()
 
     def on_PB_program_clicked(self):
         self.close()
         self.sensorValveProgramWindow = QtWidgets.QMainWindow()
         self.uiProgramSettingsWindow = programSettingsWindow.Ui_ProgramSettingsWindow()
-        self.uiProgramSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomID, self.actualRoomName)
+        self.uiProgramSettingsWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomIndex, self.actualRoomName)
         self.sensorValveProgramWindow.showMaximized()
 
     def on_PB_goBack_clicked(self):
         self.close()
         self.sensorValveProgramWindow = QtWidgets.QMainWindow()
         self.uiMainWindow = mainWindow.Ui_MainWindow()
-        self.uiMainWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomID)
+        self.uiMainWindow.setupUi(self.sensorValveProgramWindow, self.db, self.actualRoomIndex)
         self.sensorValveProgramWindow.showMaximized()
 
     def activeFunctionsConnection(self):
@@ -78,7 +101,7 @@ class Ui_SensorValveProgramWindow(object):
         self.timer.stop()
         self.sensorValveProgramWindow.close()
 
-    def setupUi(self, SensorValveProgramWindow, db, actualRoomID, actualRoomName):
+    def setupUi(self, SensorValveProgramWindow, db, actualRoomIndex, actualRoomName):
 
         self.sensorValveProgramWindow = SensorValveProgramWindow
         self.sensorValveProgramWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -180,8 +203,9 @@ class Ui_SensorValveProgramWindow(object):
         SensorValveProgramWindow.setCentralWidget(self.centralwidget)
 
         self.initDB(db)
-        self.actualRoomID = actualRoomID
+        self.actualRoomIndex = actualRoomIndex
         self.actualRoomName = actualRoomName
+        self.searchActualRoomID()
 
         self.timer = QTimer()
 

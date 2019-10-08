@@ -1,3 +1,19 @@
+# Copyright (C) 2019 Paolo Calao, Samuele Yves Cerini, Federico Pozzana
+
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import subprocess
 
 import database_manager
@@ -26,7 +42,7 @@ roomData_config = db.get_roomData_configuration()
 # TODO: Uncomment below line to reset DB
 # roomData_config = None
 if roomData_config == None:
-	roomData_config = {"conf" : [{"roomID" : "0", "roomName" : "default",  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "type" : "hot", "valves" : [{"valveID": ""}]}]}]}
+	roomData_config = {"conf" : [{"roomID" : "0", "roomName" : "default",  "sensors" : [{"sensorID" : "0"}], "actuators" : [{"actuatorID" : "", "type" : "hot", "valves" : [{"valveID": ""}]}]}]}
 	db.update_roomData_configuration(roomData_config)
 
 # Check and init roomData
@@ -47,4 +63,4 @@ subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/l
 subprocess.Popen(['python', '/home/pi/Documents/Raspberry-Thermostat/Raspberry/sensor.py'])
 
 # TODO: Uncomment for presentation
-subprocess.Popen(["python", "remote_service.py"])
+subprocess.Popen(["python", "/home/pi/Documents/Raspberry-Thermostat/Raspberry/remote_service.py"])

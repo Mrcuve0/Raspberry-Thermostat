@@ -174,7 +174,7 @@
    <widget class="QPushButton" name="PB_program">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>30</x>
       <y>340</y>
       <width>81</width>
       <height>61</height>
@@ -206,7 +206,7 @@
    <widget class="QPushButton" name="PB_manual">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>120</x>
       <y>340</y>
       <width>81</width>
       <height>61</height>
@@ -251,26 +251,6 @@
     </property>
     <property name="flat">
      <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="PB_onOff">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>320</y>
-      <width>111</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>On/Off</string>
     </property>
    </widget>
    <widget class="QPushButton" name="PB_roomList">
@@ -450,6 +430,29 @@
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QPushButton" name="PB_weekend">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>340</y>
+      <width>91</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>WE</string>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
    <zorder>LCDTempAct</zorder>
    <zorder>PB_tempIncrease</zorder>
    <zorder>PB_tempDecrease</zorder>
@@ -460,7 +463,6 @@
    <zorder>PB_program</zorder>
    <zorder>PB_manual</zorder>
    <zorder>PB_winter</zorder>
-   <zorder>PB_onOff</zorder>
    <zorder>PB_roomList</zorder>
    <zorder>PB_prevRoom</zorder>
    <zorder>PB_nextRoom</zorder>
@@ -468,6 +470,7 @@
    <zorder>labelTempSet</zorder>
    <zorder>PB_summer</zorder>
    <zorder>PB_antiFreeze</zorder>
+   <zorder>PB_weekend</zorder>
   </widget>
  </widget>
  <resources/>

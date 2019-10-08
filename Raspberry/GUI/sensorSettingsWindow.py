@@ -1,3 +1,19 @@
+# Copyright (C) 2019 Paolo Calao, Samuele Yves Cerini, Federico Pozzana
+
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import subprocess
 
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -25,25 +41,32 @@ class MyQLineEdit(QtWidgets.QLineEdit):
 class Ui_SensorSettingsWindow(object):
 
     db = None
+    actualRoomIndex = 0
     actualRoomID = 0
     actualRoomName = ""
     configuration = None
     roomDataConfiguration = None
-    
+
     def initDB(self, db):
         self.db = db
+
+    def searchActualRoomID(self):
+        self.configuration = database_manager.get_configuration(self.db)
+
+        self.actualRoomID = self.configuration["rooms_settings"][self.actualRoomIndex]["room"]
+
 
     def on_PB_goBack_clicked(self):
         self.close()
         self.sensorSettingsWindow = QtWidgets.QMainWindow()
         self.uiSensorValveProgramWindow = sensorValveProgramWindow.Ui_SensorValveProgramWindow()
-        self.uiSensorValveProgramWindow.setupUi(self.sensorSettingsWindow, self.db, self.actualRoomID, self.actualRoomName)
+        self.uiSensorValveProgramWindow.setupUi(self.sensorSettingsWindow, self.db, self.actualRoomIndex, self.actualRoomName)
         self.sensorSettingsWindow.showMaximized()
 
     def on_PB_connectSensor_pressed(self):
         self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
             "SensorSettingsWindow", "Connecting..."))
-    
+
     def on_PB_connectSensor_released(self):
         sensorID = self.LE_sensor.text()
 
@@ -63,9 +86,9 @@ class Ui_SensorSettingsWindow(object):
 
                         # Check se ID attuatore già presente
             flag = 0
-            actualNumSensors = len(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"])
+            actualNumSensors = len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"])
             for i in range(0, actualNumSensors):
-                if (str(sensorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][i]["sensorID"]).lower()):
+                if (str(sensorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"][i]["sensorID"]).lower()):
                     flag = 1
                     break
             if (flag == 1): # L'ID Attuatore esiste già, ritorna errore
@@ -94,16 +117,16 @@ class Ui_SensorSettingsWindow(object):
                 msg.setWindowTitle("Error")
                 msg.exec_()
 
-            else: 
-                returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, str(self.actualRoomName) + str(self.actualRoomID))    
+            else:
+                returnID = connection_sensor.connection(sensorID, net_SSID, net_PWD, str(self.actualRoomName) + str(self.actualRoomID))
                 # returnID = 0
                 if (returnID == 0):
                     print("OK! Sensor is being connected!")
 
-                    if (len(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"]) == 1 and str(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][0]["sensorID"]) == ""):
-                        self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][0]["sensorID"] = sensorID
+                    if (len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"]) == 1 and str(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"][0]["sensorID"]) == ""):
+                        self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"][0]["sensorID"] = sensorID
                     else:
-                        self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"].append({"sensorID" : sensorID})
+                        self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"].append({"sensorID" : sensorID})
 
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -125,7 +148,7 @@ class Ui_SensorSettingsWindow(object):
                         "Sensor ID not found, please retry")
                     msg.setWindowTitle("Errore")
                     msg.exec_()
-                    
+
                     self.PB_connectSensor.setText(QtCore.QCoreApplication.translate(
                             "SensorSettingsWindow", "Not connected!"))
                     self.PB_connectSensor.setEnabled(True)
@@ -244,15 +267,15 @@ class Ui_SensorSettingsWindow(object):
         else: # ID sensore inserito correttamente
             # Cerca il sensore, se esiste eliminalo
             flag = 0
-            actualNumSensors = len(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"])
+            actualNumSensors = len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"])
             for i in range(0, actualNumSensors):
-                if (str(sensorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][i]["sensorID"]).lower()):
-                    del self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"][i]
-                    if (len(self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"]) == 0):
-                        self.roomDataConfiguration["conf"][self.actualRoomID]["sensors"].append({"sensorID" : ""})
+                if (str(sensorID).lower() == str(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"][i]["sensorID"]).lower()):
+                    del self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"][i]
+                    if (len(self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"]) == 0):
+                        self.roomDataConfiguration["conf"][self.actualRoomIndex]["sensors"].append({"sensorID" : ""})
                     flag = 1
                     break
-                    
+
             if (flag == 1):
                 database_manager.update_roomData_configuration(self.db, self.roomDataConfiguration)
                 msg = QtWidgets.QMessageBox()
@@ -294,7 +317,7 @@ class Ui_SensorSettingsWindow(object):
         self.configuration = database_manager.get_configuration(self.db)
         self.roomDataConfiguration = database_manager.get_roomData_configuration(self.db)
 
-    def setupUi(self, SensorSettingsWindow, db, actualRoomID, actualRoomName):
+    def setupUi(self, SensorSettingsWindow, db, actualRoomIndex, actualRoomName):
 
         self.sensorSettingsWindow = SensorSettingsWindow
         self.sensorSettingsWindow.setWindowFlags(
@@ -357,7 +380,7 @@ class Ui_SensorSettingsWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.LE_sensor.setFont(font)
-        self.LE_sensor.setObjectName("LE_sensor")        
+        self.LE_sensor.setObjectName("LE_sensor")
         self.label_SensorSettings = QtWidgets.QLabel(self.centralwidget)
         self.label_SensorSettings.setGeometry(QtCore.QRect(-10, 0, 121, 61))
         font = QtGui.QFont()
@@ -405,8 +428,9 @@ class Ui_SensorSettingsWindow(object):
 
         self.initDB(db)
         self.reloadRoomData()
-        self.actualRoomID = actualRoomID
+        self.actualRoomIndex = actualRoomIndex
         self.actualRoomName = actualRoomName
+        self.searchActualRoomID()
 
         self.timer = QTimer()
 

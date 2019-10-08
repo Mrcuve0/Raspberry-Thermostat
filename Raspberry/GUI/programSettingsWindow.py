@@ -1,3 +1,19 @@
+# Copyright (C) 2019 Paolo Calao, Samuele Yves Cerini, Federico Pozzana
+
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import subprocess
 
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -25,32 +41,39 @@ class Ui_ProgramSettingsWindow(object):
     configuration = None
     newConfiguration = None
 
+    actualRoomIndex = 0
     actualRoomID = 0
     actualRoomName = ""
 
     def initDB(self, db):
         self.db = db
 
+
+    def searchActualRoomID(self):
+        self.configuration = database_manager.get_configuration(self.db)
+
+        self.actualRoomID = self.configuration["rooms_settings"][self.actualRoomIndex]["room"]
+
     def loadScreenData(self):
         self.configuration = database_manager.get_configuration(self.db)
-        if (self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFM"] != "" and \
-            self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFE"] != "" and \
-            self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFN"] != "" and \
-            self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEM"] != "" and \
-            self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEE"] != "" and \
-            self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEN"] != ""):
-                self.LE_MFM.setText(str(self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFM"]))
-                self.LE_MFE.setText(str(self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFE"]))
-                self.LE_MFN.setText(str(self.configuration["rooms_settings"][self.actualRoomID]["program"]["MFN"]))
-                self.LE_WEM.setText(str(self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEM"]))
-                self.LE_WEE.setText(str(self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEE"]))
-                self.LE_WEN.setText(str(self.configuration["rooms_settings"][self.actualRoomID]["program"]["WEN"]))
+        if (self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["MFM"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["MFE"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["MFN"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["WEM"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["WEE"] != "" and \
+            self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["WEN"] != ""):
+                self.LE_MFM.setText(str(self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["MFM"]))
+                self.LE_MFE.setText(str(self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["MFE"]))
+                self.LE_MFN.setText(str(self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["MFN"]))
+                self.LE_WEM.setText(str(self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["WEM"]))
+                self.LE_WEE.setText(str(self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["WEE"]))
+                self.LE_WEN.setText(str(self.configuration["rooms_settings"][self.actualRoomIndex]["program"]["WEN"]))
 
     def on_PB_goBack_clicked(self):
         self.close()
         self.programSettingsWindow = QtWidgets.QMainWindow()
         self.uiSensorValveProgramWindow = sensorValveProgramWindow.Ui_SensorValveProgramWindow()
-        self.uiSensorValveProgramWindow.setupUi(self.programSettingsWindow, self.db, self.actualRoomID, self.actualRoomName)
+        self.uiSensorValveProgramWindow.setupUi(self.programSettingsWindow, self.db, self.actualRoomIndex, self.actualRoomName)
         self.programSettingsWindow.showMaximized()
 
     def on_PB_apply_clicked(self):
@@ -66,13 +89,13 @@ class Ui_ProgramSettingsWindow(object):
         else:
             self.configuration = database_manager.get_configuration(self.db)
             self.newConfiguration = self.configuration
-            # self.newConfiguration["rooms_settings"][self.actualRoomID]["program"] = {"temp": {"MFM" : self.LE_MFM.text(), "MFE" : self.LE_MFE.text(), "MFN" : self.LE_MFN.text(), "WEM" : self.LE_WEM.text(), "WEE" : self.LE_WEE.text(), "WEN" : self.LE_WEN.text()}}
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"]["MFM"] = int(self.LE_MFM.text())
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"]["MFE"] = int(self.LE_MFE.text())
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"]["MFN"] = int(self.LE_MFN.text())
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"]["WEM"] = int(self.LE_WEM.text())
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"]["WEE"] = int(self.LE_WEE.text())
-            self.newConfiguration["rooms_settings"][self.actualRoomID]["program"]["WEN"] = int(self.LE_WEN.text())
+            # self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"] = {"temp": {"MFM" : self.LE_MFM.text(), "MFE" : self.LE_MFE.text(), "MFN" : self.LE_MFN.text(), "WEM" : self.LE_WEM.text(), "WEE" : self.LE_WEE.text(), "WEN" : self.LE_WEN.text()}}
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"]["MFM"] = int(self.LE_MFM.text())
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"]["MFE"] = int(self.LE_MFE.text())
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"]["MFN"] = int(self.LE_MFN.text())
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"]["WEM"] = int(self.LE_WEM.text())
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"]["WEE"] = int(self.LE_WEE.text())
+            self.newConfiguration["rooms_settings"][self.actualRoomIndex]["program"]["WEN"] = int(self.LE_WEN.text())
 
             database_manager.update_configuration(self.db, self.newConfiguration)
 
@@ -81,7 +104,7 @@ class Ui_ProgramSettingsWindow(object):
             msg.setInformativeText(
                 "Program updated correctly!")
             msg.setWindowTitle("Info")
-            msg.exec_()  
+            msg.exec_()
 
     def on_PB_clearAll_clicked(self):
         self.LE_MFE.setText("")
@@ -112,7 +135,7 @@ class Ui_ProgramSettingsWindow(object):
         self.timer.stop()
         self.programSettingsWindow.close()
 
-    def setupUi(self, ProgramSettingsWindow, db, actualRoomID, actualRoomName):
+    def setupUi(self, ProgramSettingsWindow, db, actualRoomIndex, actualRoomName):
 
         self.programSettingsWindow = ProgramSettingsWindow
         self.programSettingsWindow.setWindowFlags(
@@ -296,8 +319,10 @@ class Ui_ProgramSettingsWindow(object):
         ProgramSettingsWindow.setCentralWidget(self.centralwidget)
 
         self.initDB(db)
-        self.actualRoomID = actualRoomID
+        self.actualRoomIndex = actualRoomIndex
         self.actualRoomName = actualRoomName
+
+        self.searchActualRoomID()
 
         self.timer = QTimer()
 
@@ -311,7 +336,7 @@ class Ui_ProgramSettingsWindow(object):
         self.timeEdit.setDisplayFormat(_translate("ProgramSettingsWindow", "HH : mm"))
         self.dateEdit.setDisplayFormat(_translate("ProgramSettingsWindow", "dd - MM - yyyy"))
         self.PB_goBack.setText(_translate("ProgramSettingsWindow", "<"))
-        self.label_ValveSettings.setText(_translate("ProgramSettingsWindow", "Sensor\n"
+        self.label_ValveSettings.setText(_translate("ProgramSettingsWindow", "Program\n"
 "Settings"))
         self.PB_apply.setText(_translate("ProgramSettingsWindow", "Apply"))
         self.label_ValveName.setText(_translate("ProgramSettingsWindow", "Actual Room: " + str(self.actualRoomName)))

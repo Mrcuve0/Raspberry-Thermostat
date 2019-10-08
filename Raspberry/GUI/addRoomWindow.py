@@ -1,3 +1,19 @@
+# Copyright (C) 2019 Paolo Calao, Samuele Yves Cerini, Federico Pozzana
+
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import sys
 import subprocess
 
@@ -46,6 +62,7 @@ class Ui_addRoomWindow(object):
     def on_PB_addRoom_clicked(self):
 
         self.actualNumRooms = len(self.configuration["rooms_settings"])
+        self.nextRoomID = int(self.configuration["rooms_settings"][self.actualNumRooms - 1]["room"]) + 1
 
         roomName = self.LE_room.text()
         if (roomName == ""):
@@ -58,9 +75,9 @@ class Ui_addRoomWindow(object):
             return
 
         # Aggiungi stanza alla configurazione
-        self.configuration["rooms_settings"].append({"room" : str(self.actualNumRooms), "room_name" : roomName, "mode" : "manual", "info" : {"temp" : 25, "weekend" : 0}, "season" : "hot", "program" : {"MFM" : "", "MFE" : "", "MFN" : "", "WEM" : "", "WEE" : "", "WEN" : ""}})
+        self.configuration["rooms_settings"].append({"room" : str(self.nextRoomID), "room_name" : roomName, "mode" : "manual", "info" : {"temp" : 25, "weekend" : 0}, "season" : "hot", "program" : {"MFM" : "", "MFE" : "", "MFN" : "", "WEM" : "", "WEE" : "", "WEN" : ""}})
         # self.roomDataConfiguration = {"conf" : [{"roomID" : 0, "roomName" : "default",  "sensors" : {"sensorID" : ""}, "actuators" : {"actuatorID" : "", "valves" : {"valveID": ""}}}]}
-        self.roomDataConfiguration["conf"].append({"roomID" : str(self.actualNumRooms), "roomName" : roomName,  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "type": "hot", "valves" : [{"valveID": ""}]}]})
+        self.roomDataConfiguration["conf"].append({"roomID" : str(self.nextRoomID), "roomName" : roomName,  "sensors" : [{"sensorID" : ""}], "actuators" : [{"actuatorID" : "", "type": "hot", "valves" : [{"valveID": ""}]}]})
 
         self.newConfiguration = self.configuration
         database_manager.update_configuration(self.db, self.newConfiguration)
@@ -73,7 +90,7 @@ class Ui_addRoomWindow(object):
             "Room added!")
         msg.setWindowTitle("Info")
         msg.exec_()
-          
+
     def __handleTextChanged(self, text):
         if not self.LE_room.hasFocus:
             self.LE_room._beforeRoomName = text
@@ -86,7 +103,7 @@ class Ui_addRoomWindow(object):
             self.PB_addRoom.setText(QtCore.QCoreApplication.translate(
                 "AddRoomWindow", "Add Room"))
             self.PB_addRoom.setEnabled(True)
-        
+
     def activeFunctionsConnection(self):
         self.PB_goBack.clicked.connect(self.on_PB_goBack_clicked)
         self.PB_addRoom.clicked.connect(self.on_PB_addRoom_clicked)
@@ -154,12 +171,12 @@ class Ui_addRoomWindow(object):
         self.timeEdit.setReadOnly(True)
         self.timeEdit.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.timeEdit.setObjectName("timeEdit")
-        
+
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        
+
         self.PB_goBack = QtWidgets.QPushButton(self.centralwidget)
         self.PB_goBack.setGeometry(QtCore.QRect(0, 380, 111, 100))
         font = QtGui.QFont()
