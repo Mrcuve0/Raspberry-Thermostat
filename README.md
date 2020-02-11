@@ -3,6 +3,7 @@
 
 [![DevelopmentStatus](https://img.shields.io/badge/Development-Stopped-red.svg)](https://img.shields.io/badge/Development-Stopped-red.svg)
 
+![Twitter Follow](https://img.shields.io/twitter/follow/Mrcuve0?label=Follow%20Me%21%20%40Mrcuve0&style=social)
 
 
 ### **Here's a main view of the entire system, together with the main components (SW and HW) that compose it**
