@@ -24,5 +24,3 @@
 ### **LICENSE**
 
 The source code of the project is licensed under the ```GPLv3``` license, unless otherwise stated.
-
-*Copyright (C) Paolo Calao, Samuele Yves Cerini, Federico Pozzana*
